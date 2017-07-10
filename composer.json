@@ -1,0 +1,30 @@
+{
+  "name": "h3tech/yii2-crud",
+  "type": "yii2-extension",
+  "description": "An easy to use CRUD extension for Yii",
+  "homepage": "https://github.com/H3Tech/yii2-crud",
+  "keywords": [
+    "yii2",
+    "extension",
+    "crud"
+  ],
+  "license": "MIT",
+  "require": {
+    "kartik-v/yii2-widget-datepicker": "*",
+    "kartik-v/yii2-date-range": "*",
+    "kartik-v/yii2-widget-fileinput": "*"
+  },
+  "autoload": {
+    "psr-4": {
+      "h3tech\\crud\\": ""
+    }
+  },
+  "authors": [
+    {
+      "name": "Gyula Szabó",
+      "email": "gt.szgyula@gmail.com",
+      "homepage": "https://github.com/gyula-szabo"
+    }
+  ],
+  "minimum-stability": "stable"
+}
