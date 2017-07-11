@@ -3,29 +3,41 @@
 namespace h3tech\crud;
 
 use Yii;
+use h3tech\crud\models\Media;
 
 class Module extends \yii\base\Module
 {
     public function init()
     {
         parent::init();
-        $this->registerTranslations();
+
+        static::registerTranslations();
+
+        if (YII_ENV_DEV) {
+            static::createMediaTableIfNotExists();
+        }
     }
 
-    public function registerTranslations()
+    protected static function registerTranslations()
     {
         Yii::$app->i18n->translations['h3tech/crud/*'] = [
             'class' => 'yii\i18n\PhpMessageSource',
             'sourceLanguage' => 'en-US',
             'basePath' => '@h3tech/crud/messages',
             'fileMap' => [
-                'h3tech/crud/crud' => 'crud.php'
-            ]
+                'h3tech/crud/crud' => 'crud.php',
+            ],
         ];
     }
 
-    public static function t($category, $message, $params = [], $language = null)
+    protected static function createMediaTableIfNotExists()
     {
-        return Yii::t('h3tech/crud/' . $category, $message, $params, $language);
+        $tableName = Media::tableName();
+
+        if (Yii::$app->db->schema->getTableSchema($tableName, true) === null) {
+            Yii::$app->db->createCommand(
+                file_get_contents(Yii::getAlias("@h3tech/crud/schema/$tableName.sql"))
+            )->execute();
+        }
     }
 }
