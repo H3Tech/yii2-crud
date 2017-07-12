@@ -2,10 +2,12 @@
 
 namespace h3tech\crud\models;
 
+use h3tech\crud\Module;
 use yii\db\ActiveRecord;
+use Yii;
 
 /**
- * This is the model class for table "media".
+ * This is the model class for table "crud_media".
  *
  * @property integer $id
  * @property string $type
@@ -19,7 +21,9 @@ class Media extends ActiveRecord
      */
     public static function tableName()
     {
-        return 'media';
+        /** @var Module $crudModule */
+        $crudModule = Yii::$app->getModule('h3tech-database-generator');
+        return $crudModule->mediaTableName;
     }
 
     /**
