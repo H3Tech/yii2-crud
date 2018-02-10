@@ -22,7 +22,7 @@ class Media extends ActiveRecord
     public static function tableName()
     {
         /** @var Module $crudModule */
-        $crudModule = Yii::$app->getModule('h3tech-database-generator');
+        $crudModule = Yii::$app->getModule('h3tech-crud');
         return $crudModule->mediaTableName;
     }
 
