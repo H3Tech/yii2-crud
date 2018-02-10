@@ -2,6 +2,7 @@
 
 namespace h3tech\crud\controllers;
 
+use h3tech\crud\Module;
 use Yii;
 use yii\base\InvalidParamException;
 use yii\web\Controller;
@@ -40,9 +41,8 @@ class MediaController extends Controller {
             $prefix = $currentType['defaultPrefix'];
         }
         $fileName = uniqid($prefix) . '_' . $mediaFile->name;
-        $path = Yii::$app->basePath . Yii::$app->params['uploadPath'] . $fileName;
 
-        $mediaFile->saveAs($path);
+        $mediaFile->saveAs(Media::getUploadPath($fileName));
 
         $media = new Media();
         $media->type = $type;
@@ -59,9 +59,7 @@ class MediaController extends Controller {
 
         if ($currentType != null && $currentType['previewTemplate'] != null) {
             $baseUrl = Yii::$app->request->hostInfo.Yii::$app->request->baseUrl;
-            $uploadPath = Yii::$app->params['relativeUploadPath'];
-
-            $template = call_user_func($currentType['previewTemplate'], $baseUrl.$uploadPath, $filename);
+            $template = call_user_func($currentType['previewTemplate'], Module::getInstance()->relativeUploadPath, $filename);
         }
 
         return $template;
@@ -77,9 +75,7 @@ class MediaController extends Controller {
 
         if ($media !== null) {
             $baseUrl = Yii::$app->request->hostInfo.Yii::$app->request->baseUrl;
-            $uploadPath = Yii::$app->params['relativeUploadPath'];
-
-            $result['initialPreview'][] = $baseUrl.$uploadPath.$media->filename;
+            $result['initialPreview'][] = $media->uploadedUrl;
             $result['initialPreviewConfig'][] = ['caption' => $media->filename];
         }
 

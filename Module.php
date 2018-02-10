@@ -3,14 +3,22 @@
 namespace h3tech\crud;
 
 use Yii;
+use yii\base\InvalidConfigException;
+use yii\base\InvalidParamException;
 
 /**
  * @property string $mediaTableName
+ * @property string uploadPath
+ * @property string relativeUploadPath
  */
 class Module extends \yii\base\Module
 {
     protected static $defaultMediaTableName = 'crud_media';
-    protected $mediaTableName = null;
+
+    public $mediaTableName = null;
+
+    public $uploadPath = '@webroot/uploads/';
+    public $relativeUploadPath = '@web/uploads/';
 
     public function init()
     {
@@ -50,17 +58,38 @@ class Module extends \yii\base\Module
         }
     }
 
-    public function setMediaTableName($mediaTableName)
+    protected static function assertPropertyIsString($propertyName, $propertyValue)
     {
-        if (is_string($mediaTableName) && !empty(trim($mediaTableName))) {
-            $this->mediaTableName = $mediaTableName;
-        } else {
-            throw new InvalidConfigException("The property 'mediaTableName' must be a non-empty string value if set");
+        if (!is_string($propertyValue) || trim($propertyValue) === '') {
+            throw new InvalidConfigException("The property '$propertyName' must be a non-empty string value if set");
         }
     }
 
-    public function getMediaTableName()
+    public function setMediaTableName($mediaTableName)
     {
-        return $this->mediaTableName;
+        static::assertPropertyIsString('mediaTableName', $mediaTableName);
+        $this->mediaTableName = $mediaTableName;
+    }
+
+    public function actionSetUploadPath($uploadPath)
+    {
+        static::assertPropertyIsString('uploadPath', $uploadPath);
+        $this->uploadPath = $uploadPath;
+    }
+
+    public function actionSetRelativeUploadPath($relativeUploadPath)
+    {
+        static::assertPropertyIsString('relativeUploadPath', $relativeUploadPath);
+        $this->relativeUploadPath = $relativeUploadPath;
+    }
+
+    public function getUploadPath()
+    {
+        return Yii::getAlias($this->uploadPath);
+    }
+
+    public function getRelativeUploadPath()
+    {
+        return Yii::getAlias($this->relativeUploadPath);
     }
 }
