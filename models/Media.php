@@ -12,7 +12,7 @@ use Yii;
  * @property integer $id
  * @property string $type
  * @property string $filename
- * @property string $created
+ * @property string $created_at
  */
 class Media extends ActiveRecord
 {
@@ -33,7 +33,7 @@ class Media extends ActiveRecord
     {
         return [
             [['type', 'filename'], 'required'],
-            [['created'], 'safe'],
+            [['created_at'], 'safe'],
             [['type'], 'string', 'max' => 50],
             [['filename'], 'string', 'max' => 255]
         ];
@@ -48,7 +48,7 @@ class Media extends ActiveRecord
             'id' => 'ID',
             'type' => 'Type',
             'filename' => 'Filename',
-            'created' => 'Created',
+            'created_at' => 'Created At',
         ];
     }
 }
