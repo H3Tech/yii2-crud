@@ -18,16 +18,24 @@ use yii\db\Query;
  */
 abstract class AbstractCRUDController extends Controller
 {
+    protected static $modelClass = null;
+    protected static $searchModelClass = null;
+    protected static $pageSize = 20;
+
     protected static function modelClass() {
-        return 'app\\models\\' . static::shortName();
+        return static::$modelClass === null
+            ? ('app\models\\' . static::shortName())
+            : static::$modelClass;
     }
 
     protected static function searchModelClass() {
-        return 'app\\controllers\\search\\' . static::shortName() . 'Search';
+        return static::$searchModelClass === null
+            ? ('app\controllers\search\\' . static::shortName() . 'Search')
+            : static::$searchModelClass;
     }
 
     protected static function pageSize() {
-        return 20;
+        return static::$pageSize;
     }
 
     public static function getModelName() {
