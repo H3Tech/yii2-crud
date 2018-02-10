@@ -16,24 +16,33 @@ use yii\widgets\ActiveForm;
     ?>
 
     <?php
-    /** @var \h3tech\crud\controllers\AbstractCRUDController $controllerClass */
-    foreach($controllerClass::viewRules() as $field => $rule) {
-        $ruleArray = is_array($rule) ? $rule : [$rule];
-        $blockFolder = "blocks/";
-        $blockType = $ruleArray[0];
-        $blockExtension = ".php";
-        $blockPath = $blockFolder.$blockType.$blockExtension;
+    $includeFunction = function ($field, $blockType, $settings)
+    use ($viewPath, $defaultViewPath, $form, $model) {
+        $blockPath = 'blocks/' . $blockType . '.php';
 
         /** @noinspection PhpUndefinedVariableInspection */
-        $blockFile = $viewPath."/".$blockPath;
+        $blockFile = $viewPath . "/" . $blockPath;
         if (!file_exists($blockFile)) {
             /** @noinspection PhpUndefinedVariableInspection */
-            $blockFile = $defaultViewPath.$blockPath;
+            $blockFile = $defaultViewPath . $blockPath;
         }
 
-        $settings = isset($ruleArray[1]) ? $ruleArray[1] : [];
         /** @noinspection PhpIncludeInspection */
         include $blockFile;
+    };
+
+    /** @var \h3tech\crud\controllers\AbstractCRUDController $controllerClass */
+    foreach ($controllerClass::viewRules() as $rule) {
+        $target = $rule[0];
+        $type = $rule[1];
+        $settings = isset($rule[2]) ? $rule[2] : [];
+        if (is_array($target)) {
+            foreach ($target as $attribute) {
+                $includeFunction($attribute, $type, $settings);
+            }
+        } else {
+            $includeFunction($target, $type, $settings);
+        }
     }
     ?>
 
