@@ -7,30 +7,34 @@ use Yii;
 use yii\base\InvalidParamException;
 use yii\web\Controller;
 use h3tech\crud\models\Media;
+use yii\helpers\FileHelper;
 use yii\helpers\Html;
 use yii\db\Query;
 use yii\helpers\Url;
 use yii\web\UploadedFile;
 
-class MediaController extends Controller {
-    protected static function types() {
+class MediaController extends Controller
+{
+    protected static function types()
+    {
         return [
             'image' => [
                 'defaultPrefix' => 'img_',
-                'previewTemplate' => function($uploadPath, $filename) {
-                    return Html::img($uploadPath.$filename,  ['class'=>'file-preview-image', 'style'=>'width: auto; max-height: 160px;', 'alt'=>$filename, 'title'=>$filename]);
+                'previewTemplate' => function ($uploadPath, $filename) {
+                    return Html::img($uploadPath . $filename, ['class' => 'file-preview-image', 'style' => 'width: auto; max-height: 160px;', 'alt' => $filename, 'title' => $filename]);
                 },
             ],
             'video' => [
                 'defaultPrefix' => 'vid_',
-                'previewTemplate' => function($uploadPath, $filename) {
-                    return '<video height="160" controls><source src="'.$uploadPath.$filename.'"></video>';
+                'previewTemplate' => function ($uploadPath, $filename) {
+                    return '<video height="160" controls><source src="' . $uploadPath . $filename . '"></video>';
                 },
             ],
         ];
     }
 
-    public static function upload(UploadedFile $mediaFile, $type, $prefix) {
+    public static function upload(UploadedFile $mediaFile, $type, $prefix)
+    {
         $types = self::types();
         if (!isset($types[$type])) {
             throw new InvalidParamException('Unknown media type: $type');
@@ -52,13 +56,13 @@ class MediaController extends Controller {
         return Yii::$app->getDb()->getLastInsertID();
     }
 
-    protected static function getPreviewTemplate($type, $filename) {
+    protected static function getPreviewTemplate($type, $filename)
+    {
         $types = self::types();
         $currentType = $types[$type];
         $template = "";
 
         if ($currentType != null && $currentType['previewTemplate'] != null) {
-            $baseUrl = Yii::$app->request->hostInfo.Yii::$app->request->baseUrl;
             $template = call_user_func($currentType['previewTemplate'], Module::getInstance()->relativeUploadPath, $filename);
         }
 
@@ -74,15 +78,20 @@ class MediaController extends Controller {
         $media = Media::findOne($mediaId);
 
         if ($media !== null) {
-            $baseUrl = Yii::$app->request->hostInfo.Yii::$app->request->baseUrl;
+            $baseUrl = Yii::$app->request->hostInfo . Yii::$app->request->baseUrl;
             $result['initialPreview'][] = $media->uploadedUrl;
-            $result['initialPreviewConfig'][] = ['caption' => $media->filename];
+            $result['initialPreviewConfig'][] = [
+                'type' => $media->type,
+                'filetype' => FileHelper::getMimeType($media->uploadedPath),
+                'caption' => $media->filename,
+            ];
         }
 
         return $result;
     }
 
-    public static function getMultiplePreviewData($modelId, $table, $mediaField, $modelField) {
+    public static function getMultiplePreviewData($modelId, $table, $mediaField, $modelField)
+    {
         $result = array();
         $result['initialPreview'] = array();
         $result['initialPreviewConfig'] = array();
@@ -117,14 +126,15 @@ class MediaController extends Controller {
         return $result;
     }
 
-    public static function actionUpload() {
+    public static function actionUpload()
+    {
         $result = array();
 
         $postData = Yii::$app->request->post();
 
         $modelName = str_replace(' ', '', $postData['modelName']);
         $type = $postData['type'];
-        $prefix = $postData['prefix'] == 'null' ? preg_replace('/\s/', '', strtolower($modelName)).'_' : $postData['prefix'];
+        $prefix = $postData['prefix'] == 'null' ? preg_replace('/\s/', '', strtolower($modelName)) . '_' : $postData['prefix'];
         $table = $postData['table'];
         $mediaField = $postData['mediaField'];
         $modelField = $postData['modelField'];
@@ -165,7 +175,8 @@ class MediaController extends Controller {
         return json_encode($result);
     }
 
-    public static function actionDelete() {
+    public static function actionDelete()
+    {
         $result = array();
 
         $postData = Yii::$app->request->post();

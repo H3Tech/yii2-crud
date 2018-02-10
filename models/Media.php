@@ -14,6 +14,7 @@ use Yii;
  * @property string $filename
  * @property string $created_at
  *
+ * @property string $uploadedPath
  * @property string $uploadedUrl
  */
 class Media extends ActiveRecord
@@ -62,6 +63,11 @@ class Media extends ActiveRecord
     public static function getUploadUrl($filename)
     {
         return Yii::getAlias(Module::getInstance()->relativeUploadPath) . $filename;
+    }
+
+    public function getUploadedPath()
+    {
+        return static::getUploadPath($this->filename);
     }
 
     public function getUploadedUrl()
