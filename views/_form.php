@@ -32,10 +32,22 @@ use yii\widgets\ActiveForm;
     };
 
     /** @var \h3tech\crud\controllers\AbstractCRUDController $controllerClass */
-    foreach ($controllerClass::viewRules() as $rule) {
-        $target = $rule[0];
-        $type = $rule[1];
-        $settings = isset($rule[2]) ? $rule[2] : [];
+    foreach ($controllerClass::viewRules() as $key => $rule) {
+        if (is_numeric($key)) {
+            $target = $rule[0];
+            $type = $rule[1];
+            $settings = isset($rule[2]) ? $rule[2] : [];
+        } else {
+            $target = $key;
+            if (is_array($rule)) {
+                $type = $rule[0];
+                $settings = isset($rule[1]) ? $rule[1] : [];
+            } else {
+                $type = $rule;
+                $settings = [];
+            }
+        }
+
         if (is_array($target)) {
             foreach ($target as $attribute) {
                 $includeFunction($attribute, $type, $settings);
