@@ -1,4 +1,7 @@
 <?php
+
+// TODO: simplify options and plugin options
+
 use h3tech\crud\controllers\MediaController;
 use kartik\file\FileInput;
 use yii\helpers\Url;

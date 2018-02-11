@@ -3,20 +3,26 @@
 use h3tech\crud\controllers\MediaController;
 use kartik\file\FileInput;
 
-/** @noinspection PhpUndefinedVariableInspection */
+/* @var $model \yii\db\ActiveRecord */
+
 $preview = MediaController::getPreviewData($model->$field);
 
+$options = isset($settings['options']) ? $settings['options'] : [];
+$pluginOptions = isset($settings['pluginOptions']) ? $settings['pluginOptions'] : [];
+
 echo $form->field($model, $settings['modelVariable'])->widget(FileInput::className(), [
-    'options' => ['accept' => $settings['accept']],
-    'pluginOptions' => [
+    'options' => $options,
+    'pluginOptions' => array_merge([
         'showClose' => false,
-        'allowedFileExtensions' => $settings['allowedFileExtensions'],
         'overwriteInitial' => true,
         'initialPreviewAsData' => true,
         'initialPreviewFileType' => 'other',
         'initialPreview' => $preview['initialPreview'],
         'initialPreviewConfig' => $preview['initialPreviewConfig'],
-        'showRemove' => $model->isNewRecord ? true : false,
+        'showRemove' => $model->isNewRecord,
         'showUpload' => false,
-    ],
+        'fileActionSettings' => [
+            'showDelete' => false,
+        ],
+    ], $pluginOptions),
 ]);
