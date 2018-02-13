@@ -57,12 +57,13 @@ class Media extends ActiveRecord
 
     public static function getUploadPath($filename)
     {
-        return Yii::getAlias(Module::getInstance()->uploadPath) . $filename;
+        return rtrim(Yii::getAlias(Module::getInstance()->uploadPath), DIRECTORY_SEPARATOR)
+            . DIRECTORY_SEPARATOR . $filename;
     }
 
     public static function getUploadUrl($filename)
     {
-        return Yii::getAlias(Module::getInstance()->relativeUploadPath) . $filename;
+        return rtrim(Yii::getAlias(Module::getInstance()->relativeUploadPath), '/') . '/' . $filename;
     }
 
     public function getUploadedPath()
