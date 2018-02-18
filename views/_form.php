@@ -17,18 +17,16 @@ use yii\widgets\ActiveForm;
 
     <?php
     $includeFunction = function ($field, $blockType, $settings)
-    use ($viewPath, $defaultViewPath, $form, $model) {
+    use ($form, $model, $viewPaths) {
         $blockPath = 'blocks/' . $blockType . '.php';
 
-        /** @noinspection PhpUndefinedVariableInspection */
-        $blockFile = $viewPath . "/" . $blockPath;
-        if (!file_exists($blockFile)) {
-            /** @noinspection PhpUndefinedVariableInspection */
-            $blockFile = $defaultViewPath . $blockPath;
+        foreach ($viewPaths as $viewPath) {
+            $blockFile = $viewPath . DIRECTORY_SEPARATOR . $blockPath;
+            if (file_exists($blockFile)) {
+                include $blockFile;
+                break;
+            }
         }
-
-        /** @noinspection PhpIncludeInspection */
-        include $blockFile;
     };
 
     /** @var \h3tech\crud\controllers\AbstractCRUDController $controllerClass */

@@ -63,7 +63,7 @@ class Media extends ActiveRecord
 
     public static function getUploadUrl($filename)
     {
-        return rtrim(Yii::getAlias(Module::getInstance()->relativeUploadPath), '/') . '/' . $filename;
+        return rtrim(Yii::getAlias(Module::getInstance()->baseUploadUrl), '/') . '/' . $filename;
     }
 
     public function getUploadedPath()

@@ -16,22 +16,20 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1><?= Html::encode($this->title) ?></h1>
 
     <?php
-    $formFolder = "/";
-    $formName = "_form";
-    $formExtension = ".php";
-    /** @noinspection PhpUndefinedVariableInspection */
-    $formFile = $viewPath.$formFolder.$formName.$formExtension;
-    /** @noinspection PhpUndefinedVariableInspection */
-    $formPath = file_exists($formFile) ? "" : $relativeDefaultViewPath;
+    foreach ($viewPaths as $viewPath) {
+        $viewFile = $viewPath . DIRECTORY_SEPARATOR . '_form.php';
 
-    /** @noinspection PhpUndefinedVariableInspection */
-    echo $this->render($formPath.$formName, [
-        'model' => $model,
-        'viewPath' => $viewPath,
-        'defaultViewPath' => $defaultViewPath,
-        'controllerClass' => $controllerClass,
-        'modelName' => $modelName,
-    ]);
+        if (file_exists($viewFile)) {
+            echo $this->renderFile($viewFile, [
+                'model' => $model,
+                'controllerClass' => $controllerClass,
+                'modelName' => $modelName,
+                'viewPaths' => $viewPaths,
+            ]);
+
+            break;
+        }
+    }
     ?>
 
 </div>

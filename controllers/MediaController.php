@@ -63,7 +63,7 @@ class MediaController extends Controller
         $template = "";
 
         if ($currentType != null && $currentType['previewTemplate'] != null) {
-            $template = call_user_func($currentType['previewTemplate'], Module::getInstance()->relativeUploadPath, $filename);
+            $template = call_user_func($currentType['previewTemplate'], Module::getInstance()->baseUploadUrl, $filename);
         }
 
         return $template;

@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use yii\grid\GridView;
+use yii\base\ViewNotFoundException;
 
 /* @var $this yii\web\View */
 /* @var $dataProvider yii\data\ActiveDataProvider */
@@ -14,16 +15,16 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <h1><?= Html::encode($this->title) ?></h1>
     <?php
-//    $searchFolder = "/";
-//    $searchName = "_search";
-//    $searchExtension = ".php";
-//    /** @noinspection PhpUndefinedVariableInspection */
-//    $searchFile = $viewPath.$searchFolder.$searchName.$searchExtension;
-//    /** @noinspection PhpUndefinedVariableInspection */
-//    $searchPath = file_exists($searchFile) ? "" : $relativeDefaultViewPath;
+//    foreach ($relativeViewPaths as $viewPath) {
+//        echo $viewPath . '<br>';
 //
-//    /** @noinspection PhpUndefinedVariableInspection */
-//    echo $this->render($searchPath.$searchName, ['model' => $searchModel]);
+//        try {
+//            echo $this->render($viewPath . '_search', ['model' => $searchModel]);
+//            break;
+//        } catch (ViewNotFoundException $e) {
+//            continue;
+//        }
+//    }
     ?>
 
     <p>

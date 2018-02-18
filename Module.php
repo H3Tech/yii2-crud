@@ -9,7 +9,7 @@ use yii\base\InvalidParamException;
 /**
  * @property string $mediaTableName
  * @property string uploadPath
- * @property string relativeUploadPath
+ * @property string baseUploadUrl
  */
 class Module extends \yii\base\Module
 {
@@ -18,7 +18,7 @@ class Module extends \yii\base\Module
     public $mediaTableName = null;
 
     public $uploadPath = '@webroot/uploads/';
-    public $relativeUploadPath = '@web/uploads/';
+    public $baseUploadUrl = '@web/uploads/';
 
     public function init()
     {
@@ -77,10 +77,10 @@ class Module extends \yii\base\Module
         $this->uploadPath = $uploadPath;
     }
 
-    public function actionSetRelativeUploadPath($relativeUploadPath)
+    public function actionSetBaseUploadUrl($baseUploadUrl)
     {
-        static::assertPropertyIsString('relativeUploadPath', $relativeUploadPath);
-        $this->relativeUploadPath = $relativeUploadPath;
+        static::assertPropertyIsString('baseUploadUrl', $baseUploadUrl);
+        $this->baseUploadUrl = $baseUploadUrl;
     }
 
     public function getUploadPath()
@@ -88,8 +88,8 @@ class Module extends \yii\base\Module
         return Yii::getAlias($this->uploadPath);
     }
 
-    public function getRelativeUploadPath()
+    public function getBaseUploadUrl()
     {
-        return Yii::getAlias($this->relativeUploadPath);
+        return Yii::getAlias($this->baseUploadUrl);
     }
 }
