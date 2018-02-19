@@ -16,8 +16,6 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1><?= Html::encode($this->title) ?></h1>
     <?php
 //    foreach ($relativeViewPaths as $viewPath) {
-//        echo $viewPath . '<br>';
-//
 //        try {
 //            echo $this->render($viewPath . '_search', ['model' => $searchModel]);
 //            break;
