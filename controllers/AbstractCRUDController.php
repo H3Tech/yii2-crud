@@ -13,6 +13,9 @@ use yii\web\UploadedFile;
 use h3tech\crud\models\Media;
 use yii\db\Query;
 use yii\base\ViewNotFoundException;
+use yii\web\Response;
+use yii\widgets\ActiveForm;
+use yii\base\Model;
 
 /**
  * This class implements the CRUD actions for a model.
@@ -22,6 +25,7 @@ abstract class AbstractCRUDController extends Controller
     protected static $modelClass = null;
     protected static $searchModelClass = null;
     protected static $pageSize = 20;
+    protected static $enableAjaxValidation = false;
 
     protected static function modelClass()
     {
@@ -40,6 +44,11 @@ abstract class AbstractCRUDController extends Controller
     protected static function pageSize()
     {
         return static::$pageSize;
+    }
+
+    protected static function getEnableAjaxValidation()
+    {
+        return static::$enableAjaxValidation;
     }
 
     public static function getModelName()
@@ -75,6 +84,7 @@ abstract class AbstractCRUDController extends Controller
             'controllerClass' => get_class($this),
             'viewPaths' => $this->getViewPaths(),
             'relativeViewPaths' => $this->getRelativeViewPaths(),
+            'enableAjaxValidation' => static::getEnableAjaxValidation(),
         ];
     }
 
@@ -279,15 +289,39 @@ abstract class AbstractCRUDController extends Controller
 
     protected function renderAction($action, $params = [])
     {
+        $finalParameters = array_merge($this->commonViewData(), $params);
+        $finalParameters = array_merge($finalParameters, ['renderParams' => $finalParameters]);
+
         foreach ($this->getRelativeViewPaths($action) as $viewPath) {
             try {
-                return $this->render($viewPath, array_merge($this->commonViewData(), $params));
+                return $this->render($viewPath, $finalParameters);
             } catch (ViewNotFoundException $e) {
                 continue;
             }
         }
 
         return null;
+    }
+
+    protected function renderJson(array $json)
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        return $json;
+    }
+
+    protected function canValidateModel(ActiveRecord $model)
+    {
+        return $model->load(Yii::$app->request->post());
+    }
+
+    protected function shouldAjaxValidate(ActiveRecord $model)
+    {
+        return Yii::$app->request->isAjax && $this->canValidateModel($model);
+    }
+
+    protected function ajaxValidateModel(ActiveRecord $model)
+    {
+        return ActiveForm::validate($model);
     }
 
     /**
@@ -305,6 +339,11 @@ abstract class AbstractCRUDController extends Controller
         return $this->renderAction('index', ['searchModel' => $searchModel, 'dataProvider' => $dataProvider]);
     }
 
+    protected function canCreateModel(ActiveRecord $model)
+    {
+        return $this->canValidateModel($model) && $model->save();
+    }
+
     /**
      * Creates a new model.
      * If creation is successful, the browser will be redirected to the 'view' page.
@@ -318,7 +357,11 @@ abstract class AbstractCRUDController extends Controller
         $modelClass = static::modelClass();
         $model = new $modelClass();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($this->shouldAjaxValidate($model)) {
+            return $this->renderJson($this->ajaxValidateModel($model));
+        }
+
+        if ($this->canCreateModel($model)) {
             $this->processData($model, $action);
             return $this->redirect([static::afterActionRedirects()[$action], 'id' => $model->getPrimaryKey()]);
         } else {
@@ -336,6 +379,11 @@ abstract class AbstractCRUDController extends Controller
         return $this->renderAction('view', ['model' => static::findModel($id)]);
     }
 
+    protected function canUpdateModel(ActiveRecord $model)
+    {
+        return $this->canValidateModel($model) && $model->validate();
+    }
+
     /**
      * Updates an existing model.
      * If update is successful, the browser will be redirected to the 'view' page.
@@ -348,7 +396,11 @@ abstract class AbstractCRUDController extends Controller
 
         $model = static::findModel($id);
 
-        if ($model->load(Yii::$app->request->post())) {
+        if ($this->shouldAjaxValidate($model)) {
+            return $this->renderJson($this->ajaxValidateModel($model));
+        }
+
+        if ($this->canUpdateModel($model)) {
             $this->processData($model, $action);
             return $this->redirect([static::afterActionRedirects()[$action], 'id' => $model->getPrimaryKey()]);
         } else {

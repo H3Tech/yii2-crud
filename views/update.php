@@ -23,13 +23,7 @@ $this->params['breadcrumbs'][] = Yii::t('h3tech/crud/crud', 'Update');
         $formFile = $viewPath . DIRECTORY_SEPARATOR . '_form.php';
 
         if (file_exists($formFile)) {
-            echo $this->renderFile($formFile, [
-                'model' => $model,
-                'controllerClass' => $controllerClass,
-                'modelName' => $modelName,
-                'viewPaths' => $viewPaths,
-            ]);
-
+            echo $this->renderFile($formFile, array_merge($renderParams, ['renderParams' => $renderParams]));
             break;
         }
     }

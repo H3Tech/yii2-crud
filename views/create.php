@@ -20,13 +20,7 @@ $this->params['breadcrumbs'][] = $this->title;
         $viewFile = $viewPath . DIRECTORY_SEPARATOR . '_form.php';
 
         if (file_exists($viewFile)) {
-            echo $this->renderFile($viewFile, [
-                'model' => $model,
-                'controllerClass' => $controllerClass,
-                'modelName' => $modelName,
-                'viewPaths' => $viewPaths,
-            ]);
-
+            echo $this->renderFile($viewFile, array_merge($renderParams, ['renderParams' => $renderParams]));
             break;
         }
     }
