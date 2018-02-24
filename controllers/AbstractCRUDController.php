@@ -2,6 +2,7 @@
 
 namespace h3tech\crud\controllers;
 
+use h3tech\crud\controllers\actions\Action;
 use Yii;
 use yii\data\ActiveDataProvider;
 use yii\db\ActiveRecord;
@@ -134,118 +135,6 @@ abstract class AbstractCRUDController extends Controller
         return [];
     }
 
-    protected static function fieldActions()
-    {
-        /** @noinspection PhpUnusedParameterInspection */
-        return [
-            'media' => [
-                'createFunction' => function (ActiveRecord $model, $type, $mediaField, $fileVar, $prefix = null) {
-                    $mediaFile = UploadedFile::getInstance($model, $fileVar);
-                    if ($mediaFile !== null) {
-                        $model[$mediaField] = MediaController::upload($mediaFile, $type, ($prefix == null ? static::getModelPrefix() : $prefix));
-                    }
-                },
-                'updateFunction' => function (ActiveRecord $model, $type, $mediaField, $fileVar, $prefix = null) {
-                    $mediaFile = UploadedFile::getInstance($model, $fileVar);
-                    if ($mediaFile !== null) {
-                        $oldMedia = Media::findOne($model[$mediaField]);
-                        if ($oldMedia !== null) {
-                            $oldMedia->delete();
-                        }
-                        $model[$mediaField] = MediaController::upload($mediaFile, $type, ($prefix == null ? static::getModelPrefix() : $prefix));
-                    }
-                },
-                'deleteFunction' => function (ActiveRecord $model, $type, $mediaField) {
-                    $media = Media::findOne($model[$mediaField]);
-                    if ($media !== null) {
-                        $media->delete();
-                    }
-                },
-            ],
-            'media_multiple' => [
-                'createFunction' => function (ActiveRecord $model, $type, $tableName, $mediaField, $modelField, $fileVar, $prefix = null) {
-                    $mediaFiles = UploadedFile::getInstances($model, $fileVar);
-                    if ($mediaFiles) {
-                        foreach ($mediaFiles as $mediaFile) {
-                            $mediaId = MediaController::upload($mediaFile, $type, ($prefix == null ? static::getModelPrefix() : $prefix));
-                            Yii::$app->getDb()->createCommand()->
-                            insert($tableName, [
-                                $mediaField => $mediaId,
-                                $modelField => $model->getPrimaryKey(),
-                            ])->execute();
-                        }
-                    }
-                },
-                'deleteFunction' => function (ActiveRecord $model, $type, $tableName, $mediaField, $modelField) {
-                    $identity = [
-                        $modelField => $model->getPrimaryKey()
-                    ];
-
-                    $mediaInstances = (new Query)
-                        ->select('*')->from($tableName)->where($identity)
-                        ->createCommand()->queryAll();
-
-                    foreach ($mediaInstances as $media) {
-                        Media::findOne($media[$mediaField])->delete();
-                    }
-
-                    Yii::$app->getDb()->createCommand()->
-                    delete($tableName, $identity)->execute();
-                },
-            ],
-            'junction' => [
-                'createFunction' => function (ActiveRecord $model, $junctionModel, $localField, $remoteField, $modelVariable) {
-                    foreach ($model->$modelVariable as $foreignKey) {
-                        $identity = [
-                            $localField => $model->primaryKey,
-                            $remoteField => $foreignKey,
-                        ];
-
-                        /** @var ActiveRecord $junctionModel */
-                        /** @var ActiveRecord $junctionEntry */
-                        if (($junctionEntry = $junctionModel::find()->where($identity)->one()) === null) {
-                            $junctionEntry = new $junctionModel();
-                            $junctionEntry->load($identity, '');
-                            $junctionEntry->save();
-                        }
-                    }
-                },
-                'updateFunction' => function (ActiveRecord $model, $junctionModel, $localField, $remoteField, $modelVariable) {
-                    $foreignKeys = $model->$modelVariable;
-
-                    /** @var ActiveRecord $junctionModel */
-                    if (empty($foreignKeys)) {
-                        $junctionModel::deleteAll([$localField => $model->primaryKey]);
-                    } else {
-                        $junctionModel::deleteAll([
-                            'and',
-                            [$localField => $model->primaryKey],
-                            ['not in', $remoteField, $foreignKeys],
-                        ]);
-                    }
-
-                    foreach ($foreignKeys as $foreignKey) {
-                        $identity = [
-                            $localField => $model->primaryKey,
-                            $remoteField => $foreignKey,
-                        ];
-
-                        /** @var ActiveRecord $junctionEntry */
-                        if (($junctionEntry = $junctionModel::find()->where($identity)->one()) === null) {
-                            $junctionEntry = new $junctionModel();
-                            $junctionEntry->load($identity, '');
-                            $junctionEntry->save();
-                        }
-                    }
-                },
-                'deleteFunction' => function (ActiveRecord $model, $junctionModel, $localField) {
-                    /** @var ActiveRecord $junctionModel */
-                    $junctionModel::deleteAll([$localField => $model->primaryKey]);
-                },
-            ],
-        ];
-    }
-
     public function behaviors()
     {
         return [
@@ -290,21 +179,10 @@ abstract class AbstractCRUDController extends Controller
 
     protected function processData(ActiveRecord $model, $actionType)
     {
-        $actions = static::fieldActions();
-
         foreach (static::actionRules() as $rule) {
-            $ruleName = $rule[0];
-            $action = $actions[$ruleName];
-
-            if ($action != null) {
-                $function = isset($action[$actionType . 'Function']) ? $action[$actionType . 'Function'] : null;
-                if (is_callable($function)) {
-                    $rule[0] = $model;
-                    call_user_func_array($function, $rule);
-                }
-            } else {
-                die("Unknown field action '$ruleName'!");
-            }
+            /** @var Action $action */
+            $action = Yii::createObject($rule);
+            call_user_func([$action, $actionType], $model);
         }
 
         $model->save();
