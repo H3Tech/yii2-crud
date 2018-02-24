@@ -191,7 +191,57 @@ abstract class AbstractCRUDController extends Controller
 
                     Yii::$app->getDb()->createCommand()->
                     delete($tableName, $identity)->execute();
-                }
+                },
+            ],
+            'junction' => [
+                'createFunction' => function (ActiveRecord $model, $junctionModel, $localField, $remoteField, $modelVariable) {
+                    foreach ($model->$modelVariable as $foreignKey) {
+                        $identity = [
+                            $localField => $model->primaryKey,
+                            $remoteField => $foreignKey,
+                        ];
+
+                        /** @var ActiveRecord $junctionModel */
+                        /** @var ActiveRecord $junctionEntry */
+                        if (($junctionEntry = $junctionModel::find()->where($identity)->one()) === null) {
+                            $junctionEntry = new $junctionModel();
+                            $junctionEntry->load($identity, '');
+                            $junctionEntry->save();
+                        }
+                    }
+                },
+                'updateFunction' => function (ActiveRecord $model, $junctionModel, $localField, $remoteField, $modelVariable) {
+                    $foreignKeys = $model->$modelVariable;
+
+                    /** @var ActiveRecord $junctionModel */
+                    if (empty($foreignKeys)) {
+                        $junctionModel::deleteAll([$localField => $model->primaryKey]);
+                    } else {
+                        $junctionModel::deleteAll([
+                            'and',
+                            [$localField => $model->primaryKey],
+                            ['not in', $remoteField, $foreignKeys],
+                        ]);
+                    }
+
+                    foreach ($foreignKeys as $foreignKey) {
+                        $identity = [
+                            $localField => $model->primaryKey,
+                            $remoteField => $foreignKey,
+                        ];
+
+                        /** @var ActiveRecord $junctionEntry */
+                        if (($junctionEntry = $junctionModel::find()->where($identity)->one()) === null) {
+                            $junctionEntry = new $junctionModel();
+                            $junctionEntry->load($identity, '');
+                            $junctionEntry->save();
+                        }
+                    }
+                },
+                'deleteFunction' => function (ActiveRecord $model, $junctionModel, $localField) {
+                    /** @var ActiveRecord $junctionModel */
+                    $junctionModel::deleteAll([$localField => $model->primaryKey]);
+                },
             ],
         ];
     }

@@ -24,7 +24,11 @@ use yii\widgets\ActiveForm;
         foreach ($viewPaths as $viewPath) {
             $blockFile = $viewPath . DIRECTORY_SEPARATOR . $blockPath;
             if (file_exists($blockFile)) {
-                include $blockFile;
+                echo $this->renderFile($blockFile, array_merge([
+                    'form' => $form,
+                    'model' => $model,
+                    'field' => $field,
+                ], $settings, ['settings' => $settings]));
                 break;
             }
         }
