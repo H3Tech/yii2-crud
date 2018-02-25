@@ -106,7 +106,7 @@ class MediaController extends Controller
         $response = [];
 
         $modelName = str_replace(' ', '', $modelName);
-        if ($prefix === null) {
+        if ($prefix === null || $prefix === 'null') {
             $prefix = preg_replace('/\s/', '', strtolower($modelName)) . '_';
         }
 

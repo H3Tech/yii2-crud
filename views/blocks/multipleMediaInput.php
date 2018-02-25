@@ -5,15 +5,18 @@ use kartik\file\FileInput;
 use yii\helpers\Url;
 use h3tech\crud\Module;
 
+$options = isset($settings['options']) ? $settings['options'] : [];
+$pluginOptions = isset($settings['pluginOptions']) ? $settings['pluginOptions'] : [];
+
 if ($model->isNewRecord) {
     echo $form->field($model, $field)->widget(FileInput::className(), [
-        'options' => ['accept' => $settings['accept'], 'multiple' => true],
-        'pluginOptions' => [
+        'options' => array_merge($options, ['multiple' => true]),
+        'pluginOptions' => array_merge([
             'showClose' => false,
-            'allowedFileExtensions' => $settings['allowedFileExtensions'],
             'showRemove' => true,
             'showUpload' => false,
-        ]]);
+        ], $pluginOptions)
+    ]);
 } else {
     $modelIdAttribute = $settings['modelIdAttribute'];
     $mediaIdAttribute = $settings['mediaIdAttribute'];
@@ -24,9 +27,6 @@ if ($model->isNewRecord) {
         $modelIdAttribute,
         $mediaIdAttribute
     );
-
-    $options = isset($settings['options']) ? $settings['options'] : [];
-    $pluginOptions = isset($settings['pluginOptions']) ? $settings['pluginOptions'] : [];
 
     echo $form->field($model, $field)->widget(FileInput::className(), [
         'options' => array_merge($options, ['multiple' => true]),
