@@ -51,7 +51,7 @@ class MediaAction extends Action
         $model[$this->mediaIdAttribute] = MediaController::upload(
             $mediaFile,
             $this->type,
-            ($this->prefix === null? AbstractCRUDController::getModelPrefix() : $this->prefix)
+            ($this->prefix === null? ($this->controllerClass)::getModelPrefix() : $this->prefix)
         );
     }
 

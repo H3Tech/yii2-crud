@@ -181,7 +181,9 @@ abstract class AbstractCRUDController extends Controller
     {
         foreach (static::actionRules() as $rule) {
             /** @var Action $action */
-            $action = Yii::createObject($rule);
+            $action = Yii::createObject(array_merge($rule, [
+                'controllerClass' => get_class($this),
+            ]));
             call_user_func([$action, $actionType], $model);
         }
 

@@ -5,7 +5,7 @@ use kartik\file\FileInput;
 
 /* @var $model \yii\db\ActiveRecord */
 
-$preview = MediaController::getPreviewData($model->$field);
+$preview = MediaController::getSinglePreviewData($model->$field);
 
 $options = isset($settings['options']) ? $settings['options'] : [];
 $pluginOptions = isset($settings['pluginOptions']) ? $settings['pluginOptions'] : [];

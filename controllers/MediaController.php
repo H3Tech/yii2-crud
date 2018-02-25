@@ -9,40 +9,22 @@ use yii\web\Controller;
 use h3tech\crud\models\Media;
 use yii\helpers\FileHelper;
 use yii\helpers\Html;
-use yii\db\Query;
 use yii\helpers\Url;
 use yii\web\UploadedFile;
+use yii\web\Response;
 
 class MediaController extends Controller
 {
-    protected static function types()
+    public function init()
     {
-        return [
-            'image' => [
-                'defaultPrefix' => 'img_',
-                'previewTemplate' => function ($uploadPath, $filename) {
-                    return Html::img($uploadPath . $filename, ['class' => 'file-preview-image', 'style' => 'width: auto; max-height: 160px;', 'alt' => $filename, 'title' => $filename]);
-                },
-            ],
-            'video' => [
-                'defaultPrefix' => 'vid_',
-                'previewTemplate' => function ($uploadPath, $filename) {
-                    return '<video height="160" controls><source src="' . $uploadPath . $filename . '"></video>';
-                },
-            ],
-        ];
+        parent::init();
+        Yii::$app->response->format = Response::FORMAT_JSON;
     }
 
     public static function upload(UploadedFile $mediaFile, $type, $prefix)
     {
-        $types = self::types();
-        if (!isset($types[$type])) {
-            throw new InvalidParamException('Unknown media type: $type');
-        }
-        $currentType = $types[$type];
-
         if ($prefix == null || trim($prefix) == '') {
-            $prefix = $currentType['defaultPrefix'];
+            $prefix = $type . '_';
         }
         $fileName = uniqid($prefix) . '_' . $mediaFile->name;
 
@@ -56,20 +38,7 @@ class MediaController extends Controller
         return Yii::$app->getDb()->getLastInsertID();
     }
 
-    protected static function getPreviewTemplate($type, $filename)
-    {
-        $types = self::types();
-        $currentType = $types[$type];
-        $template = "";
-
-        if ($currentType != null && $currentType['previewTemplate'] != null) {
-            $template = call_user_func($currentType['previewTemplate'], Module::getInstance()->baseUploadUrl, $filename);
-        }
-
-        return $template;
-    }
-
-    public static function getPreviewData($mediaId)
+    public static function getSinglePreviewData($mediaId)
     {
         $result = [];
         $result['initialPreview'] = [];
@@ -78,7 +47,6 @@ class MediaController extends Controller
         $media = Media::findOne($mediaId);
 
         if ($media !== null) {
-            $baseUrl = Yii::$app->request->hostInfo . Yii::$app->request->baseUrl;
             $result['initialPreview'][] = $media->uploadedUrl;
             $result['initialPreviewConfig'][] = [
                 'type' => $media->type,
@@ -90,114 +58,86 @@ class MediaController extends Controller
         return $result;
     }
 
-    public static function getMultiplePreviewData($modelId, $table, $mediaField, $modelField)
+    protected static function getMultiplePreviewConfig(Media $media, $junctionModelClass, $mediaIdAttribute)
     {
-        $result = array();
-        $result['initialPreview'] = array();
-        $result['initialPreviewConfig'] = array();
+        return [
+            'type' => $media->type,
+            'filetype' => FileHelper::getMimeType($media->uploadedPath),
+            'caption' => $media->filename,
+            'url' => Url::to(['/media/delete']),
+            'key' => $media->primaryKey,
+            'extra' => [
+                'junctionModelClass' => $junctionModelClass,
+                'mediaIdAttribute' => $mediaIdAttribute,
+                'mediaId' => $media->primaryKey,
+            ],
+        ];
+    }
 
-        $records = (new Query)
-            ->select('*')->from($table)->where([$modelField => $modelId])
-            ->createCommand()->queryAll();
+    public static function getMultiplePreviewData($modelId, $junctionModelClass, $modelIdAttribute, $mediaIdAttribute)
+    {
+        $result = [];
+        $result['initialPreview'] = [];
+        $result['initialPreviewConfig'] = [];
 
-        foreach ($records as $record) {
-            $media = Media::findOne($record[$mediaField]);
-            $mediaId = $media->getPrimaryKey();
+        $junctionEntries = $junctionModelClass::find()->where([$modelIdAttribute => $modelId])->all();
 
-            $initialPreview = self::getPreviewTemplate($media->type, $media->filename);
+        foreach ($junctionEntries as $junctionEntry) {
+            $media = Media::findOne($junctionEntry->$mediaIdAttribute);
 
-            $initialPreviewConfig = array(
-                'caption' => $media->filename,
-                'url' => Url::to(['/media/delete']),
-                'key' => $mediaId,
-                'extra' => [
-                    'table' => $table,
-                    'modelId' => $modelId,
-                    'mediaId' => $mediaId,
-                    'mediaField' => $mediaField,
-                    'modelField' => $modelField,
-                ],
+            $result['initialPreview'][] = $media->uploadedUrl;
+            $result['initialPreviewConfig'][] = static::getMultiplePreviewConfig(
+                $media, $junctionModelClass, $mediaIdAttribute
             );
-
-            array_push($result['initialPreview'], $initialPreview);
-            array_push($result['initialPreviewConfig'], $initialPreviewConfig);
         }
 
         return $result;
     }
 
-    public static function actionUpload()
+    public function runAction($id, $params = [])
     {
-        $result = array();
+        $params = array_merge($params, Yii::$app->request->post());
+        return parent::runAction($id, $params);
+    }
 
-        $postData = Yii::$app->request->post();
+    public static function actionUpload($junctionModelClass, $type, $modelIdAttribute, $mediaIdAttribute, $modelId,
+                                        $modelName, $prefix = null)
+    {
+        $response = [];
 
-        $modelName = str_replace(' ', '', $postData['modelName']);
-        $type = $postData['type'];
-        $prefix = $postData['prefix'] == 'null' ? preg_replace('/\s/', '', strtolower($modelName)) . '_' : $postData['prefix'];
-        $table = $postData['table'];
-        $mediaField = $postData['mediaField'];
-        $modelField = $postData['modelField'];
-        $modelId = $postData['modelId'];
+        $modelName = str_replace(' ', '', $modelName);
+        if ($prefix === null) {
+            $prefix = preg_replace('/\s/', '', strtolower($modelName)) . '_';
+        }
 
         $files = UploadedFile::getInstancesByName($modelName);
 
-        $mediaId = self::upload($files[0], $type, $prefix);
+        $mediaId = static::upload($files[0], $type, $prefix);
 
-        Yii::$app->getDb()->createCommand()->
-        insert($table, [
-            $mediaField => $mediaId,
-            $modelField => $modelId,
-        ])->execute();
+        $junctionRecord = new $junctionModelClass;
+        $junctionRecord->$modelIdAttribute = $modelId;
+        $junctionRecord->$mediaIdAttribute = $mediaId;
+        $junctionRecord->save();
 
         $media = Media::findOne($mediaId);
 
-        $initialPreview = self::getPreviewTemplate($media->type, $media->filename);
+        $initialPreview = $media->uploadedUrl;
+        $initialPreviewConfig = static::getMultiplePreviewConfig($media, $junctionModelClass, $mediaIdAttribute);
 
-        $initialPreviewConfig = [
-            'caption' => $media->filename,
-            'url' => Url::to(['/media/delete']),
-            'key' => $mediaId,
-            'extra' => [
-                'table' => $table,
-                'modelId' => $modelId,
-                'mediaId' => $mediaId,
-                'mediaField' => $mediaField,
-                'modelField' => $modelField,
-            ],
-        ];
+        $response['initialPreview'] = [$initialPreview];
+        $response['initialPreviewConfig'] = [$initialPreviewConfig];
 
-        $result['initialPreview'] = array($initialPreview);
-        $result['initialPreviewConfig'] = array($initialPreviewConfig);
+        $response['result'] = 'ok';
 
-        $result['result'] = 'ok';
-
-        return json_encode($result);
+        return $response;
     }
 
-    public static function actionDelete()
+    public static function actionDelete($junctionModelClass, $mediaId, $mediaIdAttribute)
     {
-        $result = array();
+        $junctionModelClass::deleteAll([
+            $mediaIdAttribute => $mediaId,
+        ]);
 
-        $postData = Yii::$app->request->post();
-
-        $table = $postData['table'];
-        $modelField = $postData['modelField'];
-        $modelId = $postData['modelId'];
-        $mediaField = $postData['mediaField'];
-        $mediaId = $postData['mediaId'];
-
-        Yii::$app->getDb()->createCommand()->
-        delete($table, [
-            $modelField => $modelId,
-            $mediaField => $mediaId,
-        ])->execute();
-
-        $media = Media::findOne($mediaId);
-        $media->delete();
-
-        $result['result'] = 'ok';
-
-        return json_encode($result);
+        return ['result' => 'ok'];
     }
 }

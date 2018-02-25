@@ -17,7 +17,7 @@ use yii\web\UploadedFile;
  */
 class MultipleMediaAction extends Action
 {
-    protected $type;
+    public $type;
     public $junctionModelClass;
     public $modelIdAttribute;
     public $mediaIdAttribute;
@@ -29,7 +29,7 @@ class MultipleMediaAction extends Action
         return MediaController::upload(
             $mediaFile,
             $this->type,
-            ($this->prefix === null ? AbstractCRUDController::getModelPrefix() : $this->prefix)
+            ($this->prefix === null ? ($this->controllerClass)::getModelPrefix() : $this->prefix)
         );
     }
 
