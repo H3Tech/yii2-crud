@@ -26,7 +26,10 @@ $items = [];
 foreach ($relatedModels as $relatedModel) {
     $key = is_callable($foreignKey) ? call_user_func($foreignKey, $relatedModel) : $relatedModel->$foreignKey;
     $label = is_callable($foreignLabel) ? call_user_func($foreignLabel, $relatedModel) : $relatedModel->$foreignLabel;
-    $items[$key] = $label;
+
+    if (get_class($relatedModel) !== get_class($model) || $relatedModel->$foreignKey !== $model->primaryKey) {
+        $items[$key] = $label;
+    }
 }
 
 $selectedItems = [];
