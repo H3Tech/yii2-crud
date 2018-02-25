@@ -14,6 +14,8 @@
  * @var string $foreignField
  */
 
+$options = isset($settings['options']) ? $settings['options'] : [];
+
 $foreignModelClass = $foreignModel['className'];
 $foreignModelQuery = isset($foreignModel['query']) ? $foreignModel['query'] : null;
 $foreignKey = $foreignModel['key'];
@@ -38,12 +40,19 @@ if (isset($junctionModel)) {
             function ($item) use ($foreignField) {
                 return $item[$foreignField];
             },
-            $junctionModelClass::find()->select($foreignField)->where([$modelField => $model->primaryKey])->asArray()->all()
+            $junctionModelClass::find()
+                ->select($foreignField)
+                ->where([$modelField => $model->primaryKey])
+                ->asArray()
+                ->all()
         );
     }
+} else {
+    $selectedItems[] = $model->$field;
 }
 
 echo $form->field($model, $field)->dropDownList($items, array_merge([
     'multiple' => isset($junctionModel),
     'value' => $selectedItems,
-], isset($settings['options']) ? $settings['options'] : []));
+    'prompt' => isset($junctionModel) ? null : Yii::t('h3tech/crud/crud', 'None'),
+], $options));

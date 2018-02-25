@@ -10,4 +10,5 @@ return [
     'Update' => 'Módosítás',
     'Update {modelName} {id}' => '{modelName} {id} módosítása',
     'Select date...' => 'Válasszon dátumot...',
+    'None' => 'Nincs',
 ];

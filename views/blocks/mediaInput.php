@@ -25,4 +25,4 @@ echo $form->field($model, $settings['modelVariable'])->widget(FileInput::classNa
             'showDelete' => false,
         ],
     ], $pluginOptions),
-]);
+])->label($model->getAttributeLabel($field));
