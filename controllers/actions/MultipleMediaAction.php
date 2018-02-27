@@ -26,10 +26,12 @@ class MultipleMediaAction extends Action
 
     protected function uploadMedia(UploadedFile $mediaFile)
     {
+        $controllerClass = $this->controllerClass;
+
         return MediaController::upload(
             $mediaFile,
             $this->type,
-            ($this->prefix === null ? ($this->controllerClass)::getModelPrefix() : $this->prefix)
+            ($this->prefix === null ? $controllerClass::getModelPrefix() : $this->prefix)
         );
     }
 
