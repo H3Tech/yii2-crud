@@ -19,6 +19,8 @@ class JunctionAction extends Action
 
     public function create(ActiveRecord $model)
     {
+        $junctionModelClass = $this->junctionModelClass;
+
         foreach ($model->{$this->foreignKeyVariable} as $foreignKey) {
             $identity = [
                 $this->modelField => $model->primaryKey,
@@ -26,8 +28,8 @@ class JunctionAction extends Action
             ];
 
             /** @var ActiveRecord $junctionEntry */
-            if (($junctionEntry = ($this->junctionModelClass)::find()->where($identity)->one()) === null) {
-                $junctionEntry = new $this->junctionModelClass;
+            if (($junctionEntry = $junctionModelClass::find()->where($identity)->one()) === null) {
+                $junctionEntry = new $junctionModelClass;
                 $junctionEntry->load($identity, '');
                 $junctionEntry->save();
             }
@@ -36,12 +38,13 @@ class JunctionAction extends Action
 
     public function update(ActiveRecord $model)
     {
+        $junctionModelClass = $this->junctionModelClass;
         $foreignKeys = $model->{$this->foreignKeyVariable};
 
         if (empty($foreignKeys)) {
-            ($this->junctionModelClass)::deleteAll([$this->modelField => $model->primaryKey]);
+            $junctionModelClass::deleteAll([$this->modelField => $model->primaryKey]);
         } else {
-            ($this->junctionModelClass)::deleteAll([
+            $junctionModelClass::deleteAll([
                 'and',
                 [$this->modelField => $model->primaryKey],
                 ['not in', $this->foreignField, $foreignKeys],
@@ -55,8 +58,8 @@ class JunctionAction extends Action
             ];
 
             /** @var ActiveRecord $junctionEntry */
-            if (($junctionEntry = ($this->junctionModelClass)::find()->where($identity)->one()) === null) {
-                $junctionEntry = new $this->junctionModelClass;
+            if (($junctionEntry = $junctionModelClass::find()->where($identity)->one()) === null) {
+                $junctionEntry = new $junctionModelClass;
                 $junctionEntry->load($identity, '');
                 $junctionEntry->save();
             }
@@ -65,6 +68,7 @@ class JunctionAction extends Action
 
     public function delete(ActiveRecord $model)
     {
-        ($this->junctionModelClass)::deleteAll([$this->modelField => $model->primaryKey]);
+        $junctionModelClass  = $this->junctionModelClass;
+        junctionModelClass::deleteAll([$this->modelField => $model->primaryKey]);
     }
 }

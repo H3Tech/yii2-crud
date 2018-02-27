@@ -50,6 +50,7 @@ class MultipleMediaAction extends Action
 
     public function delete(ActiveRecord $model)
     {
-        ($this->junctionModelClass)::deleteAll([$this->modelIdAttribute => $model->primaryKey]);
+        $junctionModelClass = $this->junctionModelClass;
+        $junctionModelClass::deleteAll([$this->modelIdAttribute => $model->primaryKey]);
     }
 }
