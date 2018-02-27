@@ -17,12 +17,28 @@ use yii\web\UploadedFile;
  */
 class MultipleMediaAction extends Action
 {
-    public $type;
+    protected $type;
     public $junctionModelClass;
     public $modelIdAttribute;
     public $mediaIdAttribute;
     public $prefix = null;
     public $fileVariable;
+
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    public function setType($type)
+    {
+        $supportedTypes = ['image', 'video'];
+
+        if (!in_array($type, $supportedTypes)) {
+            throw new InvalidConfigException('Unsupported media type');
+        }
+
+        $this->type = $type;
+    }
 
     protected function uploadMedia(UploadedFile $mediaFile)
     {

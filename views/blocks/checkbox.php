@@ -1,3 +1,2 @@
 <?php
-/** @noinspection PhpUndefinedVariableInspection */
-echo $form->field($model, $field)->checkbox($settings);
+echo $form->field($model, $field)->checkbox($settings)->hint(null);

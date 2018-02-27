@@ -85,5 +85,5 @@ JS;
         ], $pluginOptions),
         'pluginEvents' => array_merge($events, $pluginEvents),
         'sortThumbs' => $isOrderable,
-    ]);
+    ])->hint(null);
 }

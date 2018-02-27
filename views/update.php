@@ -5,13 +5,23 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $modelName string */
 /* @var $model \yii\db\ActiveRecord */
+/* @var $controllerClass \h3tech\crud\controllers\AbstractCRUDController */
+$titleAttribute = $controllerClass::titleAttribute();
+$modelTitle = $model->primaryKey;
+if ($titleAttribute !== null && isset($model->$titleAttribute)) {
+    $modelTitle = $model->$titleAttribute;
+    $this->title = Yii::t('h3tech/crud/crud', 'Update {modelTitle}', [
+        'modelTitle' => $modelTitle,
+    ]);
+} else {
+    $this->title = Yii::t('h3tech/crud/crud', 'Update {modelName} {id}', [
+        'modelName' => $modelName,
+        'id' => $model->primaryKey,
+    ]);
+}
 
-$this->title = Yii::t('h3tech/crud/crud', 'Update {modelName} {id}', [
-    'modelName' => $modelName,
-    'id' => $model->getPrimaryKey()
-]);
 $this->params['breadcrumbs'][] = ['label' => $modelName, 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => $model->getPrimaryKey(), 'url' => ['view', 'id' => $model->getPrimaryKey()]];
+$this->params['breadcrumbs'][] = ['label' => $modelTitle, 'url' => ['view', 'id' => $model->primaryKey]];
 $this->params['breadcrumbs'][] = Yii::t('h3tech/crud/crud', 'Update');
 ?>
 <div class="model-update">

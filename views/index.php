@@ -7,7 +7,6 @@ use yii\base\ViewNotFoundException;
 /* @var $this yii\web\View */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-/** @noinspection PhpUndefinedVariableInspection */
 $this->title = $modelName;
 $this->params['breadcrumbs'][] = $this->title;
 ?>
@@ -26,18 +25,14 @@ $this->params['breadcrumbs'][] = $this->title;
     ?>
 
     <p>
-        <?= Html::a(Yii::t('h3tech/crud/crud', 'Create {modelName}', [
-            'modelName' => $modelName
-        ]), ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a(Yii::t('h3tech/crud/crud', 'Create'), ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 
     <?
     $columnsArray = [['class' => 'yii\grid\SerialColumn'], ['class' => 'yii\grid\ActionColumn']];
-    /** @noinspection PhpUndefinedVariableInspection */
     /** @var \h3tech\crud\controllers\AbstractCRUDController $controllerClass */
     $attributes = $controllerClass::indexAttributes();
     array_splice($columnsArray, 1, 0, $attributes);
-    /** @noinspection PhpUndefinedVariableInspection */
     echo GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,

@@ -68,7 +68,7 @@ class JunctionAction extends Action
 
     public function delete(ActiveRecord $model)
     {
-        $junctionModelClass  = $this->junctionModelClass;
-        junctionModelClass::deleteAll([$this->modelField => $model->primaryKey]);
+        $junctionModelClass = $this->junctionModelClass;
+        $junctionModelClass::deleteAll([$this->modelField => $model->primaryKey]);
     }
 }

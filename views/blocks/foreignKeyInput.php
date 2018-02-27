@@ -58,4 +58,4 @@ echo $form->field($model, $field)->dropDownList($items, array_merge([
     'multiple' => isset($junctionModel),
     'value' => $selectedItems,
     'prompt' => isset($junctionModel) ? null : Yii::t('h3tech/crud/crud', 'None'),
-], $options, ['disabled' => count($items) === 0]));
+], $options, ['disabled' => count($items) === 0]))->hint(null);

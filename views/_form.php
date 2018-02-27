@@ -63,8 +63,7 @@ use yii\widgets\ActiveForm;
     ?>
 
     <div class="form-group">
-        <?= /** @noinspection PhpUndefinedVariableInspection */
-        Html::submitButton($model->isNewRecord ? Yii::t('h3tech/crud/crud', 'Create') : Yii::t('h3tech/crud/crud', 'Update'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+        <?= Html::submitButton($model->isNewRecord ? Yii::t('h3tech/crud/crud', 'Create') : Yii::t('h3tech/crud/crud', 'Update'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>

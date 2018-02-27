@@ -29,4 +29,4 @@ echo $form->field($model, $settings['modelVariable'])->widget(FileInput::classNa
     ], $pluginOptions),
     'pluginEvents' => $pluginEvents,
     'sortThumbs' => false,
-])->label($model->getAttributeLabel($field));
+])->label($model->getAttributeLabel($field))->hint(null);

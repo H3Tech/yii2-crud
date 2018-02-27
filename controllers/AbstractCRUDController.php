@@ -27,6 +27,7 @@ abstract class AbstractCRUDController extends Controller
     protected static $searchModelClass = null;
     protected static $pageSize = 20;
     protected static $enableAjaxValidation = false;
+    protected static $titleAttribute = null;
 
     protected static function modelClass()
     {
@@ -50,6 +51,11 @@ abstract class AbstractCRUDController extends Controller
     protected static function getEnableAjaxValidation()
     {
         return static::$enableAjaxValidation;
+    }
+
+    public static function titleAttribute()
+    {
+        return static::$titleAttribute === null ? 'id' : static::$titleAttribute;
     }
 
     public static function getModelName()
