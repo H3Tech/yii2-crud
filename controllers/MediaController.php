@@ -64,7 +64,7 @@ class MediaController extends Controller
             'type' => $media->type,
             'filetype' => FileHelper::getMimeType($media->uploadedPath),
             'caption' => $media->filename,
-            'url' => Url::to(['/media/delete']),
+            'url' => Url::to(['/h3tech-crud/media/delete']),
             'key' => $media->primaryKey,
             'extra' => [
                 'junctionModelClass' => $junctionModelClass,

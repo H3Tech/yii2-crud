@@ -35,7 +35,7 @@ if ($model->isNewRecord) {
     $events = [];
 
     if ($isOrderable) {
-        $orderUrl = Url::to(['/media/order']);
+        $orderUrl = Url::to(['/h3tech-crud/media/order']);
         $escapedJunctionModelClass = addslashes($junctionModelClass);
 
         $events['filesorted'] = <<<JS
@@ -63,7 +63,7 @@ JS;
         'options' => array_merge($options, ['multiple' => true]),
         'pluginOptions' => array_merge([
             'showClose' => false,
-            'uploadUrl' => Url::to(['/media/upload']),
+            'uploadUrl' => Url::to(['/h3tech-crud/media/upload']),
             'uploadAsync' => true,
             'overwriteInitial' => false,
             'initialPreviewAsData' => true,
