@@ -17,8 +17,8 @@ class Module extends \yii\base\Module
 
     public $mediaTableName = null;
 
-    public $uploadPath = '@webroot/uploads/';
-    public $baseUploadUrl = '@web/uploads/';
+    protected $uploadPath = '@webroot/uploads/';
+    protected $baseUploadUrl = '@web/uploads/';
 
     public function init()
     {
@@ -71,13 +71,13 @@ class Module extends \yii\base\Module
         $this->mediaTableName = $mediaTableName;
     }
 
-    public function actionSetUploadPath($uploadPath)
+    public function setUploadPath($uploadPath)
     {
         static::assertPropertyIsString('uploadPath', $uploadPath);
         $this->uploadPath = $uploadPath;
     }
 
-    public function actionSetBaseUploadUrl($baseUploadUrl)
+    public function setBaseUploadUrl($baseUploadUrl)
     {
         static::assertPropertyIsString('baseUploadUrl', $baseUploadUrl);
         $this->baseUploadUrl = $baseUploadUrl;

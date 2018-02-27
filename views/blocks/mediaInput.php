@@ -9,6 +9,7 @@ $preview = MediaController::getSinglePreviewData($model->$field);
 
 $options = isset($settings['options']) ? $settings['options'] : [];
 $pluginOptions = isset($settings['pluginOptions']) ? $settings['pluginOptions'] : [];
+$pluginEvents = isset($settings['pluginEvents']) ? $settings['pluginEvents'] : [];
 
 echo $form->field($model, $settings['modelVariable'])->widget(FileInput::className(), [
     'options' => $options,
@@ -23,6 +24,9 @@ echo $form->field($model, $settings['modelVariable'])->widget(FileInput::classNa
         'showUpload' => false,
         'fileActionSettings' => [
             'showDelete' => false,
+            'showDrag' => false,
         ],
     ], $pluginOptions),
+    'pluginEvents' => $pluginEvents,
+    'sortThumbs' => false,
 ])->label($model->getAttributeLabel($field));

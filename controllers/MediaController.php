@@ -74,13 +74,18 @@ class MediaController extends Controller
         ];
     }
 
-    public static function getMultiplePreviewData($modelId, $junctionModelClass, $modelIdAttribute, $mediaIdAttribute)
+    public static function getMultiplePreviewData($modelId, $junctionModelClass, $modelIdAttribute, $mediaIdAttribute, $orderAttribute = null)
     {
         $result = [];
         $result['initialPreview'] = [];
         $result['initialPreviewConfig'] = [];
 
-        $junctionEntries = $junctionModelClass::find()->where([$modelIdAttribute => $modelId])->all();
+        $junctionQuery = $junctionModelClass::find()->where([$modelIdAttribute => $modelId]);
+
+        if ($orderAttribute !== null) {
+            $junctionQuery->orderBy([$orderAttribute => SORT_ASC]);
+        }
+        $junctionEntries = $junctionQuery->all();
 
         foreach ($junctionEntries as $junctionEntry) {
             $media = Media::findOne($junctionEntry->$mediaIdAttribute);
@@ -137,6 +142,20 @@ class MediaController extends Controller
         $junctionModelClass::deleteAll([
             $mediaIdAttribute => $mediaId,
         ]);
+
+        return ['result' => 'ok'];
+    }
+
+    public function actionOrder($junctionModelClass, $mediaIdAttribute, $orderAttribute, array $mediaIds)
+    {
+        for ($i = 0; $i < count($mediaIds); $i++) {
+            $junctionEntry = $junctionModelClass::findOne([$mediaIdAttribute => $mediaIds[$i]]);
+
+            if ($junctionEntry->$orderAttribute != $i) {
+                $junctionEntry->$orderAttribute = $i;
+                $junctionEntry->save();
+            }
+        }
 
         return ['result' => 'ok'];
     }

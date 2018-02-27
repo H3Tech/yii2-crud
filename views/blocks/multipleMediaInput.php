@@ -7,6 +7,9 @@ use h3tech\crud\Module;
 
 $options = isset($settings['options']) ? $settings['options'] : [];
 $pluginOptions = isset($settings['pluginOptions']) ? $settings['pluginOptions'] : [];
+$pluginEvents = isset($settings['pluginEvents']) ? $settings['pluginEvents'] : [];
+$orderAttribute = isset($settings['orderAttribute']) ? $settings['orderAttribute'] : null;
+$isOrderable = $orderAttribute !== null;
 
 if ($model->isNewRecord) {
     echo $form->field($model, $field)->widget(FileInput::className(), [
@@ -25,8 +28,36 @@ if ($model->isNewRecord) {
         $model->primaryKey,
         $settings['junctionModelClass'],
         $modelIdAttribute,
-        $mediaIdAttribute
+        $mediaIdAttribute,
+        $orderAttribute
     );
+
+    $events = [];
+
+    if ($isOrderable) {
+        $orderUrl = Url::to(['/media/order']);
+        $escapedJunctionModelClass = addslashes($junctionModelClass);
+
+        $events['filesorted'] = <<<JS
+function (event, params) {
+    var mediaIds = [];
+    for (var i = 0; i < params.stack.length; i++) {
+        mediaIds.push(params.stack[i].key);
+    }
+    
+    $.ajax('$orderUrl', {
+        method: 'POST',
+        dataType: 'json',
+        data: {
+            junctionModelClass: '$escapedJunctionModelClass',
+            mediaIdAttribute: '{$settings['mediaIdAttribute']}',
+            orderAttribute: '{$settings['orderAttribute']}',
+            mediaIds: mediaIds
+        }
+    });
+}
+JS;
+    }
 
     echo $form->field($model, $field)->widget(FileInput::className(), [
         'options' => array_merge($options, ['multiple' => true]),
@@ -48,6 +79,11 @@ if ($model->isNewRecord) {
                 'mediaIdAttribute' => $mediaIdAttribute,
                 'modelIdAttribute' => $modelIdAttribute,
             ],
+            'fileActionSettings' => [
+                'showDrag' => $isOrderable,
+            ],
         ], $pluginOptions),
+        'pluginEvents' => array_merge($events, $pluginEvents),
+        'sortThumbs' => $isOrderable,
     ]);
 }
