@@ -8,8 +8,6 @@ use yii\helpers\StringHelper;
 /* @var $generator yii\gii\generators\crud\Generator */
 
 $controllerClass = StringHelper::basename($generator->controllerClass);
-$shortModelClass = substr(strrchr($generator->modelClass, '\\'), 1);
-$shortSearchModelClass = substr(strrchr($generator->searchModelClass, '\\'), 1);
 
 echo "<?php\n";
 ?>
@@ -22,6 +20,6 @@ use <?= $generator->searchModelClass ?>;
 
 class <?= $controllerClass ?> extends AbstractCRUDController
 {
-protected static $modelClass = <?= $shortModelClass ?>::class;
-protected static $searchModelClass = <?= $shortSearchModelClass ?>::class;
+    protected static $modelClass = <?= StringHelper::basename($generator->modelClass) ?>::class;
+    protected static $searchModelClass = <?= StringHelper::basename($generator->searchModelClass) ?>::class;
 }
