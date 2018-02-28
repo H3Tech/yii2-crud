@@ -46,11 +46,12 @@ class MediaAction extends Action
         }
     }
 
-    protected function uploadMedia(UploadedFile $mediaFile)
+    protected function uploadMedia(ActiveRecord $model, UploadedFile $mediaFile)
     {
         $controllerClass = $this->controllerClass;
+        $mediaIdAttribute = $this->mediaIdAttribute;
 
-        $model[$this->mediaIdAttribute] = MediaController::upload(
+        $model->$mediaIdAttribute = MediaController::upload(
             $mediaFile,
             $this->type,
             ($this->prefix === null ? $controllerClass::getModelPrefix() : $this->prefix)
@@ -61,7 +62,7 @@ class MediaAction extends Action
     {
         $mediaFile = UploadedFile::getInstance($model, $this->fileVariable);
         if ($mediaFile !== null) {
-            $this->uploadMedia($mediaFile);
+            $this->uploadMedia($model, $mediaFile);
         }
     }
 
@@ -70,7 +71,7 @@ class MediaAction extends Action
         $mediaFile = UploadedFile::getInstance($model, $this->fileVariable);
         if ($mediaFile !== null) {
             $this->deleteMedia($model);
-            $this->uploadMedia($mediaFile);
+            $this->uploadMedia($model, $mediaFile);
         }
     }
 
