@@ -16,4 +16,8 @@ namespace <?= StringHelper::dirname(ltrim($generator->controllerClass, '\\')) ?>
 
 use h3tech\crud\controllers\AbstractCRUDController;
 
-class <?= $controllerClass ?> extends AbstractCRUDController {}
+class <?= $controllerClass ?> extends AbstractCRUDController
+{
+    protected static $modelClass = '<?= $generator->modelClass ?>';
+    protected static $searchModelClass = '<?= $generator->searchModelClass ?>';
+}

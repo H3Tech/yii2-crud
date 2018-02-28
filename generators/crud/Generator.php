@@ -2,6 +2,7 @@
 
 namespace h3tech\crud\generators\crud;
 
+use h3tech\crud\controllers\AbstractCRUDController;
 use Yii;
 use yii\db\BaseActiveRecord;
 use yii\gii\CodeFile;
@@ -11,7 +12,7 @@ class Generator extends \yii\gii\generators\crud\Generator
 {
     public $modelClass;
     public $controllerClass;
-    public $baseControllerClass = 'h3tech\crud\controllers\AbstractCRUDController';
+    public $baseControllerClass = AbstractCRUDController::class;
     public $searchModelClass;
 
     /**
