@@ -63,7 +63,7 @@ JS;
         'options' => array_merge($options, ['multiple' => true]),
         'pluginOptions' => array_merge([
             'showClose' => false,
-            'uploadUrl' => Url::to(['/h3tech-crud/media/upload']),
+            'uploadUrl' => Url::to(['/h3tech-crud/media/upload-multiple']),
             'uploadAsync' => true,
             'overwriteInitial' => false,
             'initialPreviewAsData' => true,

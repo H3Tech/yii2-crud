@@ -5,7 +5,7 @@ use kartik\file\FileInput;
 
 /* @var $model \yii\db\ActiveRecord */
 
-$preview = MediaController::getSinglePreviewData($model->$field);
+$preview = MediaController::getSinglePreviewData($model->$field, $field, get_class($model));
 
 $options = isset($settings['options']) ? $settings['options'] : [];
 $pluginOptions = isset($settings['pluginOptions']) ? $settings['pluginOptions'] : [];
@@ -15,7 +15,6 @@ echo $form->field($model, $settings['modelVariable'])->widget(FileInput::classNa
     'options' => $options,
     'pluginOptions' => array_merge([
         'showClose' => false,
-        'overwriteInitial' => true,
         'initialPreviewAsData' => true,
         'initialPreviewFileType' => 'other',
         'initialPreview' => $preview['initialPreview'],
@@ -23,7 +22,7 @@ echo $form->field($model, $settings['modelVariable'])->widget(FileInput::classNa
         'showRemove' => $model->isNewRecord,
         'showUpload' => false,
         'fileActionSettings' => [
-            'showDelete' => false,
+            'showDelete' => !$model->isNewRecord,
             'showDrag' => false,
         ],
     ], $pluginOptions),

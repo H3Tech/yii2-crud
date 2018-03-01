@@ -38,7 +38,7 @@ class MediaController extends Controller
         return Yii::$app->getDb()->getLastInsertID();
     }
 
-    public static function getSinglePreviewData($mediaId)
+    public static function getSinglePreviewData($mediaId, $mediaIdAttribute = null, $modelClass = null)
     {
         $result = [];
         $result['initialPreview'] = [];
@@ -48,11 +48,24 @@ class MediaController extends Controller
 
         if ($media !== null) {
             $result['initialPreview'][] = $media->uploadedUrl;
-            $result['initialPreviewConfig'][] = [
+
+            $previewConfig = [
                 'type' => $media->type,
                 'filetype' => FileHelper::getMimeType($media->uploadedPath),
                 'caption' => $media->filename,
             ];
+            if ($mediaIdAttribute !== null && $modelClass !== null) {
+                $previewConfig = array_merge($previewConfig, [
+                    'url' => Url::to(['/h3tech-crud/media/delete-single']),
+                    'key' => $media->primaryKey,
+                    'extra' => [
+                        'modelClass' => $modelClass,
+                        'mediaIdAttribute' => $mediaIdAttribute,
+                    ],
+                ]);
+            }
+
+            $result['initialPreviewConfig'][] = $previewConfig;
         }
 
         return $result;
@@ -64,12 +77,11 @@ class MediaController extends Controller
             'type' => $media->type,
             'filetype' => FileHelper::getMimeType($media->uploadedPath),
             'caption' => $media->filename,
-            'url' => Url::to(['/h3tech-crud/media/delete']),
+            'url' => Url::to(['/h3tech-crud/media/delete-multiple']),
             'key' => $media->primaryKey,
             'extra' => [
                 'junctionModelClass' => $junctionModelClass,
                 'mediaIdAttribute' => $mediaIdAttribute,
-                'mediaId' => $media->primaryKey,
             ],
         ];
     }
@@ -105,8 +117,8 @@ class MediaController extends Controller
         return parent::runAction($id, $params);
     }
 
-    public static function actionUpload($junctionModelClass, $type, $modelIdAttribute, $mediaIdAttribute, $modelId,
-                                        $modelName, $prefix = null)
+    public static function actionUploadMultiple($junctionModelClass, $type, $modelIdAttribute, $mediaIdAttribute, $modelId,
+                                                $modelName, $prefix = null)
     {
         $response = [];
 
@@ -137,10 +149,18 @@ class MediaController extends Controller
         return $response;
     }
 
-    public static function actionDelete($junctionModelClass, $mediaId, $mediaIdAttribute)
+    public static function actionDeleteSingle($modelClass, $key, $mediaIdAttribute)
+    {
+        $modelClass::updateAll([$mediaIdAttribute => null], [$mediaIdAttribute => $key]);
+        Media::deleteAll(['id' => $key]);
+
+        return ['result' => 'ok'];
+    }
+
+    public static function actionDeleteMultiple($junctionModelClass, $key, $mediaIdAttribute)
     {
         $junctionModelClass::deleteAll([
-            $mediaIdAttribute => $mediaId,
+            $mediaIdAttribute => $key,
         ]);
 
         return ['result' => 'ok'];

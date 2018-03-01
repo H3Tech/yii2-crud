@@ -40,8 +40,14 @@ class MediaAction extends Action
 
     protected function deleteMedia(ActiveRecord $model)
     {
-        $media = Media::findOne($model[$this->mediaIdAttribute]);
-        if ($media !== null) {
+        $mediaIdAttribute = $this->mediaIdAttribute;
+
+        $mediaId = $model->$mediaIdAttribute;
+
+        $model->$mediaIdAttribute = null;
+        $model->save();
+
+        if (($media = Media::findOne($mediaId)) !== null) {
             $media->delete();
         }
     }
