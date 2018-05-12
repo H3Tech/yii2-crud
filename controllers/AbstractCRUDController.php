@@ -28,6 +28,7 @@ abstract class AbstractCRUDController extends Controller
     protected static $pageSize = 20;
     protected static $enableAjaxValidation = false;
     protected static $titleAttribute = null;
+    protected static $indexAttributes = null;
 
     protected static function modelClass()
     {
@@ -105,6 +106,10 @@ abstract class AbstractCRUDController extends Controller
 
     public static function indexAttributes()
     {
+        if (static::$indexAttributes !== null) {
+            return static::$indexAttributes;
+        }
+
         $allAttributes = static::modelAttributes();
         return array_splice($allAttributes, 0, 5);
     }

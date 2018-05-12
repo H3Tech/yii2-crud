@@ -19,13 +19,18 @@ $options = isset($settings['options']) ? $settings['options'] : [];
 $foreignModelClass = $foreignModel['className'];
 $foreignModelQuery = isset($foreignModel['query']) ? $foreignModel['query'] : null;
 $foreignKey = $foreignModel['key'];
-$foreignLabel = $foreignModel['label'];
+$foreignLabel = isset($foreignModel['label']) ? $foreignModel['label'] : null;
 $relatedModels = $foreignModelQuery === null ? $foreignModelClass::find()->all() : $foreignModelQuery->all();
 
 $items = [];
 foreach ($relatedModels as $relatedModel) {
     $key = is_callable($foreignKey) ? call_user_func($foreignKey, $relatedModel) : $relatedModel->$foreignKey;
-    $label = is_callable($foreignLabel) ? call_user_func($foreignLabel, $relatedModel) : $relatedModel->$foreignLabel;
+
+    if ($label === null) {
+        $label = $key;
+    } else {
+        $label = is_callable($foreignLabel) ? call_user_func($foreignLabel, $relatedModel) : $relatedModel->$foreignLabel;
+    }
 
     if (get_class($relatedModel) !== get_class($model) || $relatedModel->$foreignKey !== $model->primaryKey) {
         $items[$key] = $label;
