@@ -4,8 +4,11 @@ use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\base\ViewNotFoundException;
 
-/* @var $this yii\web\View */
-/* @var $dataProvider yii\data\ActiveDataProvider */
+/**
+ * @var $this yii\web\View
+ * @var $dataProvider yii\data\ActiveDataProvider
+ * @var $controllerClass \h3tech\crud\controllers\AbstractCRUDController
+ */
 
 $this->title = $modelNameLabel;
 $this->params['breadcrumbs'][] = $this->title;
@@ -30,9 +33,18 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?
     $columnsArray = [['class' => 'yii\grid\SerialColumn'], ['class' => 'yii\grid\ActionColumn']];
-    /** @var \h3tech\crud\controllers\AbstractCRUDController $controllerClass */
-    $attributes = $controllerClass::indexAttributes();
+
+    $attributes = [];
+
+    $attributes = array_map(function ($indexAttribute) use ($searchModel) {
+        return is_array($indexAttribute) ? $indexAttribute : [
+            'attribute' => $indexAttribute,
+            'label' => $searchModel->getAttributeLabel($indexAttribute),
+        ];
+    }, $controllerClass::indexAttributes());
+
     array_splice($columnsArray, 1, 0, $attributes);
+
     echo GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
