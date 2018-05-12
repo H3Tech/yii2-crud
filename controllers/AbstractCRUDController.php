@@ -29,6 +29,7 @@ abstract class AbstractCRUDController extends Controller
     protected static $enableAjaxValidation = false;
     protected static $titleAttribute = null;
     protected static $indexAttributes = null;
+    protected static $modelNameLabel = null;
 
     protected static function modelClass()
     {
@@ -59,7 +60,7 @@ abstract class AbstractCRUDController extends Controller
         return static::$titleAttribute === null ? 'id' : static::$titleAttribute;
     }
 
-    public static function getModelName()
+    public static function modelName()
     {
         $modelClass = static::modelClass();
         $model = new $modelClass();
@@ -70,9 +71,18 @@ abstract class AbstractCRUDController extends Controller
         return preg_replace('/([a-z])([A-Z]+)/', '$1 $2', $reflection->getShortName());
     }
 
+    public static function modelNameLabel()
+    {
+        if (static::$modelNameLabel !== null) {
+            return static::$modelNameLabel;
+        }
+
+        return static::modelName();
+    }
+
     public static function getModelPrefix()
     {
-        return preg_replace('/\s/', '', strtolower(static::getModelName())) . '_';
+        return preg_replace('/\s/', '', strtolower(static::modelName())) . '_';
     }
 
     protected function getViewPaths()
@@ -88,7 +98,8 @@ abstract class AbstractCRUDController extends Controller
     {
         return [
             'modelClass' => static::modelClass(),
-            'modelName' => static::getModelName(),
+            'modelName' => static::modelName(),
+            'modelNameLabel' => static::modelNameLabel(),
             'controllerClass' => get_class($this),
             'viewPaths' => $this->getViewPaths(),
             'relativeViewPaths' => $this->getRelativeViewPaths(),

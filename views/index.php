@@ -7,7 +7,7 @@ use yii\base\ViewNotFoundException;
 /* @var $this yii\web\View */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = $modelName;
+$this->title = $modelNameLabel;
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="model-index">

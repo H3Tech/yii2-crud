@@ -18,7 +18,7 @@ use yii\widgets\ActiveForm;
 
     <?php
     $includeFunction = function ($field, $blockType, $settings)
-    use ($form, $model, $viewPaths, $modelName) {
+    use ($form, $model, $viewPaths, $modelName, $modelNameLabel) {
         $blockPath = 'blocks/' . $blockType . '.php';
 
         foreach ($viewPaths as $viewPath) {
@@ -29,6 +29,7 @@ use yii\widgets\ActiveForm;
                     'model' => $model,
                     'field' => $field,
                     'modelName' => $modelName,
+                    'modelNameLabel' => $modelNameLabel,
                 ], $settings, ['settings' => $settings]));
                 break;
             }

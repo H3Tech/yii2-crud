@@ -3,7 +3,7 @@
 use yii\helpers\Html;
 
 /* @var $this yii\web\View */
-/* @var $modelName string */
+/* @var $modelNameLabel string */
 /* @var $model \yii\db\ActiveRecord */
 /* @var $controllerClass \h3tech\crud\controllers\AbstractCRUDController */
 $titleAttribute = $controllerClass::titleAttribute();
@@ -15,12 +15,12 @@ if ($titleAttribute !== null && isset($model->$titleAttribute)) {
     ]);
 } else {
     $this->title = Yii::t('h3tech/crud/crud', 'Update {modelName} {id}', [
-        'modelName' => $modelName,
+        'modelName' => $modelNameLabel,
         'id' => $model->primaryKey,
     ]);
 }
 
-$this->params['breadcrumbs'][] = ['label' => $modelName, 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => $modelNameLabel, 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $modelTitle, 'url' => ['view', 'id' => $model->primaryKey]];
 $this->params['breadcrumbs'][] = Yii::t('h3tech/crud/crud', 'Update');
 ?>

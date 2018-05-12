@@ -5,9 +5,9 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 
 $this->title = Yii::t('h3tech/crud/crud', "Create {modelName}", [
-    'modelName' => $modelName
+    'modelName' => $modelNameLabel
 ]);
-$this->params['breadcrumbs'][] = ['label' => $modelName, 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => $modelNameLabel, 'url' => ['index']];
 $this->params['breadcrumbs'][] = Yii::t('h3tech/crud/crud', 'Create');
 ?>
 <div class="model-create">
