@@ -24,15 +24,15 @@ $relatedModels = $foreignModelQuery === null ? $foreignModelClass::find()->all()
 
 $items = [];
 foreach ($relatedModels as $relatedModel) {
-    $key = is_callable($foreignKey) ? call_user_func($foreignKey, $relatedModel) : $relatedModel->$foreignKey;
-
-    if ($label === null) {
-        $label = $key;
-    } else {
-        $label = is_callable($foreignLabel) ? call_user_func($foreignLabel, $relatedModel) : $relatedModel->$foreignLabel;
-    }
-
     if (get_class($relatedModel) !== get_class($model) || $relatedModel->$foreignKey !== $model->primaryKey) {
+        $key = is_callable($foreignKey) ? call_user_func($foreignKey, $relatedModel) : $relatedModel->$foreignKey;
+
+        if ($foreignLabel === null) {
+            $label = $key;
+        } else {
+            $label = is_callable($foreignLabel) ? call_user_func($foreignLabel, $relatedModel) : $relatedModel->$foreignLabel;
+        }
+
         $items[$key] = $label;
     }
 }
