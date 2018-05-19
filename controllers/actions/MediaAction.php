@@ -45,7 +45,6 @@ class MediaAction extends Action
         $mediaId = $model->$mediaIdAttribute;
 
         $model->$mediaIdAttribute = null;
-        $model->save();
 
         if (($media = Media::findOne($mediaId)) !== null) {
             $media->delete();
