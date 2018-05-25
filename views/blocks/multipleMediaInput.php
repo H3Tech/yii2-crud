@@ -21,7 +21,7 @@ if ($model->isNewRecord) {
             'showRemove' => true,
             'showUpload' => false,
         ], $pluginOptions)
-    ]);
+    ])->hint($hint);
 } else {
     $modelIdAttribute = $settings['modelIdAttribute'];
     $mediaIdAttribute = $settings['mediaIdAttribute'];
