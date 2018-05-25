@@ -1,6 +1,8 @@
 <?php
 use kartik\date\DatePicker;
 
+$hint = isset($settings['hint']) ? $settings['hint'] : null;
+
 echo $form->field($model, $field)->widget(DatePicker::className(), [
     'name' => $field,
     'value' => date('Y-m-d', strtotime('+2 days')),
@@ -10,4 +12,4 @@ echo $form->field($model, $field)->widget(DatePicker::className(), [
         'format' => 'yyyy-mm-dd',
         'todayHighlight' => true,
     ]
-])->hint(null);
+])->hint($hint);

@@ -5,6 +5,8 @@ use kartik\file\FileInput;
 use yii\helpers\Url;
 use h3tech\crud\Module;
 
+$hint = isset($settings['hint']) ? $settings['hint'] : null;
+
 $options = isset($settings['options']) ? $settings['options'] : [];
 $pluginOptions = isset($settings['pluginOptions']) ? $settings['pluginOptions'] : [];
 $pluginEvents = isset($settings['pluginEvents']) ? $settings['pluginEvents'] : [];
@@ -85,5 +87,5 @@ JS;
         ], $pluginOptions),
         'pluginEvents' => array_merge($events, $pluginEvents),
         'sortThumbs' => $isOrderable,
-    ])->hint(null);
+    ])->hint($hint);
 }

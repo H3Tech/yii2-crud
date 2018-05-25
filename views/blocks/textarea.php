@@ -1,3 +1,4 @@
 <?php
-$settings = array_merge(["maxLength" => true], $settings);
-echo $form->field($model, $field)->textarea($settings)->hint(null);
+$settings = array_merge(['maxLength' => true], $settings);
+$hint = isset($settings['hint']) ? $settings['hint'] : null;
+echo $form->field($model, $field)->textarea($settings)->hint($hint);

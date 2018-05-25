@@ -1,3 +1,4 @@
 <?php
 $settings = array_merge(['maxLength' => true], $settings);
-echo $form->field($model, $field)->textInput($settings)->hint(null);
+$hint = isset($settings['hint']) ? $settings['hint'] : null;
+echo $form->field($model, $field)->textInput($settings)->hint($hint);

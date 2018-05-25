@@ -14,6 +14,8 @@
  * @var string $foreignField
  */
 
+$hint = isset($settings['hint']) ? $settings['hint'] : null;
+
 $options = isset($settings['options']) ? $settings['options'] : [];
 
 $foreignModelClass = $foreignModel['className'];
@@ -63,4 +65,4 @@ echo $form->field($model, $field)->dropDownList($items, array_merge([
     'multiple' => isset($junctionModel),
     'value' => $selectedItems,
     'prompt' => isset($junctionModel) ? null : Yii::t('h3tech/crud/crud', 'None'),
-], $options, ['disabled' => count($items) === 0]))->hint(null);
+], $options, ['disabled' => count($items) === 0]))->hint($hint);

@@ -11,6 +11,8 @@ $options = isset($settings['options']) ? $settings['options'] : [];
 $pluginOptions = isset($settings['pluginOptions']) ? $settings['pluginOptions'] : [];
 $pluginEvents = isset($settings['pluginEvents']) ? $settings['pluginEvents'] : [];
 
+$hint = isset($settings['hint']) ? $settings['hint'] : null;
+
 echo $form->field($model, $settings['modelVariable'])->widget(FileInput::className(), [
     'options' => $options,
     'pluginOptions' => array_merge([
@@ -28,4 +30,4 @@ echo $form->field($model, $settings['modelVariable'])->widget(FileInput::classNa
     ], $pluginOptions),
     'pluginEvents' => $pluginEvents,
     'sortThumbs' => false,
-])->label($model->getAttributeLabel($field))->hint(null);
+])->label($model->getAttributeLabel($field))->hint($hint);
