@@ -132,7 +132,7 @@ abstract class AbstractCRUDController extends Controller
             return static::$viewAttributes;
         }
 
-        return static::modelAttributes();
+        return array_diff(static::modelAttributes(), [static::titleAttribute()]);
     }
 
     protected static function shortName()
