@@ -12,7 +12,7 @@ class CrudWidget
         return [
             'attribute' => $attribute,
             'format' => 'raw',
-            'value' => function ($model, $widget) use ($junctionClass, $mediaIdField, $modelIdField) {
+            'value' => function ($model) use ($attribute, $junctionClass, $mediaIdField, $modelIdField) {
                 $preview = MediaController::getMultiplePreviewData(
                     $model->primaryKey,
                     $junctionClass,
@@ -22,7 +22,7 @@ class CrudWidget
 
                 return FileInput::widget([
                     'model' => $model,
-                    'attribute' => 'uploadedImages',
+                    'attribute' => $attribute,
                     'pluginOptions' => [
                         'showClose' => false,
                         'initialPreviewAsData' => true,
@@ -36,7 +36,6 @@ class CrudWidget
                         'showCaption' => false,
                         'browseClass' => 'hidden',
                     ],
-                    'sortThumbs' => false,
                     'readonly' => true,
                 ]);
             }
