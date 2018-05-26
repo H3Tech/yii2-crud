@@ -41,24 +41,33 @@ class CrudWidget
 
     public static function mediaDisplayAttribute($attribute)
     {
-        return static::getDisplayAttribute($attribute, function ($model) use ($attribute, $junctionClass, $mediaIdField, $modelIdField) {
-            return static::getMediaDisplayWidget($model, $attribute, MediaController::getSinglePreviewData(
-                $model->$attribute,
+        return static::getDisplayAttribute($attribute, function ($model) use ($attribute) {
+            return static::getMediaDisplayWidget(
+                $model,
                 $attribute,
-                get_class($model)
-            ));
+                MediaController::getSinglePreviewData(
+                    $model->$attribute,
+                    $attribute,
+                    get_class($model)
+                )
+            );
         });
     }
 
     public static function multipleMediaDisplayAttribute($attribute, $junctionClass, $mediaIdField, $modelIdField)
     {
-        return static::getDisplayAttribute($attribute, function ($model) use ($attribute, $junctionClass, $mediaIdField, $modelIdField) {
-            return static::getMediaDisplayWidget($model, $attribute, MediaController::getMultiplePreviewData(
-                $model->primaryKey,
-                $junctionClass,
-                $modelIdField,
-                $mediaIdField
-            ));
-        });
+        return static::getDisplayAttribute($attribute,
+            function ($model) use ($attribute, $junctionClass, $mediaIdField, $modelIdField) {
+                return static::getMediaDisplayWidget(
+                    $model,
+                    $attribute,
+                    MediaController::getMultiplePreviewData(
+                        $model->primaryKey,
+                        $junctionClass,
+                        $modelIdField,
+                        $mediaIdField
+                    )
+                );
+            });
     }
 }
