@@ -9,6 +9,7 @@ $titleAttribute = $controllerClass::titleAttribute();
 $this->title = $titleAttribute !== null && isset($model->$titleAttribute) ? $model->$titleAttribute : $model->primaryKey;
 $this->params['breadcrumbs'][] = ['label' => $modelNameLabel, 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
+
 ?>
 <div class="model-view">
 
@@ -26,7 +27,7 @@ $this->params['breadcrumbs'][] = $this->title;
     </p>
 
     <?php
-    $fields = $model->attributes();
+    $fields = $controllerClass::viewAttributes();
     echo DetailView::widget([
         'model' => $model,
         'attributes' => $fields,

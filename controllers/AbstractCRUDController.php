@@ -30,6 +30,7 @@ abstract class AbstractCRUDController extends Controller
     protected static $titleAttribute = null;
     protected static $indexAttributes = null;
     protected static $modelNameLabel = null;
+    protected static $viewAttributes = null;
 
     protected static function modelClass()
     {
@@ -123,6 +124,15 @@ abstract class AbstractCRUDController extends Controller
 
         $allAttributes = static::modelAttributes();
         return array_splice($allAttributes, 0, 5);
+    }
+
+    public static function viewAttributes()
+    {
+        if (static::$viewAttributes !== null) {
+            return static::$viewAttributes;
+        }
+
+        return static::modelAttributes();
     }
 
     protected static function shortName()
