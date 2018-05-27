@@ -4,6 +4,9 @@ namespace h3tech\crud\helpers;
 
 use h3tech\crud\controllers\MediaController;
 use kartik\file\FileInput;
+use yii\helpers\StringHelper;
+use kartik\daterange\DateRangePicker;
+use Yii;
 
 class CrudWidget
 {
@@ -69,5 +72,30 @@ class CrudWidget
                     )
                 );
             });
+    }
+
+    public static function datePickerFilterDefinition($searchModelClass, $attribute)
+    {
+        $modelName = StringHelper::baseName($searchModelClass);
+
+        return [
+            'attribute' => $attribute,
+            'filter' => '<div class="drp-container input-group"><span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>' .
+                DateRangePicker::widget([
+                    'name' => $modelName . '[' . $attribute . ']',
+                    'pluginOptions' => [
+                        'locale' => [
+                            'format' => 'YYYY-MM-DD HH:mm:ss',
+                            'separator' => '_',
+                        ],
+                        'opens' => 'left',
+                        'timePicker' => true,
+                        'timePicker24Hour' => true,
+                    ],
+                    'value' => isset(Yii::$app->request->queryParams[$modelName][$attribute])
+                        ? Yii::$app->request->queryParams[$modelName][$attribute]
+                        : null,
+                ]) . '</div>',
+        ];
     }
 }

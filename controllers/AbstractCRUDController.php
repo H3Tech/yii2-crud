@@ -17,6 +17,7 @@ use yii\base\ViewNotFoundException;
 use yii\web\Response;
 use yii\widgets\ActiveForm;
 use yii\base\Model;
+use h3tech\crud\helpers\CrudWidget;
 
 /**
  * This class implements the CRUD actions for a model.
@@ -463,5 +464,10 @@ abstract class AbstractCRUDController extends Controller
             'update' => 'view',
             'delete' => 'index',
         ];
+    }
+
+    protected static function datePickerFilterDefinition($attribute)
+    {
+        return CrudWidget::datePickerFilterDefinition(static::searchModelClass(), $attribute);
     }
 }
