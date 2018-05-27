@@ -10,6 +10,6 @@ class CrudFormatter extends Formatter
     {
         return $value === null
             ? $this->nullDisplay
-            : '<pre>' . json_encode(json_decode($value), JSON_PRETTY_PRINT) . '</pre>';
+            : '<pre>' . htmlspecialchars(json_encode(json_decode($value), JSON_PRETTY_PRINT)) . '</pre>';
     }
 }
