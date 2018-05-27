@@ -3,6 +3,7 @@
 namespace h3tech\crud\controllers;
 
 use h3tech\crud\controllers\actions\Action;
+use h3tech\crud\formatters\CrudFormatter;
 use Yii;
 use yii\data\ActiveDataProvider;
 use yii\db\ActiveRecord;
@@ -37,6 +38,7 @@ abstract class AbstractCRUDController extends Controller
     protected static $disallowedActions = null;
     protected static $itemButtons = null;
     protected static $itemActions = null;
+    protected static $detailFormatterClass = null;
 
     protected static function modelClass()
     {
@@ -256,6 +258,15 @@ abstract class AbstractCRUDController extends Controller
         }
 
         return ['view', 'update', 'delete'];
+    }
+
+    public static function detailFormatterClass()
+    {
+        if (static::$detailFormatterClass !== null) {
+            return static::$detailFormatterClass;
+        }
+
+        return CrudFormatter::class;
     }
 
     protected static function getMediaInstances(ActiveRecord $model, $tableName, $mediaField, $modelField)

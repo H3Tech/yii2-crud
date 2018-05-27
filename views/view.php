@@ -32,9 +32,11 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?php
     $fields = $controllerClass::viewAttributes();
+    $formatterClass = $controllerClass::detailFormatterClass();
     echo DetailView::widget([
         'model' => $model,
         'attributes' => $fields,
+        'formatter' => new $formatterClass(),
     ]);
     ?>
 
