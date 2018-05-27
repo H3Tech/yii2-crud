@@ -12,6 +12,7 @@ use yii\base\ViewNotFoundException;
 
 $this->title = $modelNameLabel;
 $this->params['breadcrumbs'][] = $this->title;
+$allowedActions = $controllerClass::allowedActions();
 ?>
 <div class="model-index">
 
@@ -27,12 +28,26 @@ $this->params['breadcrumbs'][] = $this->title;
 //    }
     ?>
 
-    <p>
-        <?= Html::a(Yii::t('h3tech/crud/crud', 'Create'), ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
+    <?php if (in_array('create', $allowedActions)) : ?>
+        <p>
+            <?= Html::a(Yii::t('h3tech/crud/crud', 'Create'), ['create'], ['class' => 'btn btn-success']) ?>
+        </p>
+    <?php endif; ?>
 
     <?
-    $columnsArray = [['class' => 'yii\grid\SerialColumn'], ['class' => 'yii\grid\ActionColumn']];
+    $templateString = '';
+    $isFirst = true;
+    foreach ($controllerClass::itemActions() as $action) {
+        if (in_array($action, $allowedActions)) {
+            $templateString .= ($isFirst ? '' : ' ') . '{' . $action . '}';
+        }
+        $isFirst = false;
+    }
+    $columnsArray = [['class' => 'yii\grid\SerialColumn'], [
+        'class' => 'yii\grid\ActionColumn',
+        'buttons' => $controllerClass::itemButtons(),
+        'template' => $templateString,
+    ]];
 
     $attributes = [];
 

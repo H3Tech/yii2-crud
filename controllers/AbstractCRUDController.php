@@ -31,6 +31,11 @@ abstract class AbstractCRUDController extends Controller
     protected static $indexAttributes = null;
     protected static $modelNameLabel = null;
     protected static $viewAttributes = null;
+    protected static $supportedActions = null;
+    protected static $allowedActions = null;
+    protected static $disallowedActions = null;
+    protected static $itemButtons = null;
+    protected static $itemActions = null;
 
     protected static function modelClass()
     {
@@ -167,8 +172,68 @@ abstract class AbstractCRUDController extends Controller
         return [];
     }
 
+    public static function supportedActions()
+    {
+        if (static::$supportedActions !== null) {
+            return static::$supportedActions;
+        }
+
+        return ['index', 'create', 'view', 'update', 'delete'];
+    }
+
+    public static function itemActions()
+    {
+        if (static::$itemActions !== null) {
+            return static::$itemActions;
+        }
+
+        return ['view', 'update', 'delete'];
+    }
+
+    public static function allowedActions()
+    {
+        $allowedActions = [];
+
+        if (static::$allowedActions === null) {
+            $allowedActions = static::supportedActions();
+        } else {
+            $allowedActions = static::$allowedActions;
+        }
+
+        if (static::$disallowedActions !== null) {
+            $allowedActions = array_diff($allowedActions, static::$disallowedActions);
+        }
+
+        return $allowedActions;
+    }
+
+    protected static function disallowedActions()
+    {
+        return array_diff(static::supportedActions(), static::allowedActions());
+    }
+
+    public static function isActionAllowed($action)
+    {
+        return in_array($action, static::allowedActions());
+    }
+
     public function behaviors()
     {
+        $accessRules = [];
+
+        if (!empty($disallowedActions = static::disallowedActions())) {
+            $accessRules[] = [
+                'allow' => false,
+                'actions' => $disallowedActions,
+                'roles' => ['@'],
+            ];
+        }
+
+        $accessRules[] = [
+            'allow' => true,
+            'roles' => ['@'],
+        ];
+
         return [
             'verbs' => [
                 'class' => VerbFilter::className(),
@@ -178,14 +243,18 @@ abstract class AbstractCRUDController extends Controller
             ],
             'access' => [
                 'class' => AccessControl::className(),
-                'rules' => [
-                    [
-                        'allow' => true,
-                        'roles' => ['@'],
-                    ],
-                ],
+                'rules' => $accessRules,
             ],
         ];
+    }
+
+    public static function itemButtons()
+    {
+        if (static::$itemButtons !== null) {
+            return static::$itemButtons;
+        }
+
+        return ['view', 'update', 'delete'];
     }
 
     protected static function getMediaInstances(ActiveRecord $model, $tableName, $mediaField, $modelField)

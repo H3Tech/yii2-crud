@@ -16,14 +16,18 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a(Yii::t('h3tech/crud/crud', 'Update'), ['update', 'id' => $model->primaryKey], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a(Yii::t('h3tech/crud/crud', 'Delete'), ['delete', 'id' => $model->primaryKey], [
-            'class' => 'btn btn-danger',
-            'data' => [
-                'confirm' => Yii::t('h3tech/crud/crud', 'Are you sure you want to delete this item?'),
-                'method' => 'post',
-            ],
-        ]) ?>
+        <?php if ($controllerClass::isActionAllowed('update')) : ?>
+            <?= Html::a(Yii::t('h3tech/crud/crud', 'Update'), ['update', 'id' => $model->primaryKey], ['class' => 'btn btn-primary']) ?>
+        <?php endif; ?>
+        <?php if ($controllerClass::isActionAllowed('delete')) : ?>
+            <?= Html::a(Yii::t('h3tech/crud/crud', 'Delete'), ['delete', 'id' => $model->primaryKey], [
+                'class' => 'btn btn-danger',
+                'data' => [
+                    'confirm' => Yii::t('h3tech/crud/crud', 'Are you sure you want to delete this item?'),
+                    'method' => 'post',
+                ],
+            ]) ?>
+        <?php endif; ?>
     </p>
 
     <?php
