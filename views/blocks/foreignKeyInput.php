@@ -33,10 +33,12 @@ foreach ($relatedModels as $relatedModel) {
         if ($foreignLabel === null) {
             $label = '';
         } else {
-            $label = is_callable($foreignLabel) ? call_user_func($foreignLabel, $relatedModel) : $relatedModel->$foreignLabel;
+            $label = is_callable($foreignLabel)
+                ? call_user_func($foreignLabel, $relatedModel)
+                : $relatedModel->$foreignLabel;
         }
 
-        $items[$key] = ($showKeyInList ? "$key - " : '') . $label;
+        $items[$key] = $label === '' ? $key : (($showKeyInList ? "$key - " : '') . $label);
     }
 }
 
