@@ -60,6 +60,8 @@ if (isset($junctionModel)) {
     }
 } elseif ($model->$field !== null) {
     $selectedItems[] = $model->$field;
+} elseif (isset($foreignModel['defaultKey'])) {
+    $selectedItems[] = $foreignModel['defaultKey'];
 }
 
 echo $form->field($model, $field)->dropDownList($items, array_merge([
