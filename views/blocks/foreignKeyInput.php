@@ -23,6 +23,7 @@ $foreignModelQuery = isset($foreignModel['query']) ? $foreignModel['query'] : nu
 $foreignKey = $foreignModel['key'];
 $foreignLabel = isset($foreignModel['label']) ? $foreignModel['label'] : null;
 $relatedModels = $foreignModelQuery === null ? $foreignModelClass::find()->all() : $foreignModelQuery->all();
+$showKeyInList = isset($settings['showKeyInList']) ? $settings['showKeyInList'] : false;
 
 $items = [];
 foreach ($relatedModels as $relatedModel) {
@@ -30,12 +31,12 @@ foreach ($relatedModels as $relatedModel) {
         $key = is_callable($foreignKey) ? call_user_func($foreignKey, $relatedModel) : $relatedModel->$foreignKey;
 
         if ($foreignLabel === null) {
-            $label = $key;
+            $label = '';
         } else {
             $label = is_callable($foreignLabel) ? call_user_func($foreignLabel, $relatedModel) : $relatedModel->$foreignLabel;
         }
 
-        $items[$key] = $label;
+        $items[$key] = ($showKeyInList ? "$key - " : '') . $label;
     }
 }
 
