@@ -459,13 +459,14 @@ abstract class AbstractCRUDController extends Controller
      */
     public function actionDelete($id)
     {
-        $action = 'delete';
+        static::deleteModel(static::findModel($id));
+        return $this->redirect([static::afterActionRedirects()['delete']]);
+    }
 
-        $model = static::findModel($id);
-        $this->processData($model, $action);
+    protected function deleteModel(ActiveRecord $model)
+    {
+        $this->processData($model, 'delete');
         $model->delete();
-
-        return $this->redirect([static::afterActionRedirects()[$action]]);
     }
 
     public static function afterActionRedirects()
