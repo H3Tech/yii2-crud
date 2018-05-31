@@ -19,6 +19,7 @@ use yii\web\Response;
 use yii\widgets\ActiveForm;
 use yii\base\Model;
 use h3tech\crud\helpers\CrudWidget;
+use yii\helpers\Html;
 
 /**
  * This class implements the CRUD actions for a model.
@@ -39,6 +40,7 @@ abstract class AbstractCRUDController extends Controller
     protected static $itemButtons = null;
     protected static $itemActions = null;
     protected static $detailFormatterClass = null;
+    protected static $afterActionRedirects = ['create' => 'view', 'update' => 'view', 'delete' => 'index'];
 
     protected static function modelClass()
     {
@@ -471,11 +473,7 @@ abstract class AbstractCRUDController extends Controller
 
     public static function afterActionRedirects()
     {
-        return [
-            'create' => 'view',
-            'update' => 'view',
-            'delete' => 'index',
-        ];
+        return static::$afterActionRedirects;
     }
 
     protected static function datePickerFilterDefinition($attribute)
@@ -486,5 +484,30 @@ abstract class AbstractCRUDController extends Controller
     public static function gridConfig()
     {
         return [];
+    }
+
+    public static function detailButtons(ActiveRecord $model)
+    {
+        $buttons = [];
+
+        if (static::isActionAllowed('update')) {
+            $buttons[] = Html::a(
+                Yii::t('h3tech/crud/crud', 'Update'),
+                ['update', 'id' => $model->primaryKey],
+                ['class' => 'btn btn-primary']
+            );
+        }
+
+        if (static::isActionAllowed('delete')) {
+            $buttons[] = Html::a(Yii::t('h3tech/crud/crud', 'Delete'), ['delete', 'id' => $model->primaryKey], [
+                'class' => 'btn btn-danger',
+                'data' => [
+                    'confirm' => Yii::t('h3tech/crud/crud', 'Are you sure you want to delete this item?'),
+                    'method' => 'post',
+                ],
+            ]);
+        }
+
+        return $buttons;
     }
 }
