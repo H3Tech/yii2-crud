@@ -60,10 +60,10 @@ $allowedActions = $controllerClass::allowedActions();
 
     array_splice($columnsArray, 1, 0, $attributes);
 
-    echo GridView::widget([
+    echo GridView::widget(array_merge([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => $columnsArray,
-    ]); ?>
+    ], $controllerClass::gridConfig())); ?>
 
 </div>

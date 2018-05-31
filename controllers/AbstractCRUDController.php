@@ -481,4 +481,9 @@ abstract class AbstractCRUDController extends Controller
     {
         return CrudWidget::datePickerFilterDefinition(static::searchModelClass(), $attribute);
     }
+
+    public static function gridConfig()
+    {
+        return [];
+    }
 }
