@@ -160,11 +160,11 @@ abstract class AbstractCRUDController extends Controller
         return $modelClass::getTableSchema()->primaryKey;
     }
 
-    public static function viewRules()
+    public static function viewRules(ActiveRecord $model)
     {
         $viewRules = [];
 
-        $attributes = array_diff(static::modelAttributes(), static::primaryFields());
+        $attributes = array_diff($model->attributes(), $model::getTableSchema()->primaryKey);
         foreach ($attributes as $attribute) {
             $viewRules[$attribute] = ['textInput'];
         }
