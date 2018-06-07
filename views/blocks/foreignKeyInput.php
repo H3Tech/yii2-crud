@@ -25,20 +25,22 @@ $foreignLabel = isset($foreignModel['label']) ? $foreignModel['label'] : null;
 $relatedModels = $foreignModelQuery === null ? $foreignModelClass::find()->all() : $foreignModelQuery->all();
 $showKeyInList = isset($settings['showKeyInList']) ? $settings['showKeyInList'] : false;
 
-$items = [];
-foreach ($relatedModels as $relatedModel) {
-    if (get_class($relatedModel) !== get_class($model) || $relatedModel->$foreignKey !== $model->primaryKey) {
-        $key = is_callable($foreignKey) ? call_user_func($foreignKey, $relatedModel) : $relatedModel->$foreignKey;
+$items = isset($settings['items']) ? $settings['items'] : [];
+if (empty($items)) {
+    foreach ($relatedModels as $relatedModel) {
+        if (get_class($relatedModel) !== get_class($model) || $relatedModel->$foreignKey !== $model->primaryKey) {
+            $key = is_callable($foreignKey) ? call_user_func($foreignKey, $relatedModel) : $relatedModel->$foreignKey;
 
-        if ($foreignLabel === null) {
-            $label = '';
-        } else {
-            $label = is_callable($foreignLabel)
-                ? call_user_func($foreignLabel, $relatedModel)
-                : $relatedModel->$foreignLabel;
+            if ($foreignLabel === null) {
+                $label = '';
+            } else {
+                $label = is_callable($foreignLabel)
+                    ? call_user_func($foreignLabel, $relatedModel)
+                    : $relatedModel->$foreignLabel;
+            }
+
+            $items[$key] = $label === '' ? $key : (($showKeyInList ? "$key - " : '') . $label);
         }
-
-        $items[$key] = $label === '' ? $key : (($showKeyInList ? "$key - " : '') . $label);
     }
 }
 
