@@ -136,13 +136,13 @@ abstract class AbstractCRUDController extends Controller
         return array_splice($allAttributes, 0, 5);
     }
 
-    public static function viewAttributes()
+    public static function viewAttributes(ActiveRecord $model)
     {
         if (static::$viewAttributes !== null) {
             return static::$viewAttributes;
         }
 
-        return array_diff(static::modelAttributes(), [static::titleAttribute()]);
+        return array_diff($model->attributes(), [static::titleAttribute()]);
     }
 
     protected static function shortName()

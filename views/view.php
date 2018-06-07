@@ -22,7 +22,7 @@ $this->params['breadcrumbs'][] = $this->title;
     </p>
 
     <?php
-    $fields = $controllerClass::viewAttributes();
+    $fields = $controllerClass::viewAttributes($model);
     $formatterClass = $controllerClass::detailFormatterClass();
     echo DetailView::widget([
         'model' => $model,
