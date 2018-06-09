@@ -8,8 +8,14 @@ class CrudFormatter extends Formatter
 {
     public function asJson($value)
     {
-        return $value === null
-            ? $this->nullDisplay
-            : '<pre>' . htmlspecialchars(json_encode(json_decode($value), JSON_PRETTY_PRINT)) . '</pre>';
+        $result = $value;
+
+        if ($value === null) {
+            $this->nullDisplay;
+        } elseif (($json = json_decode($value, true)) !== null) {
+            '<pre>' . htmlspecialchars(json_encode($json, JSON_PRETTY_PRINT)) . '</pre>';
+        }
+
+        return $result;
     }
 }
