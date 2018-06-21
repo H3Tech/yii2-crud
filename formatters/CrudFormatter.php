@@ -11,9 +11,9 @@ class CrudFormatter extends Formatter
         $result = $value;
 
         if ($value === null) {
-            $this->nullDisplay;
+            $result = $this->nullDisplay;
         } elseif (($json = json_decode($value, true)) !== null) {
-            '<pre>' . htmlspecialchars(json_encode($json, JSON_PRETTY_PRINT)) . '</pre>';
+            $result = '<pre>' . htmlspecialchars(json_encode($json, JSON_PRETTY_PRINT)) . '</pre>';
         }
 
         return $result;
