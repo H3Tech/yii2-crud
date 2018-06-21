@@ -37,7 +37,7 @@ use yii\widgets\ActiveForm;
     };
 
     /** @var \h3tech\crud\controllers\AbstractCRUDController $controllerClass */
-    foreach ($controllerClass::viewRules($model) as $key => $rule) {
+    foreach ($controllerClass::formRules($model) as $key => $rule) {
         if (is_numeric($key)) {
             $target = $rule[0];
             $type = $rule[1];

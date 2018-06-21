@@ -142,7 +142,7 @@ abstract class AbstractCRUDController extends Controller
             return static::$viewAttributes;
         }
 
-        return array_diff($model->attributes(), [static::titleAttribute()]);
+        return $model->attributes();
     }
 
     protected static function shortName()
@@ -160,16 +160,16 @@ abstract class AbstractCRUDController extends Controller
         return $modelClass::getTableSchema()->primaryKey;
     }
 
-    public static function viewRules(ActiveRecord $model)
+    public static function formRules(ActiveRecord $model)
     {
-        $viewRules = [];
+        $formRules = [];
 
         $attributes = array_diff($model->attributes(), $model::getTableSchema()->primaryKey);
         foreach ($attributes as $attribute) {
-            $viewRules[$attribute] = ['textInput'];
+            $formRules[$attribute] = ['textInput'];
         }
 
-        return $viewRules;
+        return $formRules;
     }
 
     protected static function actionRules()
