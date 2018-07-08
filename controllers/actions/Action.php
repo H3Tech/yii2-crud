@@ -13,6 +13,10 @@ abstract class Action extends BaseObject
 {
     public $controllerClass;
 
+    public function beforeCreate(ActiveRecord $model)
+    {
+    }
+
     public function create(ActiveRecord $model)
     {
     }

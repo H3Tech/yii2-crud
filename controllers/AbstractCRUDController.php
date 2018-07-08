@@ -292,17 +292,19 @@ abstract class AbstractCRUDController extends Controller
         return $isAbsolute ? Yii::getAlias($path) : $path;
     }
 
-    protected function processData(ActiveRecord $model, $actionType)
+    protected function processData(ActiveRecord $model, $actionType, $before = false)
     {
         foreach (static::actionRules() as $rule) {
             /** @var Action $action */
             $action = Yii::createObject(array_merge($rule, [
                 'controllerClass' => get_class($this),
             ]));
-            call_user_func([$action, $actionType], $model);
+            call_user_func([$action, $before ? ('before' . ucfirst($actionType)) : $actionType], $model);
         }
 
-        $model->save();
+        if (!$before) {
+            $model->save();
+        }
     }
 
     /**
@@ -401,6 +403,8 @@ abstract class AbstractCRUDController extends Controller
         /** @var ActiveRecord $model */
         $modelClass = static::modelClass();
         $model = new $modelClass();
+
+        $this->processData($model, $action, true);
 
         if ($this->shouldAjaxValidate($model)) {
             return $this->renderJson($this->ajaxValidateModel($model));
