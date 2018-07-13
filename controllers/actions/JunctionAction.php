@@ -17,7 +17,7 @@ class JunctionAction extends Action
     public $foreignField;
     public $foreignKeyVariable;
 
-    public function create(ActiveRecord $model)
+    public function afterCreate(ActiveRecord $model)
     {
         $junctionModelClass = $this->junctionModelClass;
 
@@ -36,7 +36,7 @@ class JunctionAction extends Action
         }
     }
 
-    public function update(ActiveRecord $model)
+    public function afterUpdate(ActiveRecord $model)
     {
         $junctionModelClass = $this->junctionModelClass;
         $foreignKeys = $model->{$this->foreignKeyVariable};
@@ -66,7 +66,7 @@ class JunctionAction extends Action
         }
     }
 
-    public function delete(ActiveRecord $model)
+    public function beforeDelete(ActiveRecord $model)
     {
         $junctionModelClass = $this->junctionModelClass;
         $junctionModelClass::deleteAll([$this->modelField => $model->primaryKey]);

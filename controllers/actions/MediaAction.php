@@ -38,32 +38,18 @@ class MediaAction extends Action
         $this->type = $type;
     }
 
-    protected function deleteMedia(ActiveRecord $model)
-    {
-        $mediaIdAttribute = $this->mediaIdAttribute;
-
-        $mediaId = $model->$mediaIdAttribute;
-
-        $model->$mediaIdAttribute = null;
-
-        if (($media = Media::findOne($mediaId)) !== null) {
-            $media->delete();
-        }
-    }
-
     protected function uploadMedia(ActiveRecord $model, UploadedFile $mediaFile)
     {
         $controllerClass = $this->controllerClass;
-        $mediaIdAttribute = $this->mediaIdAttribute;
 
-        $model->$mediaIdAttribute = MediaController::upload(
+        $model->{$this->mediaIdAttribute} = MediaController::upload(
             $mediaFile,
             $this->type,
             ($this->prefix === null ? $controllerClass::getModelPrefix() : $this->prefix)
         );
     }
 
-    public function create(ActiveRecord $model)
+    public function afterCreate(ActiveRecord $model)
     {
         $mediaFile = UploadedFile::getInstance($model, $this->fileVariable);
         if ($mediaFile !== null) {
@@ -71,17 +57,25 @@ class MediaAction extends Action
         }
     }
 
-    public function update(ActiveRecord $model)
+    public function afterUpdate(ActiveRecord $model)
     {
         $mediaFile = UploadedFile::getInstance($model, $this->fileVariable);
         if ($mediaFile !== null) {
-            $this->deleteMedia($model);
+            $oldMedia = Media::findOne($model->{$this->mediaIdAttribute});
+
             $this->uploadMedia($model, $mediaFile);
+            $model->save();
+
+            if ($oldMedia !== null) {
+                $oldMedia->delete();
+            }
         }
     }
 
-    public function delete(ActiveRecord $model)
+    public function afterDelete(ActiveRecord $model)
     {
-        $this->deleteMedia($model);
+        if (($media = Media::findOne($model->{$this->mediaIdAttribute})) !== null) {
+            $media->delete();
+        }
     }
 }

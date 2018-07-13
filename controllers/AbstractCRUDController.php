@@ -292,18 +292,14 @@ abstract class AbstractCRUDController extends Controller
         return $isAbsolute ? Yii::getAlias($path) : $path;
     }
 
-    protected function processData(ActiveRecord $model, $actionType, $before = false)
+    protected function transformModel(ActiveRecord $model, $actionType, $before = false)
     {
         foreach (static::actionRules() as $rule) {
             /** @var Action $action */
             $action = Yii::createObject(array_merge($rule, [
                 'controllerClass' => get_class($this),
             ]));
-            call_user_func([$action, $before ? ('before' . ucfirst($actionType)) : $actionType], $model);
-        }
-
-        if (!$before) {
-            $model->save();
+            call_user_func([$action, ($before ? 'before' : 'after') . ucfirst($actionType)], $model);
         }
     }
 
@@ -404,14 +400,15 @@ abstract class AbstractCRUDController extends Controller
         $modelClass = static::modelClass();
         $model = new $modelClass();
 
-        $this->processData($model, $action, true);
+        $this->transformModel($model, $action, true);
 
         if ($this->shouldAjaxValidate($model)) {
             return $this->renderJson($this->ajaxValidateModel($model));
         }
 
         if ($this->canCreateModel($model)) {
-            $this->processData($model, $action);
+            $this->transformModel($model, $action);
+            $model->save();
             return $this->redirect([static::afterActionRedirects()[$action], 'id' => $model->getPrimaryKey()]);
         } else {
             return $this->renderAction($action, ['model' => $model]);
@@ -445,12 +442,15 @@ abstract class AbstractCRUDController extends Controller
 
         $model = static::findModel($id);
 
+        $this->transformModel($model, $action, true);
+
         if ($this->shouldAjaxValidate($model)) {
             return $this->renderJson($this->ajaxValidateModel($model));
         }
 
         if ($this->canUpdateModel($model)) {
-            $this->processData($model, $action);
+            $this->transformModel($model, $action);
+            $model->save();
             return $this->redirect([static::afterActionRedirects()[$action], 'id' => $model->getPrimaryKey()]);
         } else {
             return $this->renderAction($action, ['model' => $model]);
@@ -471,8 +471,11 @@ abstract class AbstractCRUDController extends Controller
 
     protected function deleteModel(ActiveRecord $model)
     {
-        $this->processData($model, 'delete');
+        $action = 'delete';
+
+        $this->transformModel($model, $action, true);
         $model->delete();
+        $this->transformModel($model, $action);
     }
 
     public static function afterActionRedirects()

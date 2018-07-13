@@ -17,15 +17,23 @@ abstract class Action extends BaseObject
     {
     }
 
-    public function create(ActiveRecord $model)
+    public function afterCreate(ActiveRecord $model)
     {
     }
 
-    public function update(ActiveRecord $model)
+    public function beforeUpdate(ActiveRecord $model)
     {
     }
 
-    public function delete(ActiveRecord $model)
+    public function afterUpdate(ActiveRecord $model)
+    {
+    }
+
+    public function beforedelete(ActiveRecord $model)
+    {
+    }
+
+    public function afterDelete(ActiveRecord $model)
     {
     }
 }

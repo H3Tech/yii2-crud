@@ -51,7 +51,7 @@ class MultipleMediaAction extends Action
         );
     }
 
-    public function create(ActiveRecord $model)
+    public function afterCreate(ActiveRecord $model)
     {
         foreach (UploadedFile::getInstances($model, $this->fileVariable) as $mediaFile) {
             $mediaId = $this->uploadMedia($mediaFile);
@@ -64,7 +64,7 @@ class MultipleMediaAction extends Action
         }
     }
 
-    public function delete(ActiveRecord $model)
+    public function beforeDelete(ActiveRecord $model)
     {
         $junctionModelClass = $this->junctionModelClass;
         $junctionModelClass::deleteAll([$this->modelIdAttribute => $model->primaryKey]);
