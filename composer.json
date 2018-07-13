@@ -12,7 +12,8 @@
   "require": {
     "kartik-v/yii2-widget-datepicker": "~1.4.3",
     "kartik-v/yii2-date-range": "~1.6.8",
-    "kartik-v/yii2-widget-fileinput": "~1.0.6"
+    "kartik-v/yii2-widget-fileinput": "~1.0.6",
+    "kartik-v/yii2-widget-datetimepicker": "~1.4.4"
   },
   "autoload": {
     "psr-4": {
