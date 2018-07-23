@@ -28,6 +28,7 @@ use yii\widgets\ActiveForm;
                     'form' => $form,
                     'model' => $model,
                     'field' => $field,
+                    'viewPaths' => $viewPaths,
                     'modelName' => $modelName,
                     'modelNameLabel' => $modelNameLabel,
                 ], $settings, ['settings' => $settings]));

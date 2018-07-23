@@ -4,6 +4,7 @@ use kartik\datetime\DateTimePicker;
 
 /* @var string $field */
 
+$label = isset($settings['label']) ? $settings['label'] : null;
 $hint = isset($settings['hint']) ? $settings['hint'] : null;
 
 echo $form->field($model, $field)->widget(DateTimePicker::className(), [
@@ -14,4 +15,4 @@ echo $form->field($model, $field)->widget(DateTimePicker::className(), [
         'format' => 'yyyy-mm-dd H:i',
         'autoclose' => true,
     ],
-])->hint($hint);
+])->label($label)->hint($hint);
