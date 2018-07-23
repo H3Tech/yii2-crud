@@ -5,7 +5,6 @@ use kartik\file\FileInput;
 use yii\helpers\Url;
 use h3tech\crud\Module;
 
-$label = isset($settings['label']) ? $settings['label'] : null;
 $hint = isset($settings['hint']) ? $settings['hint'] : null;
 
 $options = isset($settings['options']) ? $settings['options'] : [];
@@ -22,7 +21,7 @@ if ($model->isNewRecord) {
             'showRemove' => true,
             'showUpload' => false,
         ], $pluginOptions)
-    ])->label($label)->hint($hint);
+    ])->hint($hint);
 } else {
     $modelIdAttribute = $settings['modelIdAttribute'];
     $mediaIdAttribute = $settings['mediaIdAttribute'];
@@ -88,5 +87,5 @@ JS;
         ], $pluginOptions),
         'pluginEvents' => array_merge($events, $pluginEvents),
         'sortThumbs' => $isOrderable,
-    ])->label($label)->hint($hint);
+    ])->hint($hint);
 }
