@@ -11,7 +11,7 @@ echo $form->field($model, $field)->widget(DateTimePicker::className(), [
     'options' => ['placeholder' => Yii::t('h3tech/crud/crud', 'Select time...')],
     'readonly' => true,
     'pluginOptions' => [
-        'format' => 'yyyy-mm-dd H:i',
+        'format' => 'yyyy-mm-dd HH:ii',
         'autoclose' => true,
     ],
 ])->hint($hint);
