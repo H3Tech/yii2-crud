@@ -41,6 +41,7 @@ abstract class AbstractCRUDController extends Controller
     protected static $itemActions = null;
     protected static $detailFormatterClass = null;
     protected static $afterActionRedirects = ['create' => 'view', 'update' => 'view', 'delete' => 'index'];
+    protected static $showFilterResetButton = null;
 
     protected static function modelClass()
     {
@@ -69,6 +70,11 @@ abstract class AbstractCRUDController extends Controller
     public static function titleAttribute()
     {
         return static::$titleAttribute === null ? 'id' : static::$titleAttribute;
+    }
+
+    public static function showFilterResetButton()
+    {
+        return static::$showFilterResetButton === null ? false : static::$showFilterResetButton;
     }
 
     public static function modelName()

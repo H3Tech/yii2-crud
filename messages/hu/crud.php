@@ -13,4 +13,5 @@ return [
     'Select date...' => 'Válasszon dátumot...',
     'Select time...' => 'Válasszon időpontot...',
     'None' => 'Nincs',
+    'Reset Filters' => 'Szűrők törlése',
 ];

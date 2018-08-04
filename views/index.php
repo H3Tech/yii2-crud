@@ -28,11 +28,14 @@ $allowedActions = $controllerClass::allowedActions();
 //    }
     ?>
 
-    <?php if (in_array('create', $allowedActions)) : ?>
-        <p>
+    <p>
+        <?php if (in_array('create', $allowedActions)) : ?>
             <?= Html::a(Yii::t('h3tech/crud/crud', 'Create'), ['create'], ['class' => 'btn btn-success']) ?>
-        </p>
-    <?php endif; ?>
+        <?php endif; ?>
+        <?php if ($controllerClass::showFilterResetButton()) : ?>
+            <?= Html::a(Yii::t('h3tech/crud/crud', 'Reset Filters'), ['index'], ['class' => 'btn btn-success']) ?>
+        <?php endif; ?>
+    </p>
 
     <?
     $templateString = '';
