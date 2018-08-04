@@ -16,7 +16,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?php foreach ($controllerClass::detailButtons($model) as $button) : ?>
+        <?php foreach ($controllerClass::detailButtons($model) as $action => $button) : ?>
             <?= $button ?>
         <?php endforeach; ?>
     </p>

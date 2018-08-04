@@ -498,7 +498,7 @@ abstract class AbstractCRUDController extends Controller
         $buttons = [];
 
         if (static::isActionAllowed('update')) {
-            $buttons[] = Html::a(
+            $buttons['update'] = Html::a(
                 Yii::t('h3tech/crud/crud', 'Update'),
                 ['update', 'id' => $model->primaryKey],
                 ['class' => 'btn btn-primary']
@@ -506,7 +506,7 @@ abstract class AbstractCRUDController extends Controller
         }
 
         if (static::isActionAllowed('delete')) {
-            $buttons[] = Html::a(Yii::t('h3tech/crud/crud', 'Delete'), ['delete', 'id' => $model->primaryKey], [
+            $buttons['delete'] = Html::a(Yii::t('h3tech/crud/crud', 'Delete'), ['delete', 'id' => $model->primaryKey], [
                 'class' => 'btn btn-danger',
                 'data' => [
                     'confirm' => Yii::t('h3tech/crud/crud', 'Are you sure you want to delete this item?'),
