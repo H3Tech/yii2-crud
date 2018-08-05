@@ -301,6 +301,10 @@ abstract class AbstractCRUDController extends Controller
     protected function transformModel(ActiveRecord $model, $actionType, $before = false)
     {
         foreach (static::actionRules() as $rule) {
+            if (is_string($rule)) {
+                $rule = ['class' => $rule];
+            }
+
             /** @var Action $action */
             $action = Yii::createObject(array_merge($rule, [
                 'controllerClass' => get_class($this),
