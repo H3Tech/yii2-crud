@@ -5,13 +5,14 @@ use kartik\file\FileInput;
 
 /* @var $model \yii\db\ActiveRecord */
 
-$preview = MediaController::getSinglePreviewData($model->$field, $field, get_class($model));
-
 $options = isset($settings['options']) ? $settings['options'] : [];
 $pluginOptions = isset($settings['pluginOptions']) ? $settings['pluginOptions'] : [];
 $pluginEvents = isset($settings['pluginEvents']) ? $settings['pluginEvents'] : [];
 
 $hint = isset($settings['hint']) ? $settings['hint'] : null;
+$allowDeletion = isset($settings['allowDeletion']) ? $settings['allowDeletion'] : true;
+
+$preview = MediaController::getSinglePreviewData($model->$field, $field, get_class($model), $allowDeletion);
 
 echo $form->field($model, $settings['modelVariable'])->widget(FileInput::className(), [
     'options' => $options,
@@ -24,7 +25,7 @@ echo $form->field($model, $settings['modelVariable'])->widget(FileInput::classNa
         'showRemove' => $model->isNewRecord,
         'showUpload' => false,
         'fileActionSettings' => [
-            'showDelete' => !$model->isNewRecord,
+            'showRemove' => !$model->isNewRecord && $allowDeletion,
             'showDrag' => false,
         ],
     ], $pluginOptions),

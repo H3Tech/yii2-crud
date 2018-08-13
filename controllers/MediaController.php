@@ -38,7 +38,8 @@ class MediaController extends Controller
         return Yii::$app->getDb()->getLastInsertID();
     }
 
-    public static function getSinglePreviewData($mediaId, $mediaIdAttribute = null, $modelClass = null)
+    public static function getSinglePreviewData($mediaId, $mediaIdAttribute = null, $modelClass = null,
+                                                $allowDeletion = true)
     {
         $result = [];
         $result['initialPreview'] = [];
@@ -54,7 +55,7 @@ class MediaController extends Controller
                 'filetype' => FileHelper::getMimeType($media->uploadedPath),
                 'caption' => $media->filename,
             ];
-            if ($mediaIdAttribute !== null && $modelClass !== null) {
+            if ($mediaIdAttribute !== null && $modelClass !== null && $allowDeletion) {
                 $previewConfig = array_merge($previewConfig, [
                     'url' => Url::to(['/h3tech-crud/media/delete-single']),
                     'key' => $media->primaryKey,
