@@ -172,7 +172,7 @@ class MediaController extends Controller
         for ($i = 0; $i < count($mediaIds); $i++) {
             $junctionEntry = $junctionModelClass::findOne([$mediaIdAttribute => $mediaIds[$i]]);
 
-            if ($junctionEntry->$orderAttribute != $i) {
+            if ($junctionEntry->$orderAttribute !== $i) {
                 $junctionEntry->$orderAttribute = $i;
                 $junctionEntry->save();
             }
