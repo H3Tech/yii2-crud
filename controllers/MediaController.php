@@ -48,11 +48,11 @@ class MediaController extends Controller
         $media = Media::findOne($mediaId);
 
         if ($media !== null) {
-            $result['initialPreview'][] = $media->uploadedUrl;
+            $result['initialPreview'][] = $media->url;
 
             $previewConfig = [
                 'type' => $media->type,
-                'filetype' => FileHelper::getMimeType($media->uploadedPath),
+                'filetype' => FileHelper::getMimeType($media->filePath),
                 'caption' => $media->filename,
             ];
             if ($mediaIdAttribute !== null && $modelClass !== null && $allowDeletion) {
@@ -76,7 +76,7 @@ class MediaController extends Controller
     {
         return [
             'type' => $media->type,
-            'filetype' => FileHelper::getMimeType($media->uploadedPath),
+            'filetype' => FileHelper::getMimeType($media->filePath),
             'caption' => $media->filename,
             'url' => Url::to(['/h3tech-crud/media/delete-multiple']),
             'key' => $media->primaryKey,
@@ -103,7 +103,7 @@ class MediaController extends Controller
         foreach ($junctionEntries as $junctionEntry) {
             $media = Media::findOne($junctionEntry->$mediaIdAttribute);
 
-            $result['initialPreview'][] = $media->uploadedUrl;
+            $result['initialPreview'][] = $media->url;
             $result['initialPreviewConfig'][] = static::getMultiplePreviewConfig(
                 $media, $junctionModelClass, $mediaIdAttribute
             );
@@ -139,7 +139,7 @@ class MediaController extends Controller
 
         $media = Media::findOne($mediaId);
 
-        $initialPreview = $media->uploadedUrl;
+        $initialPreview = $media->url;
         $initialPreviewConfig = static::getMultiplePreviewConfig($media, $junctionModelClass, $mediaIdAttribute);
 
         $response['initialPreview'] = [$initialPreview];
