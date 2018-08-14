@@ -4,6 +4,7 @@ namespace h3tech\crud\models;
 
 use h3tech\crud\Module;
 use yii\db\ActiveRecord;
+use yii\helpers\Url;
 use Yii;
 
 /**
@@ -61,9 +62,12 @@ class Media extends ActiveRecord
             . DIRECTORY_SEPARATOR . $filename;
     }
 
-    public static function getUploadUrl($filename)
+    public static function getUploadUrl($filename, $scheme = true)
     {
-        return rtrim(Yii::getAlias(Module::getInstance()->baseUploadUrl), '/') . '/' . $filename;
+        return Url::to(
+            rtrim(Yii::getAlias(Module::getInstance()->baseUploadUrl), '/') . '/' . $filename,
+            $scheme
+        );
     }
 
     public function getUploadedPath()
@@ -71,8 +75,8 @@ class Media extends ActiveRecord
         return static::getUploadPath($this->filename);
     }
 
-    public function getUploadedUrl()
+    public function getUploadedUrl($scheme = true)
     {
-        return static::getUploadUrl($this->filename);
+        return static::getUploadUrl($this->filename, $scheme);
     }
 }
