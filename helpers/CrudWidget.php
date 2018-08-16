@@ -57,10 +57,11 @@ class CrudWidget
         });
     }
 
-    public static function multipleMediaDisplayAttribute($attribute, $junctionClass, $mediaIdField, $modelIdField)
+    public static function multipleMediaDisplayAttribute($attribute, $junctionClass, $mediaIdField, $modelIdField,
+                                                         $orderAttribute = null)
     {
         return static::getDisplayAttribute($attribute,
-            function ($model) use ($attribute, $junctionClass, $mediaIdField, $modelIdField) {
+            function ($model) use ($attribute, $junctionClass, $mediaIdField, $modelIdField, $orderAttribute) {
                 return static::getMediaDisplayWidget(
                     $model,
                     $attribute,
@@ -68,7 +69,8 @@ class CrudWidget
                         $model->primaryKey,
                         $junctionClass,
                         $modelIdField,
-                        $mediaIdField
+                        $mediaIdField,
+                        $orderAttribute
                     )
                 );
             });

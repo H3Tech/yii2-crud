@@ -87,7 +87,8 @@ class MediaController extends Controller
         ];
     }
 
-    public static function getMultiplePreviewData($modelId, $junctionModelClass, $modelIdAttribute, $mediaIdAttribute, $orderAttribute = null)
+    public static function getMultiplePreviewData($modelId, $junctionModelClass, $modelIdAttribute, $mediaIdAttribute,
+                                                  $orderAttribute = null)
     {
         $result = [];
         $result['initialPreview'] = [];
