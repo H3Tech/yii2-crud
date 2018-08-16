@@ -14,6 +14,7 @@ use yii\web\UploadedFile;
  * @property string $mediaIdAttribute
  * @property string $fileVariable
  * @property string $prefix
+ * @property MediaController $mediaControllerClass
  */
 class MediaAction extends Action
 {
@@ -21,6 +22,7 @@ class MediaAction extends Action
     public $mediaIdAttribute;
     public $fileVariable;
     public $prefix = null;
+    protected $mediaControllerClass = null;
 
     public function getType()
     {
@@ -38,11 +40,26 @@ class MediaAction extends Action
         $this->type = $type;
     }
 
+    public function getMediaControllerClass()
+    {
+        return $this->mediaControllerClass === null ? MediaController::class : $this->mediaControllerClass;
+    }
+
+    public function setMediaControllerClass($mediaControllerClass)
+    {
+        if (!is_subclass_of($mediaControllerClass, MediaController::class)) {
+            throw new InvalidConfigException('Media controller class must be MediaController decendant');
+        }
+
+        $this->mediaControllerClass = $mediaControllerClass;
+    }
+
     protected function uploadMedia(ActiveRecord $model, UploadedFile $mediaFile)
     {
         $controllerClass = $this->controllerClass;
+        $mediaControllerClass = $this->getMediaControllerClass();
 
-        $model->{$this->mediaIdAttribute} = MediaController::upload(
+        $model->{$this->mediaIdAttribute} = $mediaControllerClass::upload(
             $mediaFile,
             $this->type,
             ($this->prefix === null ? $controllerClass::getModelPrefix() : $this->prefix)

@@ -4,6 +4,7 @@ namespace h3tech\crud\controllers\actions;
 
 use h3tech\crud\controllers\AbstractCRUDController;
 use h3tech\crud\controllers\MediaController;
+use yii\base\InvalidConfigException;
 use yii\db\ActiveRecord;
 use yii\web\UploadedFile;
 
@@ -14,6 +15,7 @@ use yii\web\UploadedFile;
  * @property string $mediaIdAttribute
  * @property string $prefix
  * @property string $fileVariable
+ * @property MediaController $mediaControllerClass
  */
 class MultipleMediaAction extends Action
 {
@@ -23,6 +25,7 @@ class MultipleMediaAction extends Action
     public $mediaIdAttribute;
     public $prefix = null;
     public $fileVariable;
+    protected $mediaControllerClass = null;
 
     public function getType()
     {
@@ -40,11 +43,26 @@ class MultipleMediaAction extends Action
         $this->type = $type;
     }
 
+    public function getMediaControllerClass()
+    {
+        return $this->mediaControllerClass === null ? MediaController::class : $this->mediaControllerClass;
+    }
+
+    public function setMediaControllerClass($mediaControllerClass)
+    {
+        if (!is_subclass_of($mediaControllerClass, MediaController::class)) {
+            throw new InvalidConfigException('Media controller class must be MediaController decendant');
+        }
+
+        $this->mediaControllerClass = $mediaControllerClass;
+    }
+
     protected function uploadMedia(UploadedFile $mediaFile)
     {
         $controllerClass = $this->controllerClass;
+        $mediaControllerClass = $this->getMediaControllerClass();
 
-        return MediaController::upload(
+        return $mediaControllerClass::upload(
             $mediaFile,
             $this->type,
             ($this->prefix === null ? $controllerClass::getModelPrefix() : $this->prefix)
