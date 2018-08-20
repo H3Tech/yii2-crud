@@ -154,7 +154,10 @@ class MediaController extends Controller
     public static function actionDeleteSingle($modelClass, $key, $mediaIdAttribute)
     {
         $modelClass::updateAll([$mediaIdAttribute => null], [$mediaIdAttribute => $key]);
-        Media::deleteAll(['id' => $key]);
+
+        if (($media = Media::findOne($key)) !== null) {
+            $media->delete();
+        }
 
         return ['result' => 'ok'];
     }
@@ -164,6 +167,10 @@ class MediaController extends Controller
         $junctionModelClass::deleteAll([
             $mediaIdAttribute => $key,
         ]);
+
+        if (($media = Media::findOne($key)) !== null) {
+            $media->delete();
+        }
 
         return ['result' => 'ok'];
     }

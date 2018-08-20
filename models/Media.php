@@ -79,4 +79,13 @@ class Media extends ActiveRecord
     {
         return static::getUploadUrl($this->filename, $scheme);
     }
+
+    public function afterDelete()
+    {
+        $filePath = $this->filePath;
+
+        if (file_exists($filePath)) {
+            unlink($filePath);
+        }
+    }
 }
