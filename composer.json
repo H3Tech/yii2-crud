@@ -13,7 +13,10 @@
     "kartik-v/yii2-widget-datepicker": "~1.4.3",
     "kartik-v/yii2-date-range": "~1.6.8",
     "kartik-v/yii2-widget-fileinput": "~1.0.6",
-    "kartik-v/yii2-widget-datetimepicker": "~1.4.4"
+    "kartik-v/yii2-widget-datetimepicker": "~1.4.4",
+    "yiisoft/yii2-imagine": "~2.1.1.0",
+    "bower-asset/JCrop": "~0.9.15.0",
+    "FortAwesome/Font-Awesome": "*"
   },
   "autoload": {
     "psr-4": {

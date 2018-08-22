@@ -14,4 +14,9 @@ return [
     'Select time...' => 'Válasszon időpontot...',
     'None' => 'Nincs',
     'Reset Filters' => 'Szűrők törlése',
+    'Image size should be {width}x{height} (or {aspectWidth}:{aspectHeight})' => 'A kép mérete {width}x{height} (vagy {aspectWidth}:{aspectHeight}) legyen',
+    'Crop Image' => 'Kép kivágása',
+    'Saving...' => 'Mentés...',
+    'Save' => 'Mentés',
+    'Close' => 'Bezárás',
 ];

@@ -2,9 +2,12 @@
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
+use h3tech\crud\assets\CropAsset;
 
 /* @var $this yii\web\View */
 /* @var $form yii\widgets\ActiveForm */
+
+$this->registerAssetBundle(CropAsset::class);
 ?>
 
 <div class="model-form">
@@ -70,4 +73,9 @@ use yii\widgets\ActiveForm;
 
     <?php ActiveForm::end(); ?>
 
+    <div class="modal fade" id="ajax" aria-hidden="true">
+        <div class="modal-dialog" style="width:90%;">
+            <div class="modal-content"></div>
+        </div>
+    </div>
 </div>
