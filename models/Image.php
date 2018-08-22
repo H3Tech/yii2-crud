@@ -7,7 +7,10 @@ use h3tech\crud\Module;
 
 /**
  * @property ImageCrop[] $crops
+ * @property ImageCrop $crop
  * @property array $size
+ * @property string $originalFilePath
+ * @property string $originalUrl
  */
 class Image extends Media
 {
@@ -17,6 +20,14 @@ class Image extends Media
     public function getCrops()
     {
         return $this->hasMany(ImageCrop::class, ['image_id' => 'id']);
+    }
+
+    /**
+     * @return ImageCrop
+     */
+    public function getCrop()
+    {
+        return ImageCrop::find()->where(['image_id' => $this->id])->orderBy(['id' => SORT_DESC])->limit(1)->one();
     }
 
     public function getSize()
@@ -39,6 +50,11 @@ class Image extends Media
         return $this->getInternalFilePathBySuffix("{$aspectWidth}-$aspectHeight");
     }
 
+    public function getCroppedFileName($aspectWidth, $aspectHeight)
+    {
+        return $this->getSuffixedFileName("{$aspectWidth}-$aspectHeight");
+    }
+
     protected function getInternalFilePathBySuffix($suffix = '')
     {
         return Yii::getAlias(
@@ -50,5 +66,44 @@ class Image extends Media
     {
         $pathInfo = pathinfo($this->filename);
         return $pathInfo['filename'] . ($suffix === '' ? '' : "_$suffix") . '.' . $pathInfo['extension'];
+    }
+
+    public function getFilePath()
+    {
+        /* @var ImageCrop $crop */
+        return ($crop = $this->crop) === null
+            ? parent::getFilePath()
+            : static::getUploadPath($this->getCroppedFileName($crop->aspect_width, $crop->aspect_height));
+    }
+
+    public function getUrl($scheme = true)
+    {
+        /* @var ImageCrop $crop */
+        return ($crop = $this->crop) === null
+            ? parent::getUrl($scheme)
+            : static::getUploadUrl($this->getCroppedFileName($crop->aspect_width, $crop->aspect_height), $scheme);
+    }
+
+    public function getFileName()
+    {
+        /* @var ImageCrop $crop */
+        return ($crop = $this->crop) === null
+            ? parent::getFileName()
+            : $this->getCroppedFileName($crop->aspect_width, $crop->aspect_height);
+    }
+
+    public function getOriginalFilePath()
+    {
+        return parent::getFilePath();
+    }
+
+    public function getOriginalUrl($scheme = true)
+    {
+        return parent::getUrl($scheme);
+    }
+
+    public function getOriginalFileName()
+    {
+        return parent::getFileName();
     }
 }

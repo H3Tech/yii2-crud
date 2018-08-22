@@ -17,6 +17,7 @@ use Yii;
  *
  * @property string $filePath
  * @property string $url
+ * @property string $fileName
  */
 class Media extends ActiveRecord
 {
@@ -78,6 +79,11 @@ class Media extends ActiveRecord
     public function getUrl($scheme = true)
     {
         return static::getUploadUrl($this->filename, $scheme);
+    }
+
+    public function getFileName()
+    {
+        return $this->filename;
     }
 
     public function afterDelete()

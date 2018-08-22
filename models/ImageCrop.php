@@ -15,7 +15,7 @@ use yii\db\ActiveRecord;
  * @property int $y
  * @property int $width
  *
- * @property Media $image
+ * @property Image $image
  */
 class ImageCrop extends ActiveRecord
 {
@@ -36,7 +36,7 @@ class ImageCrop extends ActiveRecord
             [['image_id', 'x', 'y', 'width'], 'required'],
             [['image_id', 'aspect_width', 'aspect_height', 'x', 'y', 'width'], 'integer'],
             [['image_id', 'aspect_width', 'aspect_height'], 'unique', 'targetAttribute' => ['image_id', 'aspect_width', 'aspect_height']],
-            [['image_id'], 'exist', 'skipOnError' => true, 'targetClass' => Media::class, 'targetAttribute' => ['image_id' => 'id']],
+            [['image_id'], 'exist', 'skipOnError' => true, 'targetClass' => Image::class, 'targetAttribute' => ['image_id' => 'id']],
         ];
     }
 
@@ -61,6 +61,6 @@ class ImageCrop extends ActiveRecord
      */
     public function getImage()
     {
-        return $this->hasOne(Media::class, ['id' => 'image_id']);
+        return $this->hasOne(Image::class, ['id' => 'image_id']);
     }
 }
