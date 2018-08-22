@@ -124,7 +124,7 @@ var Crop = function () {
                 $('.sendCrop').attr('disabled', 'disabled');
 
                 var aspectWidth = $aspectRatioButton.data('aspect-width');
-                var aspectHeight = $aspectRatioButton.data('aspect-width');
+                var aspectHeight = $aspectRatioButton.data('aspect-height');
 
                 var aspectRatio = aspectWidth / aspectHeight;
 
