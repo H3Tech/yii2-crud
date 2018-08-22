@@ -35,7 +35,7 @@ class ImageCrop extends ActiveRecord
         return [
             [['image_id', 'x', 'y', 'width'], 'required'],
             [['image_id', 'aspect_width', 'aspect_height', 'x', 'y', 'width'], 'integer'],
-            [['image_id', 'aspect_width', 'aspect_height'], 'unique'],
+            [['image_id', 'aspect_width', 'aspect_height'], 'unique', 'targetAttribute' => ['image_id', 'aspect_width', 'aspect_height']],
             [['image_id'], 'exist', 'skipOnError' => true, 'targetClass' => Media::class, 'targetAttribute' => ['image_id' => 'id']],
         ];
     }
