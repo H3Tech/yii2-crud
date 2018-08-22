@@ -334,6 +334,10 @@ function sendData(options, data, callback, errorCallback) {
 }
 
 $(document).ready(function () {
+    $.initialize('button.crop:not([data-key])', function () {
+        $(this).remove();
+    });
+
     $(document).on('click', 'button.crop', function () {
         selectImageCrop($(this));
     });

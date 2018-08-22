@@ -35,7 +35,7 @@ class MediaController extends Controller
         $media->filename = $fileName;
         $media->save();
 
-        return Yii::$app->getDb()->getLastInsertID();
+        return Yii::$app->db->lastInsertID;
     }
 
     public static function getSinglePreviewData($mediaId, $mediaIdAttribute = null, $modelClass = null,

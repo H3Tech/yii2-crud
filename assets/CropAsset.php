@@ -14,6 +14,7 @@ class CropAsset extends AssetBundle
     ];
 
     public $js = [
+        'js/jquery.initialize.min.js',
         'js/crop.js',
     ];
 

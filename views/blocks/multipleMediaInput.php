@@ -4,6 +4,7 @@ use h3tech\crud\controllers\MediaController;
 use kartik\file\FileInput;
 use yii\helpers\Url;
 use h3tech\crud\Module;
+use h3tech\crud\helpers\CrudWidget;
 
 $hint = isset($settings['hint']) ? $settings['hint'] : null;
 
@@ -61,6 +62,32 @@ function (event, params) {
 JS;
     }
 
+    $otherActionButtons = '';
+    if (is_array($targetSize = isset($settings['targetSize']) ? $settings['targetSize'] : null)
+        && isset($targetSize['width']) && isset($targetSize['height'])) {
+        $width = $targetSize['width'];
+        $height = $targetSize['height'];
+
+        $gcd = CrudWidget::gcd($width, $height);
+
+        $aspectWidth = $width / $gcd;
+        $aspectHeight = $height / $gcd;
+
+        $modalUrl = Url::to(['/h3tech-crud/image/render-cropper']);
+        $cropCheckUrl = Url::to(['/h3tech-crud/image/get-crops']);
+        $cropSaveUrl = Url::to(['/h3tech-crud/image/save-crop']);
+
+        $otherActionButtons = '<button type="button" class="btn btn-sm btn-kv btn-default btn-outline-secondary crop" title="Edit" data-modal-url="' . $modalUrl . '" data-crop-check-url="' . $cropCheckUrl . '" data-crop-save-url="' . $cropSaveUrl . '" data-aspect-width="' . $width . '" data-aspect-height="' . $height . '" {dataKey}><i class="glyphicon glyphicon-scissors"></i></button>';
+
+        if ($hint === null) {
+            $hint = Yii::t(
+                'h3tech/crud/crud',
+                'Image size should be {width}x{height} (or {aspectWidth}:{aspectHeight})',
+                ['width' => $width, 'height' => $height, 'aspectWidth' => $aspectWidth, 'aspectHeight' => $aspectHeight]
+            );
+        }
+    }
+
     echo $form->field($model, $field)->widget(FileInput::className(), [
         'options' => array_merge($options, ['multiple' => true]),
         'pluginOptions' => array_merge([
@@ -84,6 +111,7 @@ JS;
             'fileActionSettings' => [
                 'showDrag' => $isOrderable,
             ],
+            'otherActionButtons' => $model->isNewRecord ? '' : $otherActionButtons,
         ], $pluginOptions),
         'pluginEvents' => array_merge($events, $pluginEvents),
         'sortThumbs' => $isOrderable,
