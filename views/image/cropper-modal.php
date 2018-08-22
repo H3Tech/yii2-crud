@@ -11,6 +11,8 @@ use Yii;
  * @var int $aspectWidth
  * @var int $aspectHeight
  */
+
+$this->registerJsVar('successMessage', Yii::t('h3tech/crud/crud', 'Image crop successful'));
 ?>
 <?php $this->beginPage(); ?>
 <?php $this->head(); ?>

@@ -19,4 +19,5 @@ return [
     'Saving...' => 'Mentés...',
     'Save' => 'Mentés',
     'Close' => 'Bezárás',
+    'Image crop successful' => 'Sikeres képkivágás',
 ];

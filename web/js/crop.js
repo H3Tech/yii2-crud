@@ -192,8 +192,7 @@ var Crop = function () {
                     $('.image-id-holder').val(result.image_id);
                     $this.parents('.cropControls:first').data('image-id', result.image_id);
                     g_selectImageCropCallback.call(this, result);
-                    // showMessage('success', 'Sikeresen elmentted a croppolt képet', $this.parents('.cropControls:first'));
-                    alert('Sikeres mentés!');
+                    showMessage('success', successMessage, $this.parents('.cropControls:first'));
                     $this.button('reset');
                 });
             });
@@ -214,6 +213,34 @@ var Crop = function () {
         }
     };
 }();
+
+function showMessage(className, message, containerDom) {
+    var $containerDom = $(containerDom);
+    var $target = $containerDom.find('.alert').first();
+
+    $target.addClass('alert-' + className).text(message).slideDown();
+
+    var messageTimeout = setTimeout(function () {
+        clearTimeout(messageTimeout);
+        messageTimeout = null;
+
+        $target.slideUp(function () {
+            $target.removeClass('alert-' + className).empty();
+        });
+    }, 5000);
+
+    if (!$target.data('click-handled')) {
+        $target.data('click-handled', true);
+        $target.click(function () {
+            clearTimeout(messageTimeout);
+            messageTimeout = null;
+
+            $target.slideUp(function () {
+                $target.removeClass('alert-' + className).empty();
+            });
+        });
+    }
+}
 
 var g_selectImageCropCallback = 0;
 
