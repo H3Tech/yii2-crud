@@ -44,7 +44,7 @@ class ImageController extends Controller
         }
 
         // Convert [0,1] to original image size space
-        $imageSize = $image->size;
+        $imageSize = $image->originalSize;
         $x = floor($x * $imageSize['width']);
         $width = floor($width * $imageSize['width']);
         $y = floor($y * $imageSize['height']);
@@ -84,7 +84,7 @@ class ImageController extends Controller
         $result = [];
 
         if (!empty($crops = $image->crops)) {
-            $imageSize = $image->size;
+            $imageSize = $image->originalSize;
             $width = $imageSize['width'];
             $height = $imageSize['height'];
 

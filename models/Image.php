@@ -11,6 +11,7 @@ use h3tech\crud\Module;
  * @property array $size
  * @property string $originalFilePath
  * @property string $originalUrl
+ * @property array $originalSize
  */
 class Image extends Media
 {
@@ -32,14 +33,24 @@ class Image extends Media
 
     public function getSize()
     {
-        $sizeData = getimagesize($this->filePath);
+        return static::getSizeByFilePath($this->filePath);
+    }
+
+    public function getOriginalSize()
+    {
+        return static::getSizeByFilePath($this->originalFilePath);
+    }
+
+    protected static function getSizeByFilePath($filePath)
+    {
+        $sizeData = getimagesize($filePath);
         return ['width' => $sizeData[0], 'height' => $sizeData[1]];
     }
 
     public function crop($aspectWidth, $aspectHeight, $x, $y, $width)
     {
         $newImage = \yii\imagine\Image::crop(
-            $this->filePath, $width, $width / ($aspectWidth / $aspectHeight), [$x, $y]
+            $this->originalFilePath, $width, $width / ($aspectWidth / $aspectHeight), [$x, $y]
         );
 
         $newImage->save($this->getCroppedFilePath($aspectWidth, $aspectHeight));

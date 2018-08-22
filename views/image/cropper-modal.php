@@ -2,11 +2,11 @@
 
 use yii\helpers\Url;
 use yii\web\View;
-use h3tech\crud\models\Media;
+use h3tech\crud\models\Image;
 
 /**
  * @var View $this
- * @var Media $image
+ * @var Image $image
  * @var int $aspectWidth
  * @var int $aspectHeight
  */
@@ -49,7 +49,7 @@ $this->registerJsVar('successMessage', Yii::t('h3tech/crud/crud', 'Image crop su
                     <div class="col-md-6 image-selector-preview-container">
                         <div style="position: static;">
                             <div id="crop">
-                                <img class="image-selector-preview" src="<?= $image->url ?>?size=3"
+                                <img class="image-selector-preview" src="<?= $image->originalUrl ?>?size=3"
                                      style="width: 100%"/>
                             </div>
                         </div>
@@ -57,7 +57,7 @@ $this->registerJsVar('successMessage', Yii::t('h3tech/crud/crud', 'Image crop su
                     <div class="col-md-6">
                         <div id="preview-pane" style="position: static;">
                             <div class="preview-container" style="width: 100%">
-                                <img class="jcrop-preview" src="<?= $image->url ?>?size=3"/>
+                                <img class="jcrop-preview" src="<?= $image->originalUrl ?>?size=3"/>
                             </div>
                         </div>
                     </div>
