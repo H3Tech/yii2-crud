@@ -110,7 +110,7 @@ var Crop = function () {
                 jcrop_api.setImage($('.image-selector-preview').attr('src'), function () {
                     setTimeout(function () {
                         $($('.setAscpectRatio').get(0)).click();
-                    }, 100);
+                    }, 150);
                 });
             });
 
