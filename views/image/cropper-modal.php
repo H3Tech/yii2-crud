@@ -3,7 +3,6 @@
 use yii\helpers\Url;
 use yii\web\View;
 use h3tech\crud\models\Media;
-use Yii;
 
 /**
  * @var View $this
