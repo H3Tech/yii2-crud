@@ -56,7 +56,7 @@ echo $form->field($model, $settings['modelVariable'])->widget(FileInput::classNa
             'showRemove' => !$model->isNewRecord && $allowDeletion,
             'showDrag' => false,
         ],
-        'otherActionButtons' => $otherActionButtons,
+        'otherActionButtons' => $model->$field === null ? '' : $otherActionButtons,
     ], $pluginOptions),
     'pluginEvents' => $pluginEvents,
     'sortThumbs' => false,
