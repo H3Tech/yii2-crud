@@ -24,6 +24,7 @@ $foreignKey = $foreignModel['key'];
 $foreignLabel = isset($foreignModel['label']) ? $foreignModel['label'] : null;
 $relatedModels = $foreignModelQuery === null ? $foreignModelClass::find()->all() : $foreignModelQuery->all();
 $showKeyInList = isset($settings['showKeyInList']) ? $settings['showKeyInList'] : false;
+$checkboxList = isset($settings['checkboxList']) ? $settings['checkboxList'] : false;
 
 $items = isset($settings['items']) ? $settings['items'] : [];
 if (empty($items)) {
@@ -68,8 +69,12 @@ if (isset($junctionModel)) {
     $selectedItems[] = $foreignModel['defaultKey'];
 }
 
-echo $form->field($model, $field)->dropDownList($items, array_merge([
-    'multiple' => isset($junctionModel),
-    'value' => $selectedItems,
-    'prompt' => isset($junctionModel) ? null : Yii::t('h3tech/crud/crud', 'None'),
-], $options, ['disabled' => count($items) === 0]))->hint($hint);
+if ($checkboxList && isset($junctionModel)) {
+    echo $form->field($model, $field)->checkboxList($items, ['value' => $selectedItems]);
+} else {
+    echo $form->field($model, $field)->dropDownList($items, array_merge([
+        'multiple' => isset($junctionModel),
+        'value' => $selectedItems,
+        'prompt' => isset($junctionModel) ? null : Yii::t('h3tech/crud/crud', 'None'),
+    ], $options, ['disabled' => count($items) === 0]))->hint($hint);
+}
