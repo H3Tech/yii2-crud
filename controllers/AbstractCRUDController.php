@@ -386,10 +386,16 @@ abstract class AbstractCRUDController extends Controller
         $searchModelClass = static::searchModelClass();
         $searchModel = new $searchModelClass();
         /** @var ActiveDataProvider $dataProvider */
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $searchParams = Yii::$app->request->queryParams;
+        $dataProvider = $searchModel->search($searchParams);
+        static::transformDataProvider($dataProvider);
         $dataProvider->pagination->setPageSize(static::pageSize());
 
         return $this->renderAction('index', ['searchModel' => $searchModel, 'dataProvider' => $dataProvider]);
+    }
+
+    protected static function transformDataProvider(ActiveDataProvider $dataProvider)
+    {
     }
 
     protected function canCreateModel(ActiveRecord $model)
