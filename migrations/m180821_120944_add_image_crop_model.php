@@ -32,7 +32,7 @@ class m180821_120944_add_image_crop_model extends Migration
             'image_crop_image_id',
             'image_crop',
             ['image_id'],
-            'media',
+            'crud_media',
             ['id'],
             'CASCADE',
             'CASCADE'
