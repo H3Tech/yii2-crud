@@ -13,9 +13,7 @@ use yii\base\InvalidParamException;
  */
 class Module extends \yii\base\Module
 {
-    protected static $defaultMediaTableName = 'crud_media';
-
-    public $mediaTableName = null;
+    public $mediaTableName = 'crud_media';
 
     protected $uploadPath = '@webroot/uploads/';
     protected $baseUploadUrl = '@web/uploads/';
@@ -23,16 +21,7 @@ class Module extends \yii\base\Module
     public function init()
     {
         parent::init();
-
         static::registerTranslations();
-
-        if ($this->mediaTableName === null) {
-            $this->mediaTableName = static::$defaultMediaTableName;
-        }
-
-        if (YII_ENV_DEV) {
-            $this->createMediaTableIfNotExists();
-        }
     }
 
     protected static function registerTranslations()
@@ -47,28 +36,11 @@ class Module extends \yii\base\Module
         ];
     }
 
-    protected function createMediaTableIfNotExists()
-    {
-        if (Yii::$app->db->schema->getTableSchema($this->mediaTableName, true) === null) {
-            Yii::$app->db->createCommand(preg_replace(
-                '/`' . static::$defaultMediaTableName . '`/',
-                '`' . $this->mediaTableName . '`',
-                file_get_contents(Yii::getAlias('@h3tech/crud/schema/' . static::$defaultMediaTableName . '.sql'))
-            ))->execute();
-        }
-    }
-
     protected static function assertPropertyIsString($propertyName, $propertyValue)
     {
         if (!is_string($propertyValue) || trim($propertyValue) === '') {
             throw new InvalidConfigException("The property '$propertyName' must be a non-empty string value if set");
         }
-    }
-
-    public function setMediaTableName($mediaTableName)
-    {
-        static::assertPropertyIsString('mediaTableName', $mediaTableName);
-        $this->mediaTableName = $mediaTableName;
     }
 
     public function setUploadPath($uploadPath)
