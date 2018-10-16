@@ -5,6 +5,7 @@ namespace h3tech\crud\controllers;
 use h3tech\crud\Module;
 use Yii;
 use yii\base\InvalidParamException;
+use yii\helpers\Inflector;
 use yii\web\Controller;
 use h3tech\crud\models\Media;
 use yii\helpers\FileHelper;
@@ -26,7 +27,7 @@ class MediaController extends Controller
         if ($prefix == null || trim($prefix) == '') {
             $prefix = $type . '_';
         }
-        $fileName = uniqid($prefix) . '_' . $mediaFile->name;
+        $fileName = uniqid($prefix) . '_' . Inflector::slug($mediaFile->name);
 
         $mediaFile->saveAs(Media::getUploadPath($fileName));
 

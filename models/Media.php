@@ -66,7 +66,8 @@ class Media extends ActiveRecord
     public static function getUploadUrl($filename, $scheme = true)
     {
         return Url::to(
-            rtrim(Yii::getAlias(Module::getInstance()->baseUploadUrl), '/') . '/' . ltrim($filename, '/'),
+            rtrim(Yii::getAlias(Module::getInstance()->baseUploadUrl), '/') . '/'
+            . rawurlencode(ltrim($filename, '/')),
             $scheme
         );
     }
