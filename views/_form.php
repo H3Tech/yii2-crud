@@ -16,6 +16,7 @@ $this->registerAssetBundle(CropAsset::class);
     $form = ActiveForm::begin([
         'options' => ['enctype' => 'multipart/form-data'],
         'enableAjaxValidation' => $enableAjaxValidation,
+        'enableClientValidation' => $enableClientValidation,
     ]);
     ?>
 

@@ -30,6 +30,7 @@ abstract class AbstractCRUDController extends Controller
     protected static $searchModelClass = null;
     protected static $pageSize = 20;
     protected static $enableAjaxValidation = false;
+    protected static $enableClientValidation = true;
     protected static $titleAttribute = null;
     protected static $indexAttributes = null;
     protected static $modelNameLabel = null;
@@ -65,6 +66,11 @@ abstract class AbstractCRUDController extends Controller
     protected static function getEnableAjaxValidation()
     {
         return static::$enableAjaxValidation;
+    }
+
+    protected static function getEnableClientValidation()
+    {
+        return static::$enableClientValidation;
     }
 
     public static function titleAttribute()
@@ -121,6 +127,7 @@ abstract class AbstractCRUDController extends Controller
             'viewPaths' => $this->getViewPaths(),
             'relativeViewPaths' => $this->getRelativeViewPaths(),
             'enableAjaxValidation' => static::getEnableAjaxValidation(),
+            'enableClientValidation' => static::getEnableClientValidation(),
         ];
     }
 
@@ -416,10 +423,12 @@ abstract class AbstractCRUDController extends Controller
         $modelClass = static::modelClass();
         $model = new $modelClass();
 
-        $this->transformModel($model, $action, true);
-
         if ($this->shouldAjaxValidate($model)) {
             return $this->renderJson($this->ajaxValidateModel($model));
+        }
+
+        if ($this->canValidateModel($model)) {
+            $this->transformModel($model, $action, true);
         }
 
         if ($this->canCreateModel($model)) {
@@ -458,10 +467,12 @@ abstract class AbstractCRUDController extends Controller
 
         $model = static::findModel($id);
 
-        $this->transformModel($model, $action, true);
-
         if ($this->shouldAjaxValidate($model)) {
             return $this->renderJson($this->ajaxValidateModel($model));
+        }
+
+        if ($this->canValidateModel()) {
+            $this->transformModel($model, $action, true);
         }
 
         if ($this->canUpdateModel($model)) {
