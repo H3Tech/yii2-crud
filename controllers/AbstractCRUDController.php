@@ -471,7 +471,7 @@ abstract class AbstractCRUDController extends Controller
             return $this->renderJson($this->ajaxValidateModel($model));
         }
 
-        if ($this->canValidateModel()) {
+        if ($this->canValidateModel($model)) {
             $this->transformModel($model, $action, true);
         }
 
