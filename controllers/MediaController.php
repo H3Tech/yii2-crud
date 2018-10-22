@@ -27,7 +27,7 @@ class MediaController extends Controller
         if ($prefix == null || trim($prefix) == '') {
             $prefix = $type . '_';
         }
-        $fileName = uniqid($prefix) . '_' . Inflector::slug($mediaFile->name);
+        $fileName = uniqid($prefix) . '_' . static::slug($mediaFile->name);
 
         $mediaFile->saveAs(Media::getUploadPath($fileName));
 
@@ -37,6 +37,16 @@ class MediaController extends Controller
         $media->save();
 
         return Yii::$app->db->lastInsertID;
+    }
+
+    protected static function slug($string, $replacement = '-', $lowercase = true)
+    {
+        $string = Inflector::transliterate($string);
+        $string = preg_replace('/[^\.a-zA-Z0-9=\s—–-]+/u', '', $string);
+        $string = preg_replace('/[=\s—–-]+/u', $replacement, $string);
+        $string = trim($string, $replacement);
+
+        return $lowercase ? strtolower($string) : $string;
     }
 
     public static function getSinglePreviewData($mediaId, $mediaIdAttribute = null, $modelClass = null,

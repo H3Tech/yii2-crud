@@ -76,7 +76,8 @@ class Image extends Media
     protected function getSuffixedFileName($suffix = '')
     {
         $pathInfo = pathinfo($this->filename);
-        return $pathInfo['filename'] . ($suffix === '' ? '' : "_$suffix") . '.' . $pathInfo['extension'];
+        $extension = isset($pathInfo['extension']) ? ('.' . $pathInfo['extension']) : '';
+        return $pathInfo['filename'] . ($suffix === '' ? '' : "_$suffix") . $extension;
     }
 
     public function getFilePath()
