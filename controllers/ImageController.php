@@ -26,12 +26,11 @@ class ImageController extends Controller
         return parent::runAction($id, $params);
     }
 
-    public function actionRenderCropper($id, $aspectWidth, $aspectHeight)
+    public function actionRenderCropper($id, $sizes)
     {
         return $this->renderPartial('cropper-modal', [
             'image' => Image::findOne($id),
-            'aspectWidth' => $aspectWidth,
-            'aspectHeight' => $aspectHeight,
+            'sizes' => json_decode($sizes, true),
         ]);
     }
 
@@ -69,6 +68,8 @@ class ImageController extends Controller
 
         $crop->save();
         $crop->refresh();
+
+        ImageCrop::deleteAll(['not', ['id' => $crop->id]]);
 
         return $crop->attributes;
     }

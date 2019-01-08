@@ -7,8 +7,7 @@ use h3tech\crud\models\Image;
 /**
  * @var View $this
  * @var Image $image
- * @var int $aspectWidth
- * @var int $aspectHeight
+ * @var array[] $sizes
  */
 
 $this->registerJsVar('successMessage', Yii::t('h3tech/crud/crud', 'Image crop successful'));
@@ -34,10 +33,12 @@ $this->registerJsVar('successMessage', Yii::t('h3tech/crud/crud', 'Image crop su
                         <div class="alert alert-success" style="display: none;"></div>
                         <input type="hidden" class="image-id-holder" disabled="disabled" value="<?= $image->id ?>"/>
 
-                        <button id="aspectRatioButton" class="btn btn-sm setAscpectRatio" data-aspect-width="<?= $aspectWidth ?>"
-                                data-aspect-height="<?= $aspectHeight ?>" style="display: none;">
-                            <?= "$aspectWidth:$aspectHeight" ?>
-                        </button>
+                        <?php foreach ($sizes as $size) : ?>
+                            <button class="btn btn-sm setAscpectRatio" data-aspect-width="<?= $size['aspectWidth'] ?>"
+                                    data-aspect-height="<?= $size['aspectHeight'] ?>" <?= count($sizes) === 1 ? 'style="display: none"' : '' ?>>
+                                <?= "{$size['aspectWidth']}:{$size['aspectHeight']}" ?>
+                            </button>
+                        <?php endforeach; ?>
 
                         <button class="btn btn-sm green sendCrop" data-loading-text="<?= Yii::t('h3tech/crud/crud', 'Saving...') ?>"><i
                                     class="fa fa-check"></i> <?= Yii::t('h3tech/crud/crud', 'Save') ?>

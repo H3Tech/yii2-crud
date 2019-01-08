@@ -1,31 +1,3 @@
-function calculateGcd(a, b) {
-    if (a < 0) {
-        a = -a;
-    }
-    if (b < 0) {
-        b = -b;
-    }
-
-    while (b != 0) {
-        a %= b;
-        if (a == 0) {
-            return b;
-        }
-        b %= a;
-    }
-
-    return a;
-}
-
-function getAspectRatio(width, height) {
-    var divisor = gcd(width, height);
-
-    return {
-        width: width / divisor,
-        height: height / divisor
-    };
-}
-
 function updatePreview(c, $previewContainer, $pimg) {
     cropWidth = c.w;
     x = c.x;
@@ -247,11 +219,7 @@ var g_selectImageCropCallback = 0;
 function selectImageCrop($button, callback) {
     var imageId = $button.data('key');
     var modalUrl = $button.data('modal-url');
-    var width = $button.data('aspect-width');
-    var height = $button.data('aspect-height');
-    var gcd = calculateGcd(width, height);
-    var aspectWidth = width / gcd;
-    var aspectHeight = height / gcd;
+    var sizes = $button.data('sizes');
 
     if (typeof callback === 'function') {
         g_selectImageCropCallback = callback;
@@ -259,7 +227,7 @@ function selectImageCrop($button, callback) {
         g_selectImageCropCallback = function () {
         }
     }
-    $MODAL = showModal(modalUrl + '?id=' + imageId + '&aspectWidth=' + aspectWidth + '&aspectHeight=' + aspectHeight);
+    $MODAL = showModal(modalUrl + '?id=' + imageId + '&sizes=' + encodeURIComponent(JSON.stringify(sizes)));
     $MODAL.bind('loaded.bs.modal', function () {
         Crop.init($button);
     });

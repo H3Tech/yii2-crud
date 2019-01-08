@@ -62,29 +62,52 @@ function (event, params) {
 JS;
     }
 
+    $targetSizes = [];
+    $targetSizes = array_merge($targetSizes, isset($settings['targetSize']) ? [$settings['targetSize']] : []);
+    $targetSizes = array_merge($targetSizes, isset($settings['targetSizes']) ? $settings['targetSizes'] : []);
+
     $otherActionButtons = '';
-    if (is_array($targetSize = isset($settings['targetSize']) ? $settings['targetSize'] : null)
-        && isset($targetSize['width']) && isset($targetSize['height'])) {
-        $width = $targetSize['width'];
-        $height = $targetSize['height'];
-
-        $gcd = CrudWidget::gcd($width, $height);
-
-        $aspectWidth = $width / $gcd;
-        $aspectHeight = $height / $gcd;
+    if (count($targetSizes) > 0) {
+        $sizes = [];
 
         $modalUrl = Url::to(['/h3tech-crud/image/render-cropper']);
         $cropCheckUrl = Url::to(['/h3tech-crud/image/get-crops']);
         $cropSaveUrl = Url::to(['/h3tech-crud/image/save-crop']);
 
-        $otherActionButtons = '<button type="button" class="btn btn-sm btn-kv btn-default btn-outline-secondary crop" title="Edit" data-modal-url="' . $modalUrl . '" data-crop-check-url="' . $cropCheckUrl . '" data-crop-save-url="' . $cropSaveUrl . '" data-aspect-width="' . $width . '" data-aspect-height="' . $height . '" {dataKey}><i class="glyphicon glyphicon-scissors"></i></button>';
+        foreach ($targetSizes as $targetSize) {
+            $width = $targetSize['width'];
+            $height = $targetSize['height'];
 
-        if ($hint === null) {
-            $hint = Yii::t(
-                'h3tech/crud/crud',
-                'Image size should be {width}x{height} (or {aspectWidth}:{aspectHeight})',
-                ['width' => $width, 'height' => $height, 'aspectWidth' => $aspectWidth, 'aspectHeight' => $aspectHeight]
-            );
+            $gcd = CrudWidget::gcd($width, $height);
+
+            $aspectWidth = $width / $gcd;
+            $aspectHeight = $height / $gcd;
+
+            $sizes[] = [
+                'width' => $width, 'height' => $height, 'aspectWidth' => $aspectWidth, 'aspectHeight' => $aspectHeight,
+            ];
+        }
+
+        $otherActionButtons = '<button id="hello" type="button" class="btn btn-sm btn-kv btn-default btn-outline-secondary crop" title="' . Yii::t('h3tech/crud/crud', 'Crop Image') . '" data-modal-url="' . $modalUrl . '" data-crop-check-url="' . $cropCheckUrl . '" data-crop-save-url="' . $cropSaveUrl . '" data-sizes="' . htmlspecialchars(json_encode($sizes), ENT_QUOTES) . '"' . ' {dataKey}><i class="glyphicon glyphicon-scissors"></i></button>';
+
+        if ($hint === null && ($autoHintCount = count($sizes)) > 0) {
+            $sizeHint = '';
+
+            for ($i = 0; $i < $autoHintCount; $i++) {
+                $separator = '';
+                if ($i === $autoHintCount - 1) {
+                    $separator = ($autoHintCount > 1) ? (' ' . Yii::t('h3tech/crud/crud', 'or') . ' ') : '';
+                } elseif ($i > 0) {
+                    $separator = ', ';
+                }
+                $sizeHint .= $separator;
+
+                $sizeHint .= Yii::t(
+                    'h3tech/crud/crud', '{width}x{height} (or {aspectWidth}:{aspectHeight})', $sizes[$i]
+                );
+            }
+
+            $hint = Yii::t('h3tech/crud/crud', 'Size should be {0}', [$sizeHint]);
         }
     }
 
