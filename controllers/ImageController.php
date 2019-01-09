@@ -69,7 +69,7 @@ class ImageController extends Controller
         $crop->save();
         $crop->refresh();
 
-        ImageCrop::deleteAll(['not', ['id' => $crop->id]]);
+        ImageCrop::deleteAll(['and', ['image_id' => $crop->image_id], ['not', ['id' => $crop->id]]]);
 
         return $crop->attributes;
     }
