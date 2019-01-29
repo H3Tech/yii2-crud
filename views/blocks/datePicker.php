@@ -2,14 +2,16 @@
 use kartik\date\DatePicker;
 
 $hint = isset($settings['hint']) ? $settings['hint'] : null;
+$options = isset($settings['options']) ? $settings['options'] : [];
+$pluginOptions = isset($settings['pluginOptions']) ? $settings['pluginOptions'] : [];
 
 echo $form->field($model, $field)->widget(DatePicker::className(), [
     'name' => $field,
-    'options' => ['placeholder' => Yii::t('h3tech/crud/crud', 'Select date...')],
+    'options' => array_merge(['placeholder' => Yii::t('h3tech/crud/crud', 'Select date...'), $options]),
     'readonly' => true,
-    'pluginOptions' => [
+    'pluginOptions' => array_merge([
         'format' => 'yyyy-mm-dd',
         'todayHighlight' => true,
         'autoclose' => true,
-    ],
+    ], $pluginOptions),
 ])->hint($hint);
