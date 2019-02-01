@@ -18,16 +18,18 @@ $hint = isset($settings['hint']) ? $settings['hint'] : null;
 
 $options = isset($settings['options']) ? $settings['options'] : [];
 
-$foreignModelClass = $foreignModel['className'];
-$foreignModelQuery = isset($foreignModel['query']) ? $foreignModel['query'] : null;
-$foreignKey = $foreignModel['key'];
-$foreignLabel = isset($foreignModel['label']) ? $foreignModel['label'] : null;
-$relatedModels = $foreignModelQuery === null ? $foreignModelClass::find()->all() : $foreignModelQuery->all();
 $showKeyInList = isset($settings['showKeyInList']) ? $settings['showKeyInList'] : false;
 $checkboxList = isset($settings['checkboxList']) ? $settings['checkboxList'] : false;
 
 $items = isset($settings['items']) ? $settings['items'] : [];
+$manualItems = false;
 if (empty($items)) {
+    $foreignModelClass = $foreignModel['className'];
+    $foreignModelQuery = isset($foreignModel['query']) ? $foreignModel['query'] : null;
+    $foreignKey = $foreignModel['key'];
+    $foreignLabel = isset($foreignModel['label']) ? $foreignModel['label'] : null;
+    $relatedModels = $foreignModelQuery === null ? $foreignModelClass::find()->all() : $foreignModelQuery->all();
+
     foreach ($relatedModels as $relatedModel) {
         if (get_class($relatedModel) !== get_class($model) || $relatedModel->$foreignKey !== $model->primaryKey) {
             $key = is_callable($foreignKey) ? call_user_func($foreignKey, $relatedModel) : $relatedModel->$foreignKey;
@@ -43,6 +45,8 @@ if (empty($items)) {
             $items[$key] = $label === '' ? $key : (($showKeyInList ? "$key - " : '') . $label);
         }
     }
+} else {
+    $manualItems = true;
 }
 
 $selectedItems = [];
@@ -74,7 +78,7 @@ if ($checkboxList && isset($junctionModel)) {
 } else {
     echo $form->field($model, $field)->dropDownList($items, array_merge([
         'multiple' => isset($junctionModel),
-        'value' => $selectedItems,
+        'value' => $manualItems ? array_keys(array_intersect($items, $selectedItems)) : $selectedItems,
         'prompt' => isset($junctionModel) ? null : Yii::t('h3tech/crud/crud', 'None'),
     ], $options, ['disabled' => count($items) === 0]))->hint($hint);
 }

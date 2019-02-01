@@ -16,6 +16,7 @@ class JunctionAction extends Action
     public $modelField;
     public $foreignField;
     public $foreignKeyVariable;
+    public $items = [];
 
     public function afterCreate(ActiveRecord $model)
     {
@@ -24,7 +25,7 @@ class JunctionAction extends Action
         foreach ($model->{$this->foreignKeyVariable} as $foreignKey) {
             $identity = [
                 $this->modelField => $model->primaryKey,
-                $this->foreignField => $foreignKey,
+                $this->foreignField => empty($this->items) ? $foreignKey : $this->items[$foreignKey],
             ];
 
             /** @var ActiveRecord $junctionEntry */
@@ -47,14 +48,20 @@ class JunctionAction extends Action
             $junctionModelClass::deleteAll([
                 'and',
                 [$this->modelField => $model->primaryKey],
-                ['not in', $this->foreignField, $foreignKeys],
+                [
+                    'not in',
+                    $this->foreignField,
+                    array_map(function ($key) {
+                        return $this->items[$key];
+                    }, $foreignKeys),
+                ],
             ]);
         }
 
         foreach ($foreignKeys as $foreignKey) {
             $identity = [
                 $this->modelField => $model->primaryKey,
-                $this->foreignField => $foreignKey,
+                $this->foreignField => empty($this->items) ? $foreignKey : $this->items[$foreignKey],
             ];
 
             /** @var ActiveRecord $junctionEntry */
