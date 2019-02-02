@@ -78,7 +78,7 @@ if ($checkboxList && isset($junctionModel)) {
 } else {
     echo $form->field($model, $field)->dropDownList($items, array_merge([
         'multiple' => isset($junctionModel),
-        'value' => $manualItems ? array_keys(array_intersect($items, $selectedItems)) : $selectedItems,
+        'value' => $manualItems && isset($junctionModel) ? array_keys(array_intersect($items, $selectedItems)) : $selectedItems,
         'prompt' => isset($junctionModel) ? null : Yii::t('h3tech/crud/crud', 'None'),
     ], $options, ['disabled' => count($items) === 0]))->hint($hint);
 }

@@ -51,7 +51,9 @@ class JunctionAction extends Action
                 [
                     'not in',
                     $this->foreignField,
-                    array_map(function ($key) {
+                    empty($this->items)
+                        ? $foreignKeys
+                        : array_map(function ($key) {
                         return $this->items[$key];
                     }, $foreignKeys),
                 ],
