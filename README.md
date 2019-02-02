@@ -17,7 +17,7 @@ Add this repository in your composer.json file, like this:
 ### Adding dependency
 Add an entry for the extension in the require section in your composer.json:
 ```
-"h3tech/yii2-crud": "*"
+"h3tech/yii2-crud": "~14.0"
 ```
 After this, you can execute `composer update` in your project directory to install the extension.
 
