@@ -8,8 +8,10 @@ use yii\base\InvalidParamException;
 
 /**
  * @property string $mediaTableName
- * @property string uploadPath
- * @property string baseUploadUrl
+ * @property string $uploadPath
+ * @property string $baseUploadUrl
+ * @property string $modelNamespace
+ * @property string $searchModelNamespace
  */
 class Module extends \yii\base\Module
 {
@@ -17,6 +19,8 @@ class Module extends \yii\base\Module
 
     protected $uploadPath = '@webroot/uploads/';
     protected $baseUploadUrl = '@web/uploads/';
+    protected $modelNamespace = 'app\models';
+    protected $searchModelNamespace = 'app\controllers\search';
 
     public function init()
     {
@@ -63,5 +67,27 @@ class Module extends \yii\base\Module
     public function getBaseUploadUrl()
     {
         return Yii::getAlias($this->baseUploadUrl);
+    }
+
+    public function setModelNamespace($modelNamespace)
+    {
+        static::assertPropertyIsString('modelNamespace', $modelNamespace);
+        $this->modelNamespace = $modelNamespace;
+    }
+
+    public function getModelNamespace()
+    {
+        return $this->modelNamespace;
+    }
+
+    public function setSearchModelNamespace($searchModelNamespace)
+    {
+        static::assertPropertyIsString('searchModelNamespace', $searchModelNamespace);
+        $this->searchModelNamespace = $searchModelNamespace;
+    }
+
+    public function getSearchModelNamespace()
+    {
+        return $this->searchModelNamespace;
     }
 }

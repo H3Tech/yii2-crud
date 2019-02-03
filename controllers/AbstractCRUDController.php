@@ -4,6 +4,7 @@ namespace h3tech\crud\controllers;
 
 use h3tech\crud\controllers\actions\Action;
 use h3tech\crud\formatters\CrudFormatter;
+use h3tech\crud\Module;
 use Yii;
 use yii\data\ActiveDataProvider;
 use yii\db\ActiveRecord;
@@ -47,14 +48,14 @@ abstract class AbstractCRUDController extends Controller
     protected static function modelClass()
     {
         return static::$modelClass === null
-            ? ('app\models\\' . static::shortName())
+            ? Module::getInstance()->modelNamespace . '\\' . static::shortName()
             : static::$modelClass;
     }
 
     protected static function searchModelClass()
     {
         return static::$searchModelClass === null
-            ? ('app\controllers\search\\' . static::shortName() . 'Search')
+            ? Module::getInstance()->searchModelNamespace . '\\' . static::shortName() . 'Search'
             : static::$searchModelClass;
     }
 
