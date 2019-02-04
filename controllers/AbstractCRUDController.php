@@ -55,9 +55,7 @@ abstract class AbstractCRUDController extends Controller
 
     protected static function searchModelClass()
     {
-        return static::$searchModelClass === null
-            ? Module::getInstance()->searchModelNamespace . '\\' . static::shortName() . 'Search'
-            : static::$searchModelClass;
+        return static::$searchModelClass === null ? ActiveSearchModel::class : static::$searchModelClass;
     }
 
     protected static function pageSize()
