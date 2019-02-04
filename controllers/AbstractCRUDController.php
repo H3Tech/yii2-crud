@@ -4,7 +4,6 @@ namespace h3tech\crud\controllers;
 
 use h3tech\crud\controllers\actions\Action;
 use h3tech\crud\formatters\CrudFormatter;
-use h3tech\crud\Module;
 use Yii;
 use yii\data\ActiveDataProvider;
 use yii\db\ActiveRecord;
@@ -21,6 +20,7 @@ use yii\widgets\ActiveForm;
 use yii\base\Model;
 use h3tech\crud\helpers\CrudWidget;
 use yii\helpers\Html;
+use yii2tech\ar\search\ActiveSearchModel;
 
 /**
  * This class implements the CRUD actions for a model.
@@ -392,7 +392,7 @@ abstract class AbstractCRUDController extends Controller
     public function actionIndex()
     {
         $searchModelClass = static::searchModelClass();
-        $searchModel = new $searchModelClass();
+        $searchModel = new $searchModelClass(array_merge(['model' => static::modelClass()], static::searchModelConfig()));
         /** @var ActiveDataProvider $dataProvider */
         $searchParams = Yii::$app->request->queryParams;
         $dataProvider = $searchModel->search($searchParams);
@@ -400,6 +400,11 @@ abstract class AbstractCRUDController extends Controller
         $dataProvider->pagination->setPageSize(static::pageSize());
 
         return $this->renderAction('index', ['searchModel' => $searchModel, 'dataProvider' => $dataProvider]);
+    }
+
+    protected static function searchModelConfig()
+    {
+        return [];
     }
 
     protected static function transformDataProvider(ActiveDataProvider $dataProvider)
