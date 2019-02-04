@@ -21,6 +21,7 @@ use yii\base\Model;
 use h3tech\crud\helpers\CrudWidget;
 use yii\helpers\Html;
 use yii2tech\ar\search\ActiveSearchModel;
+use h3tech\crud\Module;
 
 /**
  * This class implements the CRUD actions for a model.
