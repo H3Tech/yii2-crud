@@ -16,7 +16,8 @@
     "kartik-v/yii2-widget-datetimepicker": "~1.4.4",
     "yiisoft/yii2-imagine": "~2.1.1.0",
     "bower-asset/JCrop": "~0.9.15.0",
-    "FortAwesome/Font-Awesome": "*"
+    "FortAwesome/Font-Awesome": "*",
+    "yii2tech/ar-search": "~1.0"
   },
   "autoload": {
     "psr-4": {
