@@ -36,16 +36,10 @@ Then it must be added to the list of bootstrapped items, for example:
 ```
 
 ### The media table
-In order for the file upload functionality of the extension to work, a table named `crud_media` will be created when the application is run in development mode. The name of the table can be changed though in the configuration of the module, for example:
+In order for the file upload functionality of the extension to work, a media table named must be created. To do this, run the migrations of the extension:
 ```
-'modules' => [
-    'h3tech-crud' => [
-        'class' => 'h3tech\crud\Module',
-        'mediaTableName' => 'example_media_table_name',
-    ],
-],
+./yii migrate/up --migrationPath=@vendor/h3tech/yii2-crud/migrations
 ```
-Also, you can find the necessary MySQL table creation query in the `schema/crud_media.sql` file of the module in case you have to manually execute it on a server where running the application in development mode is not possible.
 
 ### Enabling the CRUD generator
 If you would like to use the built-in generator for starting up a CRUD quickly, make sure you have something like this at the end of your web.php file:
