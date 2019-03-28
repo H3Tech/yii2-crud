@@ -56,16 +56,18 @@ if (isset($junctionModel)) {
     $junctionModelClass = $junctionModel['className'];
 
     if (count($items) > 0) {
-        $selectedItems = array_map(
-            function ($item) use ($foreignField) {
-                return $item[$foreignField];
-            },
-            $junctionModelClass::find()
-                ->select($foreignField)
-                ->where([$modelField => $model->primaryKey])
-                ->asArray()
-                ->all()
-        );
+        $selectedItems = $model->$field === null
+            ? array_map(
+                function ($item) use ($foreignField) {
+                    return $item[$foreignField];
+                },
+                $junctionModelClass::find()
+                    ->select($foreignField)
+                    ->where([$modelField => $model->primaryKey])
+                    ->asArray()
+                    ->all()
+            )
+            : $model->$field;
     }
 } elseif ($model->$field !== null) {
     $selectedItems[] = $model->$field;
