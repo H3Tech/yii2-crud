@@ -75,6 +75,12 @@ if (isset($junctionModel)) {
     $selectedItems[] = $foreignModel['defaultKey'];
 }
 
+$itemOptions = [];
+$disabledKeys = isset($foreignModel['disabledKeys']) ? $foreignModel['disabledKeys'] : [];
+foreach ($disabledKeys as $key) {
+    $itemOptions[$key] = ['disabled' => true];
+}
+
 if ($checkboxList && isset($junctionModel)) {
     echo $form->field($model, $field)->checkboxList($items, ['value' => $selectedItems]);
 } else {
@@ -82,5 +88,6 @@ if ($checkboxList && isset($junctionModel)) {
         'multiple' => isset($junctionModel),
         'value' => $manualItems && isset($junctionModel) ? array_keys(array_intersect($items, $selectedItems)) : $selectedItems,
         'prompt' => isset($junctionModel) ? null : Yii::t('h3tech/crud/crud', 'None'),
+        'options' => $itemOptions,
     ], $options, ['disabled' => count($items) === 0]))->hint($hint);
 }
