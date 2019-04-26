@@ -275,6 +275,11 @@ abstract class AbstractCRUDController extends Controller
         return ['view', 'update', 'delete'];
     }
 
+    public static function visibleButtons()
+    {
+        return [];
+    }
+
     public static function detailFormatterClass()
     {
         if (static::$detailFormatterClass !== null) {

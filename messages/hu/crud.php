@@ -7,7 +7,7 @@ return [
     'Create' => 'Létrehozás',
     'Create {modelName}' => '{modelName} létrehozása',
     'Delete' => 'Törlés',
-    'Update' => 'Módosítás',
+    'Update' => 'Szerkesztés',
     'Update {modelTitle}' => '{modelTitle} módosítása',
     'Update {modelName} {id}' => '{modelName} {id} módosítása',
     'Select date...' => 'Válasszon dátumot...',

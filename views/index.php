@@ -49,6 +49,7 @@ $allowedActions = $controllerClass::allowedActions();
     $columnsArray = [['class' => 'yii\grid\SerialColumn'], [
         'class' => 'yii\grid\ActionColumn',
         'buttons' => $controllerClass::itemButtons(),
+        'visibleButtons' => $controllerClass::visibleButtons(),
         'template' => $templateString,
     ]];
 
