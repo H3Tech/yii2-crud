@@ -2,10 +2,14 @@
 
 use yii\helpers\Html;
 
-/* @var $this yii\web\View */
-/* @var $modelNameLabel string */
-/* @var $model \yii\db\ActiveRecord */
-/* @var $controllerClass \h3tech\crud\controllers\AbstractCRUDController */
+/**
+ * @var $this yii\web\View
+ * @var $modelNameLabel string
+ * @var $model \yii\db\ActiveRecord
+ * @var $controllerClass \h3tech\crud\controllers\AbstractCRUDController
+ * @var array $context
+ */
+
 $titleAttribute = $controllerClass::titleAttribute();
 $modelTitle = $model->primaryKey;
 if ($titleAttribute !== null && isset($model->$titleAttribute)) {
@@ -33,7 +37,7 @@ $this->params['breadcrumbs'][] = Yii::t('h3tech/crud/crud', 'Update');
         $formFile = $viewPath . DIRECTORY_SEPARATOR . '_form.php';
 
         if (file_exists($formFile)) {
-            echo $this->renderFile($formFile, array_merge($renderParams, ['renderParams' => $renderParams]));
+            echo $this->renderFile($formFile, array_merge($context, ['context' => $context]));
             break;
         }
     }

@@ -2,7 +2,10 @@
 
 use yii\helpers\Html;
 
-/* @var $this yii\web\View */
+/**
+ * @var $this yii\web\View
+ * @var array $context
+ */
 
 $this->title = Yii::t('h3tech/crud/crud', "Create {modelName}", [
     'modelName' => $modelNameLabel
@@ -19,7 +22,7 @@ $this->params['breadcrumbs'][] = Yii::t('h3tech/crud/crud', 'Create');
         $viewFile = $viewPath . DIRECTORY_SEPARATOR . '_form.php';
 
         if (file_exists($viewFile)) {
-            echo $this->renderFile($viewFile, array_merge($renderParams, ['renderParams' => $renderParams]));
+            echo $this->renderFile($viewFile, array_merge($context, ['context' => $context]));
             break;
         }
     }

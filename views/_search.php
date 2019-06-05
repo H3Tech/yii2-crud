@@ -2,11 +2,15 @@
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
+use h3tech\crud\helpers\CrudWidget;
 
-/* @var $this yii\web\View */
-/* @var $form yii\widgets\ActiveForm */
+/**
+ * @var $this yii\web\View
+ * @var $form yii\widgets\ActiveForm
+ * @var \h3tech\crud\controllers\AbstractCRUDController $controllerClass
+ * @var array $context
+ */
 ?>
-
 <div class="model-search">
 
     <?php $form = ActiveForm::begin([
@@ -15,8 +19,12 @@ use yii\widgets\ActiveForm;
     ]); ?>
 
     <?php
-    foreach($model->attributes() as $field) {
-        echo $form->field($model, $field);
+    if (empty(($searchRules = $controllerClass::searchRules()))) {
+        foreach($model->attributes() as $field) {
+            echo $form->field($model, $field);
+        }
+    } else {
+        CrudWidget::renderFormRules($this, $searchRules, array_merge($context, ['form' => $form]));
     }
     ?>
 

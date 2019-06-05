@@ -4,9 +4,11 @@ namespace h3tech\crud\helpers;
 
 use h3tech\crud\controllers\MediaController;
 use kartik\file\FileInput;
+use yii\helpers\ArrayHelper;
 use yii\helpers\StringHelper;
 use kartik\daterange\DateRangePicker;
 use Yii;
+use yii\web\View;
 
 class CrudWidget
 {
@@ -119,5 +121,53 @@ class CrudWidget
         }
 
         return $a;
+    }
+
+    public static function renderFormRules(View $view, array $rules, array $context)
+    {
+        foreach ($rules as $key => $rule) {
+            if (is_numeric($key)) {
+                $target = $rule[0];
+                $type = $rule[1];
+                $settings = isset($rule[2]) ? $rule[2] : [];
+            } else {
+                $target = $key;
+                if (is_array($rule)) {
+                    $type = $rule[0];
+                    $settings = isset($rule[1]) ? $rule[1] : [];
+                } else {
+                    $type = $rule;
+                    $settings = [];
+                }
+            }
+
+            if (is_array($target)) {
+                foreach ($target as $attribute) {
+                    static::renderRule($view, $attribute, $type, $settings, $context);
+                }
+            } else {
+                static::renderRule($view, $target, $type, $settings, $context);
+            }
+        }
+    }
+
+    protected static function renderRule(View $view, $field, $blockType, array $settings, array $context)
+    {
+        $viewPaths = ArrayHelper::getValue($context, 'viewPaths', []);
+
+        $blockPath = 'blocks/' . $blockType . '.php';
+
+        foreach ($viewPaths as $viewPath) {
+            $blockFile = $viewPath . DIRECTORY_SEPARATOR . $blockPath;
+            if (file_exists($blockFile)) {
+                echo $view->renderFile(
+                    $blockFile,
+                    array_merge(
+                        $context, $settings, ['settings' => $settings, 'context' => $context, 'field' => $field]
+                    )
+                );
+                break;
+            }
+        }
     }
 }

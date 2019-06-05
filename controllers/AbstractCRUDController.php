@@ -355,12 +355,12 @@ abstract class AbstractCRUDController extends Controller
 
     protected function renderAction($action, $params = [])
     {
-        $finalParameters = array_merge($this->commonViewData(), $params);
-        $finalParameters = array_merge($finalParameters, ['renderParams' => $finalParameters]);
+        $context = array_merge($this->commonViewData(), $params);
+        $context = array_merge($context, ['context' => $context]);
 
         foreach ($this->getRelativeViewPaths($action) as $viewPath) {
             try {
-                return $this->render($viewPath, $finalParameters);
+                return $this->render($viewPath, $context);
             } catch (ViewNotFoundException $e) {
                 continue;
             }
@@ -549,5 +549,10 @@ abstract class AbstractCRUDController extends Controller
         }
 
         return $buttons;
+    }
+
+    public static function searchRules()
+    {
+        return [];
     }
 }

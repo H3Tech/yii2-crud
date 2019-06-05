@@ -19,9 +19,11 @@ $allowedActions = $controllerClass::allowedActions();
     <h1><?= Html::encode($this->title) ?></h1>
     <?php
     if ($controllerClass::$enableSearchForm) {
+        $context = array_merge($context, ['model' => $searchModel]);
+
         foreach ($relativeViewPaths as $viewPath) {
             try {
-                echo $this->render($viewPath . '_search', ['model' => $searchModel]);
+                echo $this->render($viewPath . '_search', array_merge($context, ['context' => $context]));
                 break;
             } catch (ViewNotFoundException $e) {
                 continue;
