@@ -43,7 +43,7 @@ abstract class AbstractCRUDController extends Controller
     protected static $detailFormatterClass = null;
     protected static $afterActionRedirects = ['create' => 'view', 'update' => 'view', 'delete' => 'index'];
     protected static $showFilterResetButton = null;
-    public static $enableSearchForm = true;
+    public static $enableSearchForm = false;
 
     protected static function modelClass()
     {
