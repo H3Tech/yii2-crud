@@ -18,14 +18,16 @@ $allowedActions = $controllerClass::allowedActions();
 
     <h1><?= Html::encode($this->title) ?></h1>
     <?php
-//    foreach ($relativeViewPaths as $viewPath) {
-//        try {
-//            echo $this->render($viewPath . '_search', ['model' => $searchModel]);
-//            break;
-//        } catch (ViewNotFoundException $e) {
-//            continue;
-//        }
-//    }
+    if ($controllerClass::$enableSearchForm) {
+        foreach ($relativeViewPaths as $viewPath) {
+            try {
+                echo $this->render($viewPath . '_search', ['model' => $searchModel]);
+                break;
+            } catch (ViewNotFoundException $e) {
+                continue;
+            }
+        }
+    }
     ?>
 
     <p>

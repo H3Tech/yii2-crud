@@ -22,4 +22,6 @@ return [
     'Save' => 'Mentés',
     'Close' => 'Bezárás',
     'Image crop successful' => 'Sikeres képkivágás',
+    'Search' => 'Keresés',
+    'Reset' => 'Visszaállítás',
 ];
