@@ -50,12 +50,20 @@ $allowedActions = $controllerClass::allowedActions();
         }
         $isFirst = false;
     }
-    $columnsArray = [['class' => 'yii\grid\SerialColumn'], [
-        'class' => 'yii\grid\ActionColumn',
-        'buttons' => $controllerClass::itemButtons(),
-        'visibleButtons' => $controllerClass::visibleButtons(),
-        'template' => $templateString,
-    ]];
+
+    $columns = [
+        ['class' => 'yii\grid\SerialColumn'],
+    ];
+
+    $numberOfActions = count($allowedActions);
+    if ($numberOfActions > 1 || ($numberOfActions === 1 && !in_array('index', $allowedActions))) {
+        $columns[] = [
+            'class' => 'yii\grid\ActionColumn',
+            'buttons' => $controllerClass::itemButtons(),
+            'visibleButtons' => $controllerClass::visibleButtons(),
+            'template' => $templateString,
+        ];
+    }
 
     $attributes = [];
 
@@ -66,12 +74,12 @@ $allowedActions = $controllerClass::allowedActions();
         ];
     }, $controllerClass::indexAttributes());
 
-    array_splice($columnsArray, 1, 0, $attributes);
+    array_splice($columns, 1, 0, $attributes);
 
     echo GridView::widget(array_merge([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
-        'columns' => $columnsArray,
+        'columns' => $columns,
     ], $controllerClass::gridConfig())); ?>
 
 </div>
