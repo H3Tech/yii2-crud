@@ -407,7 +407,7 @@ abstract class AbstractCRUDController extends Controller
         return $this->renderAction('index', ['searchModel' => $searchModel, 'dataProvider' => $dataProvider]);
     }
 
-    protected static function transformDataProvider(ActiveDataProvider $dataProvider)
+    public static function transformDataProvider(ActiveDataProvider $dataProvider)
     {
     }
 
