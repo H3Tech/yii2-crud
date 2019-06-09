@@ -45,14 +45,14 @@ abstract class AbstractCRUDController extends Controller
     protected static $showFilterResetButton = null;
     public static $enableSearchForm = false;
 
-    protected static function modelClass()
+    public static function modelClass()
     {
         return static::$modelClass === null
             ? ('app\models\\' . static::shortName())
             : static::$modelClass;
     }
 
-    protected static function searchModelClass()
+    public static function searchModelClass()
     {
         return static::$searchModelClass === null
             ? ('app\controllers\search\\' . static::shortName() . 'Search')
