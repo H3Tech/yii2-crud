@@ -13,6 +13,7 @@ $pluginOptions = isset($settings['pluginOptions']) ? $settings['pluginOptions'] 
 $pluginEvents = isset($settings['pluginEvents']) ? $settings['pluginEvents'] : [];
 $orderAttribute = isset($settings['orderAttribute']) ? $settings['orderAttribute'] : null;
 $isOrderable = $orderAttribute !== null;
+$actionButtons = isset($settings['actionButtons']) ? $settings['actionButtons'] : [];
 
 if ($model->isNewRecord) {
     echo $form->field($model, $field)->widget(FileInput::className(), [
@@ -66,7 +67,6 @@ JS;
     $targetSizes = array_merge($targetSizes, isset($settings['targetSize']) ? [$settings['targetSize']] : []);
     $targetSizes = array_merge($targetSizes, isset($settings['targetSizes']) ? $settings['targetSizes'] : []);
 
-    $otherActionButtons = '';
     if (count($targetSizes) > 0) {
         $sizes = [];
 
@@ -88,7 +88,10 @@ JS;
             ];
         }
 
-        $otherActionButtons = '<button type="button" class="btn btn-sm btn-kv btn-default btn-outline-secondary crop" title="' . Yii::t('h3tech/crud/crud', 'Crop Image') . '" data-modal-url="' . $modalUrl . '" data-crop-check-url="' . $cropCheckUrl . '" data-crop-save-url="' . $cropSaveUrl . '" data-sizes="' . htmlspecialchars(json_encode($sizes), ENT_QUOTES) . '"' . ' {dataKey}><i class="glyphicon glyphicon-scissors"></i></button>';
+        $cropButton = '<button type="button" class="btn btn-sm btn-kv btn-default btn-outline-secondary crop" title="' . Yii::t('h3tech/crud/crud', 'Crop Image') . '" data-modal-url="' . $modalUrl . '" data-crop-check-url="' . $cropCheckUrl . '" data-crop-save-url="' . $cropSaveUrl . '" data-sizes="' . htmlspecialchars(json_encode($sizes), ENT_QUOTES) . '"' . ' {dataKey}><i class="glyphicon glyphicon-scissors"></i></button>';
+        if (!$model->isNewRecord) {
+            array_unshift($actionButtons, $cropButton);
+        }
 
         if ($hint === null && ($autoHintCount = count($sizes)) > 0) {
             $sizeHint = '';
@@ -134,7 +137,7 @@ JS;
             'fileActionSettings' => [
                 'showDrag' => $isOrderable,
             ],
-            'otherActionButtons' => $model->isNewRecord ? '' : $otherActionButtons,
+            'otherActionButtons' => join('', $actionButtons),
         ], $pluginOptions),
         'pluginEvents' => array_merge($events, $pluginEvents),
         'sortThumbs' => $isOrderable,

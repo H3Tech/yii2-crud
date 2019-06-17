@@ -10,6 +10,7 @@ use h3tech\crud\helpers\CrudWidget;
 $options = isset($settings['options']) ? $settings['options'] : [];
 $pluginOptions = isset($settings['pluginOptions']) ? $settings['pluginOptions'] : [];
 $pluginEvents = isset($settings['pluginEvents']) ? $settings['pluginEvents'] : [];
+$actionButtons = isset($settings['actionButtons']) ? $settings['actionButtons'] : [];
 
 $hint = isset($settings['hint']) ? $settings['hint'] : null;
 $allowDeletion = isset($settings['allowDeletion']) ? $settings['allowDeletion'] : true;
@@ -20,7 +21,6 @@ $targetSizes = [];
 $targetSizes = array_merge($targetSizes, isset($settings['targetSize']) ? [$settings['targetSize']] : []);
 $targetSizes = array_merge($targetSizes, isset($settings['targetSizes']) ? $settings['targetSizes'] : []);
 
-$otherActionButtons = '';
 if (count($targetSizes) > 0) {
     $sizes = [];
 
@@ -42,7 +42,10 @@ if (count($targetSizes) > 0) {
         ];
     }
 
-    $otherActionButtons = '<button type="button" class="btn btn-sm btn-kv btn-default btn-outline-secondary crop" title="' . Yii::t('h3tech/crud/crud', 'Crop Image') . '" data-modal-url="' . $modalUrl . '" data-crop-check-url="' . $cropCheckUrl . '" data-crop-save-url="' . $cropSaveUrl . '" data-sizes="' . htmlspecialchars(json_encode($sizes), ENT_QUOTES) . '"' . ' {dataKey}><i class="glyphicon glyphicon-scissors"></i></button>';
+    $cropButton = '<button type="button" class="btn btn-sm btn-kv btn-default btn-outline-secondary crop" title="' . Yii::t('h3tech/crud/crud', 'Crop Image') . '" data-modal-url="' . $modalUrl . '" data-crop-check-url="' . $cropCheckUrl . '" data-crop-save-url="' . $cropSaveUrl . '" data-sizes="' . htmlspecialchars(json_encode($sizes), ENT_QUOTES) . '"' . ' {dataKey}><i class="glyphicon glyphicon-scissors"></i></button>';
+    if ($model->$field !== null) {
+        array_unshift($cropButton, $cropButton);
+    }
 
     if ($hint === null && ($autoHintCount = count($sizes)) > 0) {
         $sizeHint = '';
@@ -79,7 +82,7 @@ echo $form->field($model, $settings['modelVariable'])->widget(FileInput::classNa
             'showRemove' => !$model->isNewRecord && $allowDeletion,
             'showDrag' => false,
         ],
-        'otherActionButtons' => $model->$field === null ? '' : $otherActionButtons,
+        'otherActionButtons' => join('', $actionButtons),
     ], $pluginOptions),
     'pluginEvents' => $pluginEvents,
     'sortThumbs' => false,
