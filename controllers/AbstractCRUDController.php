@@ -43,6 +43,7 @@ abstract class AbstractCRUDController extends Controller
     protected static $detailFormatterClass = null;
     protected static $afterActionRedirects = ['create' => 'view', 'update' => 'view', 'delete' => 'index'];
     protected static $showFilterResetButton = null;
+    protected static $idAttribute = null;
     public static $enableSearchForm = false;
 
     public static function modelClass()
@@ -82,6 +83,11 @@ abstract class AbstractCRUDController extends Controller
     public static function showFilterResetButton()
     {
         return static::$showFilterResetButton === null ? false : static::$showFilterResetButton;
+    }
+
+    public static function idAttribute()
+    {
+        return static::$idAttribute === null ? 'id' : static::$idAttribute;
     }
 
     public static function modelName()
@@ -337,7 +343,7 @@ abstract class AbstractCRUDController extends Controller
     {
         /** @var ActiveRecord $modelClass */
         $modelClass = static::modelClass();
-        if (($model = $modelClass::findOne($id)) !== null) {
+        if (($model = $modelClass::findOne([static::idAttribute() => $id])) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
@@ -484,7 +490,7 @@ abstract class AbstractCRUDController extends Controller
         if ($this->canUpdateModel($model)) {
             $this->transformModel($model, $action);
             $model->save();
-            return $this->redirect([static::afterActionRedirects()[$action], 'id' => $model->getPrimaryKey()]);
+            return $this->redirect([static::afterActionRedirects()[$action], 'id' => $model->{static::idAttribute()}]);
         } else {
             return $this->renderAction($action, ['model' => $model]);
         }
@@ -530,16 +536,18 @@ abstract class AbstractCRUDController extends Controller
     {
         $buttons = [];
 
+        $idAttribute = static::idAttribute();
+
         if (static::isActionAllowed('update')) {
             $buttons['update'] = Html::a(
                 Yii::t('h3tech/crud/crud', 'Update'),
-                ['update', 'id' => $model->primaryKey],
+                ['update', 'id' => $model->$idAttribute],
                 ['class' => 'btn btn-primary']
             );
         }
 
         if (static::isActionAllowed('delete')) {
-            $buttons['delete'] = Html::a(Yii::t('h3tech/crud/crud', 'Delete'), ['delete', 'id' => $model->primaryKey], [
+            $buttons['delete'] = Html::a(Yii::t('h3tech/crud/crud', 'Delete'), ['delete', 'id' => $model->$idAttribute], [
                 'class' => 'btn btn-danger',
                 'data' => [
                     'confirm' => Yii::t('h3tech/crud/crud', 'Are you sure you want to delete this item?'),

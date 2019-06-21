@@ -24,8 +24,8 @@ if ($titleAttribute !== null && isset($model->$titleAttribute)) {
     ]);
 }
 
-$this->params['breadcrumbs'][] = ['label' => $modelNameLabel, 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => $modelTitle, 'url' => ['view', 'id' => $model->primaryKey]];
+$this->params['breadcrumbs'][] = $controllerClass::isActionAllowed('index') ? ['label' => $modelNameLabel, 'url' => ['index']] : $modelNameLabel;
+$this->params['breadcrumbs'][] = $controllerClass::isActionAllowed('view') ? ['label' => $modelTitle, 'url' => ['view', 'id' => $model->{$controllerClass::idAttribute()}]] : $modelTitle;
 $this->params['breadcrumbs'][] = Yii::t('h3tech/crud/crud', 'Update');
 ?>
 <div class="model-update">

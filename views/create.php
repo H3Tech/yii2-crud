@@ -5,12 +5,13 @@ use yii\helpers\Html;
 /**
  * @var $this yii\web\View
  * @var array $context
+ * @var \h3tech\crud\controllers\AbstractCRUDController $controllerClass
  */
 
 $this->title = Yii::t('h3tech/crud/crud', "Create {modelName}", [
     'modelName' => $modelNameLabel
 ]);
-$this->params['breadcrumbs'][] = ['label' => $modelNameLabel, 'url' => ['index']];
+$this->params['breadcrumbs'][] = $controllerClass::isActionAllowed('index') ? ['label' => $modelNameLabel, 'url' => ['index']] : $modelNameLabel;
 $this->params['breadcrumbs'][] = Yii::t('h3tech/crud/crud', 'Create');
 ?>
 <div class="model-create">
