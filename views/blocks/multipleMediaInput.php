@@ -1,10 +1,13 @@
 <?php
 
+use h3tech\crud\assets\CropAsset;
 use h3tech\crud\controllers\MediaController;
 use kartik\file\FileInput;
 use yii\helpers\Url;
 use h3tech\crud\Module;
 use h3tech\crud\helpers\CrudWidget;
+
+/* @var \yii\web\View $this */
 
 $hint = isset($settings['hint']) ? $settings['hint'] : null;
 
@@ -68,6 +71,8 @@ JS;
     $targetSizes = array_merge($targetSizes, isset($settings['targetSizes']) ? $settings['targetSizes'] : []);
 
     if (count($targetSizes) > 0) {
+        $this->registerAssetBundle(CropAsset::class);
+
         $sizes = [];
 
         $modalUrl = Url::to(['/h3tech-crud/image/render-cropper']);

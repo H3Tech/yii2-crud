@@ -10,8 +10,6 @@ use h3tech\crud\helpers\CrudWidget;
  * @var $form yii\widgets\ActiveForm
  * @var array $context
  */
-
-$this->registerAssetBundle(CropAsset::class);
 ?>
 <div class="model-form">
 
