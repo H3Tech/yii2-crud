@@ -381,17 +381,17 @@ abstract class AbstractCRUDController extends Controller
         return $json;
     }
 
-    protected function canValidateModel(ActiveRecord $model)
+    protected function canValidateModel(Model $model)
     {
         return $model->load(Yii::$app->request->post());
     }
 
-    protected function shouldAjaxValidate(ActiveRecord $model)
+    protected function shouldAjaxValidate(Model $model)
     {
         return Yii::$app->request->isAjax && $this->canValidateModel($model);
     }
 
-    protected function ajaxValidateModel(ActiveRecord $model)
+    protected function ajaxValidateModel(Model $model)
     {
         return ActiveForm::validate($model);
     }
