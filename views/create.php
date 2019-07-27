@@ -13,6 +13,10 @@ $this->title = Yii::t('h3tech/crud/crud', "Create {modelName}", [
 ]);
 $this->params['breadcrumbs'][] = $controllerClass::isActionAllowed('index') ? ['label' => $modelNameLabel, 'url' => ['index']] : $modelNameLabel;
 $this->params['breadcrumbs'][] = Yii::t('h3tech/crud/crud', 'Create');
+
+foreach ($controllerClass::getAssetBundles('create') as $assetBundle) {
+    $assetBundle::register($this);
+}
 ?>
 <div class="model-create">
 

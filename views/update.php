@@ -27,6 +27,10 @@ if ($titleAttribute !== null && isset($model->$titleAttribute)) {
 $this->params['breadcrumbs'][] = $controllerClass::isActionAllowed('index') ? ['label' => $modelNameLabel, 'url' => ['index']] : $modelNameLabel;
 $this->params['breadcrumbs'][] = $controllerClass::isActionAllowed('view') ? ['label' => $modelTitle, 'url' => ['view', 'id' => $model->{$controllerClass::idAttribute()}]] : $modelTitle;
 $this->params['breadcrumbs'][] = Yii::t('h3tech/crud/crud', 'Update');
+
+foreach ($controllerClass::getAssetBundles('update') as $assetBundle) {
+    $assetBundle::register($this);
+}
 ?>
 <div class="model-update">
 

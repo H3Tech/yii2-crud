@@ -13,6 +13,10 @@ use yii\base\ViewNotFoundException;
 $this->title = $modelNameLabel;
 $this->params['breadcrumbs'][] = $this->title;
 $allowedActions = $controllerClass::allowedActions();
+
+foreach ($controllerClass::getAssetBundles('index') as $assetBundle) {
+    $assetBundle::register($this);
+}
 ?>
 <div class="model-index">
 

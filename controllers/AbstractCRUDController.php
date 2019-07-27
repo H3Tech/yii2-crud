@@ -20,6 +20,8 @@ use yii\widgets\ActiveForm;
 use yii\base\Model;
 use h3tech\crud\helpers\CrudWidget;
 use yii\helpers\Html;
+use yii\helpers\ArrayHelper;
+use yii\web\AssetBundle;
 
 /**
  * This class implements the CRUD actions for a model.
@@ -178,6 +180,20 @@ abstract class AbstractCRUDController extends Controller
         $modelClass = static::modelClass();
 
         return $modelClass::getTableSchema()->primaryKey;
+    }
+
+    public static function assetBundles()
+    {
+        return [];
+    }
+
+    /**
+     * @param string $action
+     * @return AssetBundle[]
+     */
+    public static function getAssetBundles($action)
+    {
+        return ArrayHelper::getValue(static::assetBundles(), $action, []);
     }
 
     public static function formRules(ActiveRecord $model)

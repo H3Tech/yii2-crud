@@ -10,6 +10,9 @@ $this->title = $titleAttribute !== null && isset($model->$titleAttribute) ? $mod
 $this->params['breadcrumbs'][] = $controllerClass::isActionAllowed('index') ? ['label' => $modelNameLabel, 'url' => ['index']] : $modelNameLabel;
 $this->params['breadcrumbs'][] = $this->title;
 
+foreach ($controllerClass::getAssetBundles('view') as $assetBundle) {
+    $assetBundle::register($this);
+}
 ?>
 <div class="model-view">
 
