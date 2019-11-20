@@ -6,6 +6,7 @@ use h3tech\crud\Module;
 use Yii;
 use yii\base\InvalidParamException;
 use yii\helpers\Inflector;
+use yii\web\BadRequestHttpException;
 use yii\web\Controller;
 use h3tech\crud\models\Media;
 use yii\helpers\FileHelper;
@@ -142,22 +143,38 @@ class MediaController extends Controller
 
         $files = UploadedFile::getInstancesByName($modelName);
 
-        $mediaId = static::upload($files[0], $type, $prefix);
+        if (count($files) > 0) {
+            $file = $files[0];
 
-        $junctionRecord = new $junctionModelClass;
-        $junctionRecord->$modelIdAttribute = $modelId;
-        $junctionRecord->$mediaIdAttribute = $mediaId;
-        $junctionRecord->save();
+            if ($file->hasError) {
+                throw new BadRequestHttpException(
+                    Yii::t(
+                        'h3tech/crud/crud',
+                        'File upload failed with error code {errorCode}',
+                        ['errorCode' => $file->error]
+                    )
+                );
+            } else {
+                $mediaId = static::upload($file, $type, $prefix);
 
-        $media = Media::findOne($mediaId);
+                $junctionRecord = new $junctionModelClass;
+                $junctionRecord->$modelIdAttribute = $modelId;
+                $junctionRecord->$mediaIdAttribute = $mediaId;
+                $junctionRecord->save();
 
-        $initialPreview = $media->url;
-        $initialPreviewConfig = static::getMultiplePreviewConfig($media, $junctionModelClass, $mediaIdAttribute);
+                $media = Media::findOne($mediaId);
 
-        $response['initialPreview'] = [$initialPreview];
-        $response['initialPreviewConfig'] = [$initialPreviewConfig];
+                $initialPreview = $media->url;
+                $initialPreviewConfig = static::getMultiplePreviewConfig($media, $junctionModelClass, $mediaIdAttribute);
 
-        $response['result'] = 'ok';
+                $response['initialPreview'] = [$initialPreview];
+                $response['initialPreviewConfig'] = [$initialPreviewConfig];
+
+                $response['result'] = 'ok';
+            }
+        } else {
+            throw new BadRequestHttpException(Yii::t('h3tech/crud/crud', 'No uploaded file received'));
+        }
 
         return $response;
     }

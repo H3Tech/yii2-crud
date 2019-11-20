@@ -24,4 +24,6 @@ return [
     'Image crop successful' => 'Sikeres képkivágás',
     'Search' => 'Keresés',
     'Reset' => 'Visszaállítás',
+    'File upload failed with error code {errorCode}' => 'Sikertelen fájlfeltöltés, hibakód: {errorCode}',
+    'No uploaded file received' => 'Nem érkezett feltöltendő fájl',
 ];
