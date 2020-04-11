@@ -9,6 +9,7 @@ use yii\helpers\StringHelper;
 use kartik\daterange\DateRangePicker;
 use Yii;
 use yii\web\View;
+use yii\db\ActiveRecord;
 
 class CrudWidget
 {
@@ -169,5 +170,57 @@ class CrudWidget
                 break;
             }
         }
+    }
+
+    public static function getLengthHint(ActiveRecord $model, $field)
+    {
+        $hint = null;
+        $field = preg_replace('/^\[\d+\]/','', $field);
+
+        foreach ($model->rules() as $rule) {
+            if (((is_array($rule[0]) && in_array($field, $rule[0])) || $rule[0] === $field)) {
+                $min = ArrayHelper::getValue($rule, 'min');
+                $max = ArrayHelper::getValue($rule, 'max');
+                $minMaxRange = $min !== null && $max !== null;
+
+                if ($rule[1] === 'string') {
+                    $rangeMessage = 'At least {minLength}, at most {maxLength} characters';
+
+                    if ($minMaxRange) {
+                        $hint = Yii::t(
+                            'h3tech/crud/crud', $rangeMessage, ['minLength' => $min, 'maxLength' => $max]
+                        );
+                    } elseif ($min !== null) {
+                        $hint = Yii::t('h3tech/crud/crud', 'At least {minLength} characters', [
+                            'minLength' => $min,
+                        ]);
+                    } elseif ($max !== null) {
+                        $hint = Yii::t('h3tech/crud/crud', 'At most {maxLength} characters', [
+                            'maxLength' => $max,
+                        ]);
+                    } elseif (is_array(($length = ArrayHelper::getValue($rule, 'length')))
+                        && count($length === 2)) {
+                        $hint = Yii::t(
+                            'h3tech/crud/crud',
+                            $rangeMessage,
+                            ['minLength' => $length[0], 'maxLength' => $length[1]]
+                        );
+                    }
+                } elseif (in_array($rule[1], ['integer', 'number'])) {
+                    if ($minMaxRange) {
+                        $hint = Yii::t('h3tech/crud/crud', 'At least {minValue}, at most {maxValue}', [
+                            'minValue' => $min,
+                            'maxValue' => $max,
+                        ]);
+                    } elseif ($min !== null) {
+                        $hint = Yii::t('h3tech/crud/crud', 'At least {minValue}', ['minValue' => $min]);
+                    } elseif ($max !== null) {
+                        $hint = Yii::t('h3tech/crud/crud', 'At most {maxValue}', ['maxValue' => $max]);
+                    }
+                }
+            }
+        }
+
+        return $hint;
     }
 }

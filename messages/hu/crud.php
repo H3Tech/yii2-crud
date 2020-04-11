@@ -27,4 +27,10 @@ return [
     'File upload failed with error code {errorCode}' => 'Sikertelen fájlfeltöltés, hibakód: {errorCode}',
     'No uploaded file received' => 'Nem érkezett feltöltendő fájl',
     'Download' => 'Letöltés',
+    'At least {minLength}, at most {maxLength} characters' => 'Legalább {minLength}, legfeljebb {maxLength} karakter',
+    'At least {minLength} characters' => 'Legalább {minLength} karakter',
+    'At most {maxLength} characters' => 'Legfeljebb {maxLength} karakter',
+    'At least {minValue}, at most {maxValue}' => 'Legalább {minValue}, legfeljebb {maxValue}',
+    'At least {minValue}' => 'Legalább {minValue}',
+    'At most {maxValue}' => 'Legfeljebb {maxValue}',
 ];
