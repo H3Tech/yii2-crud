@@ -3,12 +3,9 @@
 namespace h3tech\crud\assets;
 
 use yii\bootstrap\BootstrapPluginAsset;
-use yii\web\AssetBundle;
 
-class CropAsset extends AssetBundle
+class CropAsset extends Asset
 {
-    public $sourcePath = '@h3tech/crud/web';
-
     public $css = [
         'css/crop.css',
     ];

@@ -2,9 +2,7 @@
 
 namespace h3tech\crud\assets;
 
-use yii\web\AssetBundle;
-
-class FontAwesomeAsset extends AssetBundle
+class FontAwesomeAsset extends Asset
 {
     public $sourcePath = '@vendor/fortawesome/font-awesome';
 

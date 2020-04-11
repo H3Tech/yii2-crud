@@ -23,6 +23,23 @@ class MediaController extends Controller
         Yii::$app->response->format = Response::FORMAT_JSON;
     }
 
+    public function actionDownload($id)
+    {
+        if (($media = Media::findOne($id)) !== null && ($file = fopen($media->filePath, 'r')) !== false) {
+            header('Content-Disposition: attachment; filename="' . $media->fileName . '"');
+            header('Content-Length: ' . filesize($media->filePath));
+            header('Cache-Control: private');
+
+            session_write_close();
+            set_time_limit(0);
+            while (!feof($file)) {
+                echo fread($file, 8192);
+            }
+
+            exit(0);
+        }
+    }
+
     public static function upload(UploadedFile $mediaFile, $type, $prefix)
     {
         if ($prefix == null || trim($prefix) == '') {

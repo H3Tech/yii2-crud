@@ -5,6 +5,7 @@ namespace h3tech\crud;
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\base\InvalidParamException;
+use yii\helpers\ArrayHelper;
 
 /**
  * @property string $mediaTableName
@@ -34,6 +35,10 @@ class Module extends \yii\base\Module
                 'h3tech/crud/crud' => 'crud.php',
             ],
         ];
+
+        Yii::$app->urlManager->addRules([
+            'h3tech-crud/<controller:[\w-]+>/<action:[\w-]+>/<id:\d+>' => 'h3tech-crud/<controller>/<action>',
+        ], true);
     }
 
     protected static function assertPropertyIsString($propertyName, $propertyValue)

@@ -1,6 +1,7 @@
 <?php
 
 use h3tech\crud\assets\CropAsset;
+use h3tech\crud\assets\DownloadAsset;
 use h3tech\crud\controllers\MediaController;
 use kartik\file\FileInput;
 use yii\helpers\Url;
@@ -9,6 +10,8 @@ use h3tech\crud\helpers\CrudWidget;
 
 /* @var \yii\web\View $this */
 
+$this->registerAssetBundle(DownloadAsset::class);
+
 $hint = isset($settings['hint']) ? $settings['hint'] : null;
 
 $options = isset($settings['options']) ? $settings['options'] : [];
@@ -16,7 +19,14 @@ $pluginOptions = isset($settings['pluginOptions']) ? $settings['pluginOptions'] 
 $pluginEvents = isset($settings['pluginEvents']) ? $settings['pluginEvents'] : [];
 $orderAttribute = isset($settings['orderAttribute']) ? $settings['orderAttribute'] : null;
 $isOrderable = $orderAttribute !== null;
+
 $actionButtons = isset($settings['actionButtons']) ? $settings['actionButtons'] : [];
+$disableDownload = isset($settings['disableDownload']) ? $settings['disableDownload'] : false;
+if (!$disableDownload) {
+    $downloadUrl = Url::to(['/h3tech-crud/media/download']);
+    $downloadButton = '<button type="button" class="btn btn-sm btn-kv btn-default btn-outline-secondary download" title="' . Yii::t('h3tech/crud/crud', 'Download') . '" data-download-url="' . $downloadUrl . '" {dataKey}><i class="glyphicon glyphicon-download"></i></a>';
+    array_unshift($actionButtons, $downloadButton);
+}
 
 if ($model->isNewRecord) {
     echo $form->field($model, $field)->widget(FileInput::className(), [

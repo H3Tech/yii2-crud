@@ -2,7 +2,6 @@
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
-use h3tech\crud\assets\CropAsset;
 use h3tech\crud\helpers\CrudWidget;
 
 /**

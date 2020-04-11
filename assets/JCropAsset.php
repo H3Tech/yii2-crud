@@ -2,10 +2,9 @@
 
 namespace h3tech\crud\assets;
 
-use yii\web\AssetBundle;
 use yii\web\JqueryAsset;
 
-class JCropAsset extends AssetBundle
+class JCropAsset extends Asset
 {
     public $sourcePath = '@vendor/bower-asset/jcrop';
 
