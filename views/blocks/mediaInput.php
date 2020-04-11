@@ -27,6 +27,10 @@ if (!$disableDownload) {
 }
 
 $hint = isset($settings['hint']) ? $settings['hint'] : null;
+
+$label = isset($settings['label']) ? $settings['label'] : $model->getAttributeLabel($field);
+$labelOptions = isset($settings['labelOptions']) ? $settings['labelOptions'] : [];
+
 $allowDeletion = isset($settings['allowDeletion']) ? $settings['allowDeletion'] : true;
 
 $preview = MediaController::getSinglePreviewData($model->$field, $field, get_class($model), $allowDeletion);
@@ -102,4 +106,4 @@ echo $form->field($model, $settings['modelVariable'])->widget(FileInput::classNa
     ], $pluginOptions),
     'pluginEvents' => $pluginEvents,
     'sortThumbs' => false,
-])->label($model->getAttributeLabel($field))->hint($hint);
+])->label($label, $labelOptions)->hint($hint);

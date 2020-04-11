@@ -1,6 +1,9 @@
 <?php
 use kartik\date\DatePicker;
 
+$label = isset($settings['label']) ? $settings['label'] : null;
+$labelOptions = isset($settings['labelOptions']) ? $settings['labelOptions'] : [];
+
 $hint = isset($settings['hint']) ? $settings['hint'] : null;
 $options = isset($settings['options']) ? $settings['options'] : [];
 $pluginOptions = isset($settings['pluginOptions']) ? $settings['pluginOptions'] : [];
@@ -14,4 +17,4 @@ echo $form->field($model, $field)->widget(DatePicker::className(), [
         'todayHighlight' => true,
         'autoclose' => true,
     ], $pluginOptions),
-])->hint($hint);
+])->hint($hint)->label($label, $labelOptions);

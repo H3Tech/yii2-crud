@@ -14,6 +14,9 @@ $this->registerAssetBundle(DownloadAsset::class);
 
 $hint = isset($settings['hint']) ? $settings['hint'] : null;
 
+$label = isset($settings['label']) ? $settings['label'] : $model->getAttributeLabel($field);
+$labelOptions = isset($settings['labelOptions']) ? $settings['labelOptions'] : [];
+
 $options = isset($settings['options']) ? $settings['options'] : [];
 $pluginOptions = isset($settings['pluginOptions']) ? $settings['pluginOptions'] : [];
 $pluginEvents = isset($settings['pluginEvents']) ? $settings['pluginEvents'] : [];
@@ -36,7 +39,7 @@ if ($model->isNewRecord) {
             'showRemove' => true,
             'showUpload' => false,
         ], $pluginOptions)
-    ])->hint($hint);
+    ])->hint($hint)->label($label, $labelOptions);
 } else {
     $modelIdAttribute = $settings['modelIdAttribute'];
     $mediaIdAttribute = $settings['mediaIdAttribute'];
@@ -129,7 +132,7 @@ JS;
         }
     }
 
-    echo $form->field($model, $field)->widget(FileInput::className(), [
+    echo $form->field($model, $field)->label(':)')->widget(FileInput::class, [
         'options' => array_merge($options, ['multiple' => true]),
         'pluginOptions' => array_merge([
             'showClose' => false,
@@ -156,5 +159,5 @@ JS;
         ], $pluginOptions),
         'pluginEvents' => array_merge($events, $pluginEvents),
         'sortThumbs' => $isOrderable,
-    ])->hint($hint);
+    ])->hint($hint)->label($label, $labelOptions);
 }

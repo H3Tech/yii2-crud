@@ -14,6 +14,9 @@
  * @var string $foreignField
  */
 
+$label = isset($settings['label']) ? $settings['label'] : null;
+$labelOptions = isset($settings['labelOptions']) ? $settings['labelOptions'] : [];
+
 $hint = isset($settings['hint']) ? $settings['hint'] : null;
 
 $options = isset($settings['options']) ? $settings['options'] : [];
@@ -35,14 +38,14 @@ if (empty($items)) {
             $key = is_callable($foreignKey) ? call_user_func($foreignKey, $relatedModel) : $relatedModel->$foreignKey;
 
             if ($foreignLabel === null) {
-                $label = '';
+                $finalLabel = '';
             } else {
-                $label = is_callable($foreignLabel)
+                $finalLabel = is_callable($foreignLabel)
                     ? call_user_func($foreignLabel, $relatedModel)
                     : $relatedModel->$foreignLabel;
             }
 
-            $items[$key] = $label === '' ? $key : (($showKeyInList ? "$key - " : '') . $label);
+            $items[$key] = $finalLabel === '' ? $key : (($showKeyInList ? "$key - " : '') . $finalLabel);
         }
     }
 } else {
@@ -82,12 +85,12 @@ foreach ($disabledKeys as $key) {
 }
 
 if ($checkboxList && isset($junctionModel)) {
-    echo $form->field($model, $field)->checkboxList($items, ['value' => $selectedItems]);
+    echo $form->field($model, $field)->checkboxList($items, ['value' => $selectedItems])->label($label, $labelOptions);
 } else {
     echo $form->field($model, $field)->dropDownList($items, array_merge([
         'multiple' => isset($junctionModel),
         'value' => $manualItems && isset($junctionModel) ? array_keys(array_intersect($items, $selectedItems)) : $selectedItems,
         'prompt' => isset($junctionModel) ? null : Yii::t('h3tech/crud/crud', 'None'),
         'options' => $itemOptions,
-    ], $options, ['disabled' => count($items) === 0]))->hint($hint);
+    ], $options, ['disabled' => count($items) === 0]))->hint($hint)->label($label, $labelOptions);
 }
