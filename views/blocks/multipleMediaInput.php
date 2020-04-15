@@ -132,7 +132,7 @@ JS;
         }
     }
 
-    echo $form->field($model, $field)->label(':)')->widget(FileInput::class, [
+    echo $form->field($model, $field)->widget(FileInput::class, [
         'options' => array_merge($options, ['multiple' => true]),
         'pluginOptions' => array_merge([
             'showClose' => false,
