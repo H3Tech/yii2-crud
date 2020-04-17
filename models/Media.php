@@ -18,6 +18,7 @@ use Yii;
  * @property string $filePath
  * @property string $url
  * @property string $fileName
+ * @property int $fileSize
  */
 class Media extends ActiveRecord
 {
@@ -94,5 +95,10 @@ class Media extends ActiveRecord
         if (file_exists($filePath)) {
             unlink($filePath);
         }
+    }
+
+    public function getFileSize()
+    {
+        return filesize($this->filePath);
     }
 }

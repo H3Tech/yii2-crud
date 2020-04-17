@@ -33,4 +33,5 @@ return [
     'At least {minValue}, at most {maxValue}' => 'Legalább {minValue}, legfeljebb {maxValue}',
     'At least {minValue}' => 'Legalább {minValue}',
     'At most {maxValue}' => 'Legfeljebb {maxValue}',
+    'Copy URL' => 'URL másolása',
 ];
