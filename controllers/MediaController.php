@@ -25,19 +25,35 @@ class MediaController extends Controller
 
     public static function upload(UploadedFile $mediaFile, $type, $prefix)
     {
-        if ($prefix == null || trim($prefix) == '') {
-            $prefix = $type . '_';
-        }
-        $fileName = uniqid($prefix) . '_' . static::slug($mediaFile->name);
+        $fileName = static::generateFileName($mediaFile->name, $type, $prefix);
 
         $mediaFile->saveAs(Media::getUploadPath($fileName));
 
-        $media = new Media();
-        $media->type = $type;
-        $media->filename = $fileName;
+        $media = new Media(['type' => $type, 'filename' => $fileName]);
         $media->save();
 
         return Yii::$app->db->lastInsertID;
+    }
+
+    public static function save($sourceFilePath, $type, $prefix)
+    {
+        $fileName = static::generateFileName(basename($sourceFilePath), $type, $prefix);
+
+        copy($sourceFilePath, Media::getUploadPath($fileName));
+
+        $media = new Media(['type' => $type, 'filename' => $fileName]);
+        $media->save();
+
+        return Yii::$app->db->lastInsertID;
+    }
+
+    protected static function generateFileName($originalName, $type, $prefix = null)
+    {
+        if ($prefix == null || trim($prefix) == '') {
+            $prefix = $type . '_';
+        }
+
+        return uniqid($prefix) . '_' . static::slug($originalName);
     }
 
     protected static function slug($string, $replacement = '-', $lowercase = true)
