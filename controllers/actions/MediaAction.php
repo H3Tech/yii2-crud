@@ -27,7 +27,7 @@ abstract class MediaAction extends Action
 
     public function setType($type)
     {
-        $supportedTypes = ['image', 'video'];
+        $supportedTypes = ['image', 'video', 'file'];
 
         if (!in_array($type, $supportedTypes)) {
             throw new InvalidConfigException('Unsupported media type');
