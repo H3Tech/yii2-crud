@@ -8,6 +8,7 @@ use h3tech\crud\helpers\CrudWidget;
 $settings = array_merge(['maxLength' => true], $settings);
 
 $label = isset($settings['label']) ? $settings['label'] : null;
+$labelOptions = isset($settings['labelOptions']) ? $settings['labelOptions'] : [];
 
 $disableAutomaticHints = isset($settings['disableAutomaticHints']) ? $settings['disableAutomaticHints'] : false;
 $hint = isset($settings['hint']) ? $settings['hint'] : null;
@@ -50,4 +51,4 @@ echo $form->field($model, $field)->widget(TinyMce::class, [
         'toolbar' => 'undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | image',
         'relative_urls' => false,
     ], $clientOptions),
-])->label($label)->hint($hint);
+])->label($label, $labelOptions)->hint($hint);
