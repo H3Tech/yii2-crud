@@ -9,7 +9,7 @@ use yii\helpers\StringHelper;
 use kartik\daterange\DateRangePicker;
 use Yii;
 use yii\web\View;
-use yii\db\ActiveRecord;
+use yii\base\Model;
 
 class CrudWidget
 {
@@ -172,7 +172,7 @@ class CrudWidget
         }
     }
 
-    public static function getLengthHint(ActiveRecord $model, $field)
+    public static function getLengthHint(Model $model, $field)
     {
         $hint = null;
         $field = preg_replace('/^\[\d+\]/','', $field);
