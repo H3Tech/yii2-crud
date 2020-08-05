@@ -22,6 +22,7 @@ use h3tech\crud\helpers\CrudWidget;
 use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
 use yii\web\AssetBundle;
+use yii\grid\GridView;
 
 /**
  * This class implements the CRUD actions for a model.
@@ -47,6 +48,7 @@ abstract class AbstractCRUDController extends Controller
     protected static $showFilterResetButton = null;
     protected static $idAttribute = null;
     public static $enableSearchForm = false;
+    protected static $listViewClass = null;
 
     public static function modelClass()
     {
@@ -578,5 +580,10 @@ abstract class AbstractCRUDController extends Controller
     public static function searchRules()
     {
         return [];
+    }
+
+    public static function listViewClass()
+    {
+        return static::$listViewClass === null ? GridView::class : static::$listViewClass;
     }
 }

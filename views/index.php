@@ -80,7 +80,9 @@ foreach ($controllerClass::getAssetBundles('index') as $assetBundle) {
 
     array_splice($columns, 1, 0, $attributes);
 
-    echo GridView::widget(array_merge([
+    $listViewClass = $controllerClass::listViewClass();
+
+    echo $listViewClass::widget(array_merge([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => $columns,
