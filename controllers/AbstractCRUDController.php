@@ -32,6 +32,7 @@ abstract class AbstractCRUDController extends Controller
     protected static $modelClass = null;
     protected static $searchModelClass = null;
     protected static $pageSize = 20;
+    protected static $pageSizes = [20, 50, 100, 200, 500];
     protected static $enableAjaxValidation = false;
     protected static $enableClientValidation = true;
     protected static $titleAttribute = null;
@@ -64,9 +65,16 @@ abstract class AbstractCRUDController extends Controller
             : static::$searchModelClass;
     }
 
-    protected static function pageSize()
+    public static function pageSize()
     {
         return static::$pageSize;
+    }
+
+    public static function pageSizes()
+    {
+        $allSizes = array_unique(array_merge(static::$pageSizes, [static::pageSize()]));
+        sort($allSizes);
+        return $allSizes;
     }
 
     protected static function getEnableAjaxValidation()
@@ -426,7 +434,9 @@ abstract class AbstractCRUDController extends Controller
         $searchParams = Yii::$app->request->queryParams;
         $dataProvider = $searchModel->search($searchParams);
         static::transformDataProvider($dataProvider);
-        $dataProvider->pagination->setPageSize(static::pageSize());
+        $dataProvider->pagination->defaultPageSize = static::pageSize();
+        $allSizes = static::pageSizes();
+        $dataProvider->pagination->pageSizeLimit = [$allSizes[0], $allSizes[count($allSizes) - 1]];
 
         return $this->renderAction('index', ['searchModel' => $searchModel, 'dataProvider' => $dataProvider]);
     }

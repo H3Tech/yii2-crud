@@ -17,7 +17,8 @@
     "yiisoft/yii2-imagine": "~2.1.1.0",
     "bower-asset/JCrop": "~0.9.15.0",
     "FortAwesome/Font-Awesome": "~5.12.0",
-    "2amigos/yii2-tinymce-widget" : "~1.1"
+    "2amigos/yii2-tinymce-widget" : "~1.1.3",
+    "nterms/yii2-pagesize-widget": "^2.0.1"
   },
   "autoload": {
     "psr-4": {

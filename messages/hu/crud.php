@@ -34,4 +34,5 @@ return [
     'At least {minValue}' => 'Legalább {minValue}',
     'At most {maxValue}' => 'Legfeljebb {maxValue}',
     'Copy URL' => 'URL másolása',
+    'items per page' => 'elem oldalanként',
 ];
