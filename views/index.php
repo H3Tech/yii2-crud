@@ -82,20 +82,24 @@ foreach ($controllerClass::getAssetBundles('index') as $assetBundle) {
 
     $listViewClass = $controllerClass::listViewClass();
 
-    $pageSizes = [];
-    foreach ($controllerClass::pageSizes() as $size) {
-        $pageSizes[$size] = $size;
+    $allSizes = $controllerClass::pageSizes();
+    $canChangeSize = count($allSizes) > 1;
+    if ($canChangeSize) {
+        $pageSizes = [];
+        foreach ($controllerClass::pageSizes() as $size) {
+            $pageSizes[$size] = $size;
+        }
+        echo \nterms\pagesize\PageSize::widget([
+            'defaultPageSize' => $controllerClass::pageSize(),
+            'sizes' => $pageSizes,
+            'label' => Yii::t('h3tech/crud/crud', 'items per page'),
+        ]);
     }
-    echo \nterms\pagesize\PageSize::widget([
-        'defaultPageSize' => $controllerClass::pageSize(),
-        'sizes' => $pageSizes,
-        'label' => Yii::t('h3tech/crud/crud', 'items per page'),
-    ]);
 
     echo $listViewClass::widget(array_merge([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
-        'filterSelector' => 'select[name="per-page"]',
+        'filterSelector' => $canChangeSize ? 'select[name="per-page"]' : null,
         'columns' => $columns,
     ], $controllerClass::gridConfig())); ?>
 
