@@ -45,7 +45,7 @@ abstract class AbstractCRUDController extends Controller
     protected static $itemButtons = null;
     protected static $itemActions = null;
     protected static $detailFormatterClass = null;
-    protected static $afterActionRedirects = ['create' => 'view', 'update' => 'view', 'delete' => 'index'];
+    protected static $afterActionRedirects = ['create' => ['view'], 'update' => ['view'], 'delete' => ['index']];
     protected static $showFilterResetButton = null;
     protected static $idAttribute = null;
     public static $enableSearchForm = false;
@@ -475,7 +475,11 @@ abstract class AbstractCRUDController extends Controller
         if ($this->canCreateModel($model)) {
             $this->transformModel($model, $action);
             $model->save();
-            return $this->redirect([static::afterActionRedirects()[$action], 'id' => $model->getPrimaryKey()]);
+            return $this->redirect(
+            is_array(($redirect = static::afterActionRedirects()[$action]))
+                ? array_merge($redirect, ['id' => $model->getPrimaryKey()])
+                : $redirect
+            );
         } else {
             return $this->renderAction($action, ['model' => $model]);
         }
@@ -519,7 +523,11 @@ abstract class AbstractCRUDController extends Controller
         if ($this->canUpdateModel($model)) {
             $this->transformModel($model, $action);
             $model->save();
-            return $this->redirect([static::afterActionRedirects()[$action], 'id' => $model->{static::idAttribute()}]);
+            return $this->redirect(
+                is_array(($redirect = static::afterActionRedirects()[$action]))
+                    ? array_merge($redirect, ['id' => $model->{static::idAttribute()}])
+                    : $redirect
+            );
         } else {
             return $this->renderAction($action, ['model' => $model]);
         }
@@ -534,7 +542,7 @@ abstract class AbstractCRUDController extends Controller
     public function actionDelete($id)
     {
         $this->deleteModel(static::findModel($id));
-        return $this->redirect([static::afterActionRedirects()['delete']]);
+        return $this->redirect(static::afterActionRedirects()['delete']);
     }
 
     protected function deleteModel(ActiveRecord $model)
