@@ -3,6 +3,7 @@
 use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\base\ViewNotFoundException;
+use yii\helpers\ArrayHelper;
 
 /**
  * @var $this yii\web\View
@@ -43,6 +44,13 @@ foreach ($controllerClass::getAssetBundles('index') as $assetBundle) {
         <?php if ($controllerClass::showFilterResetButton()) : ?>
             <?= Html::a(Yii::t('h3tech/crud/crud', 'Reset Filters'), ['index'], ['class' => 'btn btn-success']) ?>
         <?php endif; ?>
+        <?php foreach ($controllerClass::additionalIndexButtons() as $button) : ?>
+            <?= Html::a(
+                    ArrayHelper::getValue($button, 'text'),
+                    ArrayHelper::getValue($button, 'url'),
+                    array_merge(['class' => 'btn btn-success'], ArrayHelper::getValue($button, 'options', []))
+            ) ?>
+        <?php endforeach; ?>
     </p>
 
     <?

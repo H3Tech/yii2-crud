@@ -50,6 +50,7 @@ abstract class AbstractCRUDController extends Controller
     protected static $idAttribute = null;
     public static $enableSearchForm = false;
     protected static $listViewClass = null;
+    protected static $additionalIndexButtons = [];
 
     public static function modelClass()
     {
@@ -595,5 +596,10 @@ abstract class AbstractCRUDController extends Controller
     public static function listViewClass()
     {
         return static::$listViewClass === null ? GridView::class : static::$listViewClass;
+    }
+
+    public static function additionalIndexButtons()
+    {
+        return static::$additionalIndexButtons;
     }
 }
