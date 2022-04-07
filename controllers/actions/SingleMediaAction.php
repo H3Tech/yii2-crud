@@ -21,9 +21,14 @@ class SingleMediaAction extends MediaAction
         );
     }
 
+    protected function getMediaFile(ActiveRecord $model)
+    {
+        return UploadedFile::getInstance($model, $this->fileVariable);
+    }
+
     public function afterCreate(ActiveRecord $model)
     {
-        $mediaFile = UploadedFile::getInstance($model, $this->fileVariable);
+        $mediaFile = $this->getMediaFile($model);
         if ($mediaFile !== null) {
             $this->uploadMedia($model, $mediaFile);
         }
@@ -31,7 +36,7 @@ class SingleMediaAction extends MediaAction
 
     public function afterUpdate(ActiveRecord $model)
     {
-        $mediaFile = UploadedFile::getInstance($model, $this->fileVariable);
+        $mediaFile = $this->getMediaFile($model);
         if ($mediaFile !== null) {
             $oldMedia = Media::findOne($model->{$this->mediaIdAttribute});
 
