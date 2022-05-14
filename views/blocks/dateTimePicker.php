@@ -17,7 +17,7 @@ echo $form->field($model, $field)->widget(DateTimePicker::className(), [
     'options' => array_merge(['placeholder' => Yii::t('h3tech/crud/crud', 'Select time...')], $options),
     'readonly' => true,
     'pluginOptions' => array_merge([
-        'format' => 'yyyy-mm-dd HH:ii',
+        'format' => 'yyyy-mm-dd hh:ii',
         'autoclose' => true,
     ], $pluginOptions),
 ])->hint($hint)->label($label, $labelOptions);
