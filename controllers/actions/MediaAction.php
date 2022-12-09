@@ -49,4 +49,10 @@ abstract class MediaAction extends Action
 
         $this->mediaControllerClass = $mediaControllerClass;
     }
+
+    protected function getModelPrefix()
+    {
+        $controllerClass = $this->controllerClass;
+        return $this->prefix === null ? $controllerClass::getModelPrefix() : $this->prefix;
+    }
 }

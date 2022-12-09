@@ -22,7 +22,7 @@ class MultipleMediaAction extends MediaAction
         return $mediaControllerClass::upload(
             $mediaFile,
             $this->type,
-            ($this->prefix === null ? $controllerClass::getModelPrefix() : $this->prefix)
+            $this->getModelPrefix()
         );
     }
 

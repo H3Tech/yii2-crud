@@ -17,7 +17,7 @@ class SingleMediaAction extends MediaAction
         $model->{$this->mediaIdAttribute} = $mediaControllerClass::upload(
             $mediaFile,
             $this->type,
-            ($this->prefix === null ? $controllerClass::getModelPrefix() : $this->prefix)
+            $this->getModelPrefix()
         );
     }
 

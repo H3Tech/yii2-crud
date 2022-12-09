@@ -4,6 +4,7 @@ namespace h3tech\crud\controllers;
 
 use h3tech\crud\Module;
 use Yii;
+use yii\base\Exception;
 use yii\base\InvalidParamException;
 use yii\helpers\Inflector;
 use yii\web\BadRequestHttpException;
@@ -23,8 +24,40 @@ class MediaController extends Controller
         Yii::$app->response->format = Response::FORMAT_JSON;
     }
 
+    protected static function getFileErrorMessage(int $error)
+    {
+        switch ($error) {
+            case 1:
+                return Yii::t('h3tech/crud/crud', 'The uploaded file exceeds the upload_max_filesize directive in php.ini');
+            case 2:
+                return Yii::t('h3tech/crud/crud', 'The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the HTML form');
+            case 3:
+                return Yii::t('h3tech/crud/crud', 'The uploaded file was only partially uploaded');
+            case 4:
+                return Yii::t('h3tech/crud/crud', 'No file was uploaded');
+            case 6:
+                return Yii::t('h3tech/crud/crud', 'Missing a temporary folder');
+            case 7:
+                return Yii::t('h3tech/crud/crud', 'Failed to write file to disk');
+            case 8:
+                return Yii::t('h3tech/crud/crud', 'A PHP extension stopped the file upload');
+            default:
+                throw new Exception(
+                    Yii::t(
+                        'h3tech/crud/crud',
+                        'Unknown file error: {error}',
+                        ['error' => $error]
+                    )
+                );
+        }
+    }
+
     public static function upload(UploadedFile $mediaFile, $type, $prefix)
     {
+        if ($mediaFile->hasError) {
+            throw new Exception(static::getFileErrorMessage($mediaFile->error));
+        }
+
         $fileName = static::generateFileName($mediaFile->name, $type, $prefix);
 
         $mediaFile->saveAs(Media::getUploadPath($fileName));

@@ -35,4 +35,12 @@ return [
     'At most {maxValue}' => 'Legfeljebb {maxValue}',
     'Copy URL' => 'URL másolása',
     'items per page' => 'elem oldalanként',
+    'The uploaded file exceeds the upload_max_filesize directive in php.ini' => 'A feltöltött fájl mérete meghaladja a php.ini upload_max_filesize direktívájában megadottat',
+    'The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the HTML form' => 'A feltöltött fájl mérete meghaladja a HTML form MAX_FILE_SIZE direktívájában megadottat',
+    'The uploaded file was only partially uploaded' => 'A fájl csak részben került feltöltésre',
+    'No file was uploaded' => 'Nem került feltöltésre fájl',
+    'Missing a temporary folder' => 'Hiányzó ideiglenes mappa',
+    'Failed to write file to disk' => 'Nem sikerült lemezre írni a fájlt',
+    'A PHP extension stopped the file upload' => 'Egy PHP kiterjesztés megállította a fájlfeltöltést',
+    'Unknown file error: {error}' => 'Ismeretlen fájl hiba: {error}',
 ];
