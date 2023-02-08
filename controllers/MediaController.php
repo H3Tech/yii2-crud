@@ -290,7 +290,7 @@ class MediaController extends Controller
                 $modelClass::tableName(), [$mediaIdAttribute => null], [$mediaIdAttribute => $key, 'id' => $modelId]
             )->execute();
 
-        if (($media = Media::findOne($key)) !== null) {
+        if ($modelClass::find()->where([$mediaIdAttribute => $key])->count() == 0 && ($media = Media::findOne($key)) !== null) {
             $media->delete();
         }
 
