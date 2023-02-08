@@ -4,11 +4,20 @@ use h3tech\crud\assets\CropAsset;
 use h3tech\crud\assets\UrlCopyAsset;
 use h3tech\crud\controllers\MediaController;
 use kartik\file\FileInput;
+use yii\db\ActiveRecord;
 use yii\helpers\Url;
-use h3tech\crud\Module;
 use h3tech\crud\helpers\CrudWidget;
+use yii\web\View;
+use yii\widgets\ActiveForm;
 
-/* @var \yii\web\View $this */
+/**
+ * @var View $this
+ * @var ActiveForm $form
+ * @var string $junctionModelClass
+ * @var ActiveRecord $model
+ * @var string $field
+ * @var string $modelName
+ */
 
 $this->registerAssetBundle(UrlCopyAsset::class);
 
@@ -39,7 +48,7 @@ if ($model->isNewRecord) {
     $mediaIdAttribute = $settings['mediaIdAttribute'];
 
     $preview = MediaController::getMultiplePreviewData(
-        $model->primaryKey,
+        $model,
         $settings['junctionModelClass'],
         $modelIdAttribute,
         $mediaIdAttribute,
@@ -148,6 +157,7 @@ JS;
                 'junctionModelClass' => $settings['junctionModelClass'],
                 'mediaIdAttribute' => $mediaIdAttribute,
                 'modelIdAttribute' => $modelIdAttribute,
+                'modelClass' => get_class($model),
             ],
             'fileActionSettings' => [
                 'showDrag' => $isOrderable,

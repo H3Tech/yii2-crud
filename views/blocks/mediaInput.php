@@ -27,7 +27,7 @@ $labelOptions = isset($settings['labelOptions']) ? $settings['labelOptions'] : [
 
 $allowDeletion = isset($settings['allowDeletion']) ? $settings['allowDeletion'] : true;
 
-$preview = MediaController::getSinglePreviewData($model->$field, $field, get_class($model), $allowDeletion);
+$preview = MediaController::getSinglePreviewData($model, $field, null, $allowDeletion);
 
 $targetSizes = [];
 $targetSizes = array_merge($targetSizes, isset($settings['targetSize']) ? [$settings['targetSize']] : []);

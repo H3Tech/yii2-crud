@@ -2,16 +2,17 @@
 
 namespace h3tech\crud\controllers;
 
-use h3tech\crud\Module;
+use Throwable;
 use Yii;
 use yii\base\Exception;
-use yii\base\InvalidParamException;
+use yii\base\InvalidConfigException;
+use yii\db\ActiveRecord;
+use yii\db\StaleObjectException;
 use yii\helpers\Inflector;
 use yii\web\BadRequestHttpException;
 use yii\web\Controller;
 use h3tech\crud\models\Media;
 use yii\helpers\FileHelper;
-use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\web\UploadedFile;
 use yii\web\Response;
@@ -99,14 +100,26 @@ class MediaController extends Controller
         return $lowercase ? strtolower($string) : $string;
     }
 
-    public static function getSinglePreviewData($mediaId, $mediaIdAttribute = null, $modelClass = null,
+    /**
+     * @param ActiveRecord $model
+     * @param $mediaIdAttribute
+     * @param $modelClass
+     * @param $allowDeletion
+     * @return array
+     * @throws InvalidConfigException
+     */
+    public static function getSinglePreviewData($model, $mediaIdAttribute = null, $modelClass = null,
                                                 $allowDeletion = true)
     {
+        if ($modelClass === null) {
+            $modelClass = get_class($model);
+        }
+
         $result = [];
         $result['initialPreview'] = [];
         $result['initialPreviewConfig'] = [];
 
-        $media = Media::findOne($mediaId);
+        $media = Media::findOne($model->$mediaIdAttribute);
 
         if ($media !== null) {
             $result['initialPreview'][] = $media->url;
@@ -123,6 +136,7 @@ class MediaController extends Controller
                     'extra' => [
                         'modelClass' => $modelClass,
                         'mediaIdAttribute' => $mediaIdAttribute,
+                        'modelId' => $model->primaryKey,
                     ],
                     'downloadUrl' => $media->url,
                     'size' => $media->fileSize,
@@ -136,7 +150,7 @@ class MediaController extends Controller
         return $result;
     }
 
-    protected static function getMultiplePreviewConfig(Media $media, $junctionModelClass, $mediaIdAttribute)
+    protected static function getMultiplePreviewConfig(ActiveRecord $model, Media $media, $junctionModelClass, $mediaIdAttribute, $modelIdAttribute)
     {
         return [
             'type' => $media->type,
@@ -147,6 +161,8 @@ class MediaController extends Controller
             'extra' => [
                 'junctionModelClass' => $junctionModelClass,
                 'mediaIdAttribute' => $mediaIdAttribute,
+                'modelIdAttribute' => $modelIdAttribute,
+                'modelId' => $model->primaryKey,
             ],
             'downloadUrl' => $media->url,
             'size' => $media->fileSize,
@@ -154,14 +170,22 @@ class MediaController extends Controller
         ];
     }
 
-    public static function getMultiplePreviewData($modelId, $junctionModelClass, $modelIdAttribute, $mediaIdAttribute,
+    /**
+     * @param ActiveRecord $model
+     * @param ActiveRecord $junctionModelClass
+     * @param string $modelIdAttribute
+     * @param string $mediaIdAttribute
+     * @param string $orderAttribute
+     * @return array
+     */
+    public static function getMultiplePreviewData($model, $junctionModelClass, $modelIdAttribute, $mediaIdAttribute,
                                                   $orderAttribute = null)
     {
         $result = [];
         $result['initialPreview'] = [];
         $result['initialPreviewConfig'] = [];
 
-        $junctionQuery = $junctionModelClass::find()->where([$modelIdAttribute => $modelId]);
+        $junctionQuery = $junctionModelClass::find()->where([$modelIdAttribute => $model->primaryKey]);
 
         if ($orderAttribute !== null) {
             $junctionQuery->orderBy([$orderAttribute => SORT_ASC]);
@@ -173,7 +197,7 @@ class MediaController extends Controller
 
             $result['initialPreview'][] = $media->url;
             $result['initialPreviewConfig'][] = static::getMultiplePreviewConfig(
-                $media, $junctionModelClass, $mediaIdAttribute
+                $model, $media, $junctionModelClass, $mediaIdAttribute, $modelIdAttribute
             );
         }
 
@@ -186,7 +210,20 @@ class MediaController extends Controller
         return parent::runAction($id, $params);
     }
 
-    public static function actionUploadMultiple($junctionModelClass, $type, $modelIdAttribute, $mediaIdAttribute, $modelId,
+    /**
+     * @param ActiveRecord $modelClass
+     * @param ActiveRecord $junctionModelClass
+     * @param string $type
+     * @param string $modelIdAttribute
+     * @param string $mediaIdAttribute
+     * @param $modelId
+     * @param string $modelName
+     * @param string $prefix
+     * @return array
+     * @throws BadRequestHttpException
+     * @throws Exception
+     */
+    public static function actionUploadMultiple($modelClass, $junctionModelClass, $type, $modelIdAttribute, $mediaIdAttribute, $modelId,
                                                 $modelName, $prefix = null)
     {
         $response = [];
@@ -210,6 +247,8 @@ class MediaController extends Controller
                     )
                 );
             } else {
+                $model = $modelClass::findOne($modelId);
+
                 $mediaId = static::upload($file, $type, $prefix);
 
                 $junctionRecord = new $junctionModelClass;
@@ -220,7 +259,7 @@ class MediaController extends Controller
                 $media = Media::findOne($mediaId);
 
                 $initialPreview = $media->url;
-                $initialPreviewConfig = static::getMultiplePreviewConfig($media, $junctionModelClass, $mediaIdAttribute);
+                $initialPreviewConfig = static::getMultiplePreviewConfig($model, $media, $junctionModelClass, $mediaIdAttribute, $modelIdAttribute);
 
                 $response['initialPreview'] = [$initialPreview];
                 $response['initialPreviewConfig'] = [$initialPreviewConfig];
@@ -234,9 +273,22 @@ class MediaController extends Controller
         return $response;
     }
 
-    public static function actionDeleteSingle($modelClass, $key, $mediaIdAttribute)
+    /**
+     * @param ActiveRecord $modelClass
+     * @param mixed $key
+     * @param string $mediaIdAttribute
+     * @param mixed $modelId
+     * @return string[]
+     * @throws Throwable
+     * @throws StaleObjectException
+     */
+    public static function actionDeleteSingle($modelClass, $key, $mediaIdAttribute, $modelId)
     {
-        $modelClass::updateAll([$mediaIdAttribute => null], [$mediaIdAttribute => $key]);
+        $modelClass::getDb()
+            ->createCommand()
+            ->update(
+                $modelClass::tableName(), [$mediaIdAttribute => null], [$mediaIdAttribute => $key, 'id' => $modelId]
+            )->execute();
 
         if (($media = Media::findOne($key)) !== null) {
             $media->delete();
@@ -245,13 +297,23 @@ class MediaController extends Controller
         return ['result' => 'ok'];
     }
 
-    public static function actionDeleteMultiple($junctionModelClass, $key, $mediaIdAttribute)
+    /**
+     * @param ActiveRecord $junctionModelClass
+     * @param $key
+     * @param string $mediaIdAttribute
+     * @param $modelId
+     * @return string[]
+     * @throws StaleObjectException
+     * @throws Throwable
+     */
+    public static function actionDeleteMultiple($junctionModelClass, $key, $mediaIdAttribute, $modelIdAttribute, $modelId)
     {
-        $junctionModelClass::deleteAll([
+        $junctionModelClass::getDb()->createCommand()->delete($junctionModelClass::tableName(), [
             $mediaIdAttribute => $key,
-        ]);
+            $modelIdAttribute => $modelId,
+        ])->execute();
 
-        if (($media = Media::findOne($key)) !== null) {
+        if ($junctionModelClass::find()->where([$mediaIdAttribute => $key])->count() == 0 && ($media = Media::findOne($key)) !== null) {
             $media->delete();
         }
 

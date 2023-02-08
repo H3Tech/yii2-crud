@@ -51,11 +51,7 @@ class CrudWidget
             return static::getMediaDisplayWidget(
                 $model,
                 $attribute,
-                MediaController::getSinglePreviewData(
-                    $model->$attribute,
-                    $attribute,
-                    get_class($model)
-                )
+                MediaController::getSinglePreviewData($model, $attribute)
             );
         });
     }
@@ -69,7 +65,7 @@ class CrudWidget
                     $model,
                     $attribute,
                     MediaController::getMultiplePreviewData(
-                        $model->primaryKey,
+                        $model,
                         $junctionClass,
                         $modelIdField,
                         $mediaIdField,
