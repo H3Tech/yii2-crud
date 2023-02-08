@@ -15,7 +15,7 @@
     "kartik-v/yii2-widget-fileinput": "~1.0.6",
     "kartik-v/bootstrap-fileinput": "~5.1.5.0",
     "kartik-v/yii2-widget-datetimepicker": "~1.4.4",
-    "yiisoft/yii2-imagine": "~2.1.1.0",
+    "yiisoft/yii2-imagine": "^2.0",
     "bower-asset/jcrop": "~0.9.15.0",
     "fortawesome/font-awesome": "~5.12.0",
     "2amigos/yii2-tinymce-widget" : "~1.1.3",
