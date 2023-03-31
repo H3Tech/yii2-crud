@@ -16,7 +16,6 @@ class MultipleMediaAction extends MediaAction
 
     protected function uploadMedia(UploadedFile $mediaFile)
     {
-        $controllerClass = $this->controllerClass;
         $mediaControllerClass = $this->getMediaControllerClass();
 
         return $mediaControllerClass::upload(
@@ -43,5 +42,6 @@ class MultipleMediaAction extends MediaAction
     {
         $junctionModelClass = $this->junctionModelClass;
         $junctionModelClass::deleteAll([$this->modelIdAttribute => $model->primaryKey]);
+        // TODO: Delete Media records if deleteOldMedia flag is set
     }
 }

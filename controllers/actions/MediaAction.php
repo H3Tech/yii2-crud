@@ -19,6 +19,7 @@ abstract class MediaAction extends Action
     public $fileVariable;
     public $prefix = null;
     protected $mediaControllerClass = null;
+    public $deleteOldMedia = true;
 
     public function getType()
     {
