@@ -55,7 +55,7 @@ class SingleMediaAction extends MediaAction
 
             $this->uploadMedia($model, $mediaFile);
 
-            if ($this->deleteOldMedia && ($oldMedia = Media::findOne($oldMediaId)) !== null) {
+            if ($this->shouldDeleteOldMedia() && ($oldMedia = Media::findOne($oldMediaId)) !== null) {
                 $model->save();
                 $oldMedia->delete();
             }
@@ -68,7 +68,7 @@ class SingleMediaAction extends MediaAction
      */
     public function afterDelete(ActiveRecord $model)
     {
-        if ($this->deleteOldMedia && ($media = Media::findOne($model->{$this->mediaIdAttribute})) !== null) {
+        if ($this->shouldDeleteOldMedia() && ($media = Media::findOne($model->{$this->mediaIdAttribute})) !== null) {
             $media->delete();
         }
     }

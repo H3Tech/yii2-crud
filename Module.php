@@ -4,13 +4,12 @@ namespace h3tech\crud;
 
 use Yii;
 use yii\base\InvalidConfigException;
-use yii\base\InvalidParamException;
-use yii\helpers\ArrayHelper;
 
 /**
  * @property string $mediaTableName
  * @property string uploadPath
  * @property string baseUploadUrl
+ * @property boolean $deleteOldMedia
  */
 class Module extends \yii\base\Module
 {
@@ -18,6 +17,8 @@ class Module extends \yii\base\Module
 
     protected $uploadPath = '@webroot/uploads/';
     protected $baseUploadUrl = '@web/uploads/';
+
+    protected $deleteOldMedia = true;
 
     public function init()
     {
@@ -38,9 +39,12 @@ class Module extends \yii\base\Module
 
         Yii::$app->urlManager->addRules([
             'h3tech-crud/<controller:[\w-]+>/<action:[\w-]+>/<id:\d+>' => 'h3tech-crud/<controller>/<action>',
-        ], true);
+        ]);
     }
 
+    /**
+     * @throws InvalidConfigException
+     */
     protected static function assertPropertyIsString($propertyName, $propertyValue)
     {
         if (!is_string($propertyValue) || trim($propertyValue) === '') {
@@ -48,12 +52,29 @@ class Module extends \yii\base\Module
         }
     }
 
+
+    /**
+     * @throws InvalidConfigException
+     */
+    protected static function assertPropertyIsBoolean($propertyName, $propertyValue)
+    {
+        if (!is_string($propertyValue) || trim($propertyValue) === '') {
+            throw new InvalidConfigException("The property '$propertyName' must be a boolean value if set");
+        }
+    }
+
+    /**
+     * @throws InvalidConfigException
+     */
     public function setUploadPath($uploadPath)
     {
         static::assertPropertyIsString('uploadPath', $uploadPath);
         $this->uploadPath = $uploadPath;
     }
 
+    /**
+     * @throws InvalidConfigException
+     */
     public function setBaseUploadUrl($baseUploadUrl)
     {
         static::assertPropertyIsString('baseUploadUrl', $baseUploadUrl);
@@ -68,5 +89,19 @@ class Module extends \yii\base\Module
     public function getBaseUploadUrl()
     {
         return Yii::getAlias($this->baseUploadUrl);
+    }
+
+    /**
+     * @throws InvalidConfigException
+     */
+    public function setDeleteOldMedia($value)
+    {
+        static::assertPropertyIsBoolean('deleteOldMedia', $value);
+        $this->deleteOldMedia = $value;
+    }
+
+    public function getDeleteOldMedia()
+    {
+        return $this->deleteOldMedia;
     }
 }

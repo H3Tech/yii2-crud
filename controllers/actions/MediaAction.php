@@ -3,6 +3,7 @@
 namespace h3tech\crud\controllers\actions;
 
 use h3tech\crud\controllers\MediaController;
+use h3tech\crud\Module;
 use yii\base\InvalidConfigException;
 
 /**
@@ -11,6 +12,7 @@ use yii\base\InvalidConfigException;
  * @property string $fileVariable
  * @property string $prefix
  * @property MediaController $mediaControllerClass
+ * @property-write $deleteOldMedia
  */
 abstract class MediaAction extends Action
 {
@@ -19,7 +21,7 @@ abstract class MediaAction extends Action
     public $fileVariable;
     public $prefix = null;
     protected $mediaControllerClass = null;
-    public $deleteOldMedia = true;
+    protected $deleteOldMedia;
 
     public function getType()
     {
@@ -55,5 +57,22 @@ abstract class MediaAction extends Action
     {
         $controllerClass = $this->controllerClass;
         return $this->prefix === null ? $controllerClass::getModelPrefix() : $this->prefix;
+    }
+
+    /**
+     * @throws InvalidConfigException
+     */
+    public function setDeleteMedia($value)
+    {
+        if (is_bool($value)) {
+            $this->deleteOldMedia = $value;
+        } else {
+            throw new InvalidConfigException("The property 'deleteOldMedia' must be a boolean value if set");
+        }
+    }
+
+    protected function shouldDeleteOldMedia()
+    {
+        return $this->deleteOldMedia === null ? Module::getInstance()->deleteOldMedia : $this->deleteOldMedia;
     }
 }
