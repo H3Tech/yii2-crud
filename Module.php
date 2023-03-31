@@ -58,7 +58,7 @@ class Module extends \yii\base\Module
      */
     protected static function assertPropertyIsBoolean($propertyName, $propertyValue)
     {
-        if (!is_string($propertyValue) || trim($propertyValue) === '') {
+        if (!is_bool($propertyValue)) {
             throw new InvalidConfigException("The property '$propertyName' must be a boolean value if set");
         }
     }
