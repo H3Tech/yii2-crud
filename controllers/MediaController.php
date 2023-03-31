@@ -2,6 +2,7 @@
 
 namespace h3tech\crud\controllers;
 
+use h3tech\crud\Module;
 use Throwable;
 use Yii;
 use yii\base\Exception;
@@ -273,6 +274,11 @@ class MediaController extends Controller
         return $response;
     }
 
+    protected function shouldDeleteOldMedia()
+    {
+        return Module::getInstance()->deleteOldMedia;
+    }
+
     /**
      * @param ActiveRecord $modelClass
      * @param mixed $key
@@ -282,7 +288,7 @@ class MediaController extends Controller
      * @throws Throwable
      * @throws StaleObjectException
      */
-    public static function actionDeleteSingle($modelClass, $key, $mediaIdAttribute, $modelId)
+    public function actionDeleteSingle($modelClass, $key, $mediaIdAttribute, $modelId)
     {
         $modelClass::getDb()
             ->createCommand()
@@ -290,7 +296,8 @@ class MediaController extends Controller
                 $modelClass::tableName(), [$mediaIdAttribute => null], [$mediaIdAttribute => $key, 'id' => $modelId]
             )->execute();
 
-        if ($modelClass::find()->where([$mediaIdAttribute => $key])->count() == 0 && ($media = Media::findOne($key)) !== null) {
+        if ($this->shouldDeleteOldMedia() && $modelClass::find()->where([$mediaIdAttribute => $key])->count() == 0
+            && ($media = Media::findOne($key)) !== null) {
             $media->delete();
         }
 
@@ -306,14 +313,15 @@ class MediaController extends Controller
      * @throws StaleObjectException
      * @throws Throwable
      */
-    public static function actionDeleteMultiple($junctionModelClass, $key, $mediaIdAttribute, $modelIdAttribute, $modelId)
+    public function actionDeleteMultiple($junctionModelClass, $key, $mediaIdAttribute, $modelIdAttribute, $modelId)
     {
         $junctionModelClass::getDb()->createCommand()->delete($junctionModelClass::tableName(), [
             $mediaIdAttribute => $key,
             $modelIdAttribute => $modelId,
         ])->execute();
 
-        if ($junctionModelClass::find()->where([$mediaIdAttribute => $key])->count() == 0 && ($media = Media::findOne($key)) !== null) {
+        if ($this->shouldDeleteOldMedia() && $junctionModelClass::find()->where([$mediaIdAttribute => $key])->count() == 0
+            && ($media = Media::findOne($key)) !== null) {
             $media->delete();
         }
 
